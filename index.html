@@ -872,6 +872,21 @@
                 width: clamp(1.75rem, 8vw, 2.25rem);
                 height: clamp(1.75rem, 8vw, 2.25rem);
             }
+
+            .chat-input {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                z-index: 10;
+                padding: clamp(0.5rem, 2vw, 1rem) clamp(0.5rem, 2vw, 1rem);
+                border-top: 1px solid #e5e7eb;
+                background-color: white;
+            }
+
+            .chat-messages {
+                padding-bottom: clamp(4rem, 15vw, 5rem);
+            }
         }
 
         @media (max-width: 480px) {
@@ -903,6 +918,7 @@
 
             .chat-messages {
                 padding: clamp(0.25rem, 1.5vw, 0.5rem);
+                padding-bottom: clamp(4rem, 15vw, 5rem);
             }
 
             .message {
@@ -1409,7 +1425,7 @@
                 return;
             }
 
-            usernameButton.disabled = true;
+ oroUsernameButton.disabled = true;
             usernameError.classList.add('hidden');
 
             try {
