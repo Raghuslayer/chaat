@@ -505,7 +505,7 @@
             align-items: center;
         }
 
-        .back-button {
+        .menu-button, .back-button {
             display: none;
             margin-right: clamp(0.5rem, 2vw, 1rem);
             background: none;
@@ -822,6 +822,10 @@
                 transform: translateX(0);
             }
 
+            .menu-button {
+                display: block;
+            }
+
             .back-button {
                 display: block;
             }
@@ -1045,6 +1049,11 @@
 
         <div id="chatContainer" class="chat-container">
             <div id="noChatSelected" class="no-chat-selected">
+                <div class="chat-header">
+                    <button id="menuButton" class="menu-button">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
                 <i class="fas fa-comments"></i>
                 <h3>Select a chat to start messaging</h3>
                 <p>Or add a new friend to begin a conversation</p>
@@ -1052,6 +1061,9 @@
 
             <div id="activeChat" class="hidden">
                 <div class="chat-header">
+                    <button id="menuButtonActive" class="menu-button">
+                        <i class="fas fa-bars"></i>
+                    </button>
                     <button id="backButton" class="back-button">
                         <i class="fas fa-arrow-left"></i>
                     </button>
@@ -1136,6 +1148,8 @@
         const noChatSelected = document.getElementById('noChatSelected');
         const activeChat = document.getElementById('activeChat');
         const backButton = document.getElementById('backButton');
+        const menuButton = document.getElementById('menuButton');
+        const menuButtonActive = document.getElementById('menuButtonActive');
         const chatName = document.getElementById('chatName');
         const chatMessages = document.getElementById('chatMessages');
         const chatLoader = document.getElementById('chatLoader');
@@ -1184,9 +1198,15 @@
             });
             document.getElementById(screenId).classList.remove('hidden');
 
-            if (window.innerWidth <= 768 && screenId !== 'appContainer') {
+            if (window.innerWidth <= 768 && screenId === 'appContainer') {
+                sidebar.classList.add('active'); // Show sidebar by default on mobile
+            } else {
                 sidebar.classList.remove('active');
             }
+        }
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('active');
         }
 
         function toggleUserDropdown() {
@@ -1955,8 +1975,13 @@
 
         backButton.addEventListener('click', () => {
             setActiveChat(null);
-            sidebar.classList.add('active');
+            if (window.innerWidth <= 768) {
+                sidebar.classList.add('active');
+            }
         });
+
+        menuButton.addEventListener('click', toggleSidebar);
+        menuButtonActive.addEventListener('click', toggleSidebar);
 
         searchFriendsInput.addEventListener('input', (e) => {
             filterFriends(e.target.value);
