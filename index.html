@@ -19,8 +19,11 @@
             --gray-text: #6b7280;
             --error-color: #ef4444;
             --success-color: #10b981;
-            --border-radius: 8px;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --border-radius: clamp(0.5rem, 1vw, 0.75rem);
+            --shadow: 0 0.25rem 0.375rem -0.0625rem rgba(0, 0, 0, 0.1), 0 0.125rem 0.25rem -0.0625rem rgba(0, 0, 0, 0.06);
+            --base-font-size: clamp(0.875rem, 2.5vw, 1rem);
+            --sidebar-width: clamp(15rem, 25vw, 20rem);
+            --container-max-width: 90rem;
         }
 
         * {
@@ -30,18 +33,23 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
+        html {
+            font-size: var(--base-font-size);
+        }
+
         body {
             background-color: #f9fafb;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            font-size: var(--base-font-size);
         }
 
         .container {
             width: 100%;
-            max-width: 1200px;
+            max-width: var(--container-max-width);
             margin: 0 auto;
-            padding: 1rem;
+            padding: clamp(0.5rem, 2vw, 1rem);
             flex: 1;
         }
 
@@ -49,7 +57,6 @@
             display: none !important;
         }
 
-        /* Auth Screens */
         .auth-container {
             display: flex;
             flex-direction: column;
@@ -57,38 +64,38 @@
             justify-content: center;
             min-height: 100vh;
             background: linear-gradient(135deg, #4f46e5 0%, #10b981 100%);
+            padding: clamp(1rem, 5vw, 2rem);
         }
 
         .auth-box {
             background-color: white;
             border-radius: var(--border-radius);
             box-shadow: var(--shadow);
-            width: 90%;
-            max-width: 400px;
-            padding: 2rem;
+            width: clamp(18rem, 90vw, 25rem);
+            padding: clamp(1rem, 5vw, 2rem);
             animation: slideUp 0.5s ease-out;
         }
 
         .auth-logo {
             text-align: center;
-            margin-bottom: 1.5rem;
+            margin-bottom: clamp(0.75rem, 3vw, 1.5rem);
         }
 
         .auth-logo h1 {
             color: var(--primary-color);
-            font-size: 2rem;
+            font-size: clamp(1.5rem, 5vw, 2rem);
             margin-bottom: 0.5rem;
         }
 
         .auth-logo p {
             color: var(--gray-text);
-            font-size: 0.9rem;
+            font-size: clamp(0.75rem, 2vw, 0.9rem);
         }
 
         .auth-form {
             display: flex;
             flex-direction: column;
-            gap: 1rem;
+            gap: clamp(0.5rem, 2vw, 1rem);
         }
 
         .form-group {
@@ -98,23 +105,24 @@
         }
 
         .form-group label {
-            font-size: 0.9rem;
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
             font-weight: 500;
             color: var(--dark-text);
         }
 
         .form-group input {
-            padding: 0.75rem;
+            padding: clamp(0.5rem, 2vw, 0.75rem);
             border: 1px solid #d1d5db;
             border-radius: var(--border-radius);
-            font-size: 1rem;
+            font-size: clamp(0.875rem, 2.5vw, 1rem);
             transition: border 0.3s;
+            width: 100%;
         }
 
         .form-group input:focus {
             outline: none;
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+            box-shadow: 0 0 0 0.1875rem rgba(79, 70, 229, 0.2);
         }
 
         .auth-button {
@@ -122,8 +130,8 @@
             color: white;
             border: none;
             border-radius: var(--border-radius);
-            padding: 0.75rem 1rem;
-            font-size: 1rem;
+            padding: clamp(0.5rem, 2vw, 0.75rem) 1rem;
+            font-size: clamp(0.875rem, 2.5vw, 1rem);
             font-weight: 500;
             cursor: pointer;
             transition: background-color 0.3s;
@@ -143,13 +151,13 @@
         }
 
         .auth-alt {
-            margin-top: 1.5rem;
+            margin-top: clamp(0.75rem, 3vw, 1.5rem);
             text-align: center;
         }
 
         .auth-alt p {
             color: var(--gray-text);
-            font-size: 0.9rem;
+            font-size: clamp(0.75rem, 2vw, 0.9rem);
         }
 
         .auth-alt a {
@@ -165,51 +173,51 @@
 
         .error-message {
             color: var(--error-color);
-            font-size: 0.9rem;
+            font-size: clamp(0.75rem, 2vw, 0.9rem);
             margin-top: 0.5rem;
         }
 
         .success-message {
             color: var(--success-color);
-            font-size: 0.9rem;
+            font-size: clamp(0.75rem, 2vw, 0.9rem);
             margin-top: 0.5rem;
         }
 
-        /* Username Setup Screen */
         .username-setup {
             text-align: center;
             animation: fadeIn 0.5s ease-out;
         }
 
         .username-setup h2 {
-            margin-bottom: 1rem;
+            margin-bottom: clamp(0.5rem, 2vw, 1rem);
             color: var(--dark-text);
+            font-size: clamp(1.25rem, 4vw, 1.5rem);
         }
 
         .username-setup p {
             color: var(--gray-text);
-            margin-bottom: 1.5rem;
+            margin-bottom: clamp(0.75rem, 3vw, 1.5rem);
+            font-size: clamp(0.875rem, 2.5vw, 1rem);
         }
 
-        /* Main App */
         .app-container {
-            display: flex;
+            display: grid;
+            grid-template-columns: minmax(0, var(--sidebar-width)) 1fr;
             height: 100vh;
             overflow: hidden;
         }
 
-        /* Sidebar */
         .sidebar {
-            width: 300px;
             background-color: white;
             border-right: 1px solid #e5e7eb;
             display: flex;
             flex-direction: column;
-            transition: transform 0.3s;
+            transition: transform 0.3s ease;
+            width: 100%;
         }
 
         .sidebar-header {
-            padding: 1rem;
+            padding: clamp(0.5rem, 2vw, 1rem);
             border-bottom: 1px solid #e5e7eb;
             display: flex;
             justify-content: space-between;
@@ -218,7 +226,7 @@
 
         .sidebar-header h2 {
             color: var(--dark-text);
-            font-size: 1.25rem;
+            font-size: clamp(1rem, 3vw, 1.25rem);
         }
 
         .user-menu {
@@ -230,7 +238,7 @@
             border: none;
             cursor: pointer;
             color: var(--dark-text);
-            font-size: 1.25rem;
+            font-size: clamp(1rem, 3vw, 1.25rem);
         }
 
         .dropdown-menu {
@@ -241,7 +249,7 @@
             border-radius: var(--border-radius);
             box-shadow: var(--shadow);
             z-index: 10;
-            min-width: 150px;
+            min-width: clamp(8rem, 20vw, 10rem);
             margin-top: 0.5rem;
             animation: fadeIn 0.2s ease-out;
         }
@@ -251,9 +259,10 @@
         }
 
         .dropdown-menu li {
-            padding: 0.75rem 1rem;
+            padding: clamp(0.5rem, 2vw, 0.75rem) 1rem;
             cursor: pointer;
             transition: background-color 0.2s;
+            font-size: clamp(0.875rem, 2.5vw, 1rem);
         }
 
         .dropdown-menu li:hover {
@@ -268,11 +277,12 @@
         .tab {
             flex: 1;
             text-align: center;
-            padding: 1rem;
+            padding: clamp(0.5rem, 2vw, 1rem);
             cursor: pointer;
             transition: all 0.3s;
             color: var(--gray-text);
             font-weight: 500;
+            font-size: clamp(0.875rem, 2.5vw, 1rem);
         }
 
         .tab.active {
@@ -287,47 +297,48 @@
         .tab-content {
             flex: 1;
             overflow-y: auto;
-            padding: 0.5rem;
+            padding: clamp(0.25rem, 1vw, 0.5rem);
         }
 
         .search-bar {
-            margin: 0.5rem;
+            margin: clamp(0.25rem, 1vw, 0.5rem);
             position: relative;
         }
 
         .search-bar input {
             width: 100%;
-            padding: 0.75rem 1rem 0.75rem 2.5rem;
-            border-radius: 20px;
+            padding: clamp(0.5rem, 2vw, 0.75rem) clamp(0.5rem, 2vw, 1rem) clamp(0.5rem, 2vw, 0.75rem) clamp(2rem, 5vw, 2.5rem);
+            border-radius: clamp(1rem, 3vw, 1.25rem);
             border: 1px solid #e5e7eb;
-            font-size: 0.9rem;
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
             transition: all 0.3s;
         }
 
         .search-bar input:focus {
             outline: none;
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+            box-shadow: 0 0 0 0.1875rem rgba(79, 70, 229, 0.2);
         }
 
         .search-bar i {
             position: absolute;
-            left: 1rem;
+            left: clamp(0.5rem, 2vw, 1rem);
             top: 50%;
             transform: translateY(-50%);
             color: var(--gray-text);
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
         }
 
         .friend-list, .request-list {
             display: flex;
             flex-direction: column;
-            gap: 0.5rem;
+            gap: clamp(0.25rem, 1vw, 0.5rem);
         }
 
         .friend-item, .request-item {
             display: flex;
             align-items: center;
-            padding: 0.75rem;
+            padding: clamp(0.5rem, 2vw, 0.75rem);
             border-radius: var(--border-radius);
             transition: background-color 0.3s;
             cursor: pointer;
@@ -343,8 +354,8 @@
         }
 
         .friend-avatar {
-            width: 40px;
-            height: 40px;
+            width: clamp(2rem, 10vw, 2.5rem);
+            height: clamp(2rem, 10vw, 2.5rem);
             border-radius: 50%;
             background-color: var(--primary-color);
             color: white;
@@ -352,14 +363,14 @@
             align-items: center;
             justify-content: center;
             font-weight: bold;
-            margin-right: 1rem;
-            flex-shrink: 0; /* Prevent shrinking */
+            margin-right: clamp(0.5rem, 2vw, 1rem);
+            flex-shrink: 0;
+            font-size: clamp(0.8rem, 2vw, 1rem);
         }
 
-         .request-item .friend-avatar {
-             background-color: var(--gray-text); /* Different color for requests */
-         }
-
+        .request-item .friend-avatar {
+            background-color: var(--gray-text);
+        }
 
         .friend-info {
             flex: 1;
@@ -368,48 +379,50 @@
         .friend-name {
             font-weight: 500;
             color: var(--dark-text);
+            font-size: clamp(0.875rem, 2.5vw, 1rem);
         }
 
         .friend-status {
-            font-size: 0.8rem;
+            font-size: clamp(0.7rem, 2vw, 0.8rem);
             color: var(--gray-text);
         }
 
         .request-item {
-            background-color: #f3f4f6; /* Slightly different background */
+            background-color: #f3f4f6;
             border: 1px solid #e5e7eb;
-            flex-direction: column; /* Stack info and buttons */
+            flex-direction: column;
             align-items: flex-start;
-            padding: 1rem; /* More padding */
+            padding: clamp(0.75rem, 3vw, 1rem);
         }
 
         .request-info {
             display: flex;
             align-items: center;
             width: 100%;
-            margin-bottom: 0.75rem; /* Space below info */
+            margin-bottom: clamp(0.5rem, 2vw, 0.75rem);
         }
 
         .request-info .friend-info {
-             margin-left: 1rem; /* Add margin if avatar is present */
-             flex: 1;
-         }
+            margin-left: clamp(0.5rem, 2vw, 1rem);
+            flex: 1;
+        }
 
         .request-buttons {
             display: flex;
-            gap: 0.5rem;
-            width: 100%; /* Full width buttons */
+            gap: clamp(0.25rem, 1vw, 0.5rem);
+            width: 100%;
         }
 
         .request-button {
             flex: 1;
-            padding: 0.5rem;
+            padding: clamp(0.25rem, 1vw, 0.5rem);
             border-radius: var(--border-radius);
             border: none;
             font-weight: 500;
             cursor: pointer;
             transition: all 0.3s;
             text-align: center;
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
         }
 
         .accept-button {
@@ -422,38 +435,38 @@
         }
 
         .decline-button {
-            background-color: #e5e7eb; /* Lighter background */
+            background-color: #e5e7eb;
             color: var(--dark-text);
         }
 
         .decline-button:hover {
-            background-color: #d1d5db; /* Darker hover */
+            background-color: #d1d5db;
         }
 
         .add-friend {
-            padding: 1rem;
+            padding: clamp(0.5rem, 2vw, 1rem);
             border-top: 1px solid #e5e7eb;
             margin-top: auto;
-            background-color: white; /* Match sidebar background */
+            background-color: white;
         }
 
         .add-friend-form {
             display: flex;
-            gap: 0.5rem;
+            gap: clamp(0.25rem, 1vw, 0.5rem);
         }
 
         .add-friend-form input {
             flex: 1;
-            padding: 0.75rem;
+            padding: clamp(0.5rem, 2vw, 0.75rem);
             border: 1px solid #e5e7eb;
             border-radius: var(--border-radius);
-            font-size: 0.9rem;
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
         }
 
         .add-friend-form input:focus {
             outline: none;
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+            box-shadow: 0 0 0 0.1875rem rgba(79, 70, 229, 0.2);
         }
 
         .add-friend-form button {
@@ -461,31 +474,31 @@
             color: white;
             border: none;
             border-radius: var(--border-radius);
-            padding: 0.75rem;
+            padding: clamp(0.5rem, 2vw, 0.75rem);
             cursor: pointer;
             transition: background-color 0.3s;
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
         }
 
         .add-friend-form button:hover {
             background-color: var(--primary-hover);
         }
 
-         .add-friend-form button:disabled {
+        .add-friend-form button:disabled {
             background-color: #a5b4fc;
             cursor: not-allowed;
-         }
+        }
 
-        /* Chat Area */
         .chat-container {
             flex: 1;
             display: flex;
             flex-direction: column;
             background-color: #f9fafb;
-            position: relative; /* Needed for mobile sidebar overlay */
+            position: relative;
         }
 
         .chat-header {
-            padding: 1rem;
+            padding: clamp(0.5rem, 2vw, 1rem);
             background-color: white;
             border-bottom: 1px solid #e5e7eb;
             display: flex;
@@ -493,11 +506,11 @@
         }
 
         .back-button {
-            display: none; /* Hidden by default on larger screens */
-            margin-right: 1rem;
+            display: none;
+            margin-right: clamp(0.5rem, 2vw, 1rem);
             background: none;
             border: none;
-            font-size: 1.25rem;
+            font-size: clamp(1rem, 3vw, 1.25rem);
             cursor: pointer;
             color: var(--gray-text);
         }
@@ -509,49 +522,50 @@
         .chat-name {
             font-weight: 500;
             color: var(--dark-text);
+            font-size: clamp(1rem, 3vw, 1.25rem);
         }
 
         .chat-status {
-            font-size: 0.8rem;
+            font-size: clamp(0.7rem, 2vw, 0.8rem);
             color: var(--gray-text);
         }
 
         .chat-messages {
             flex: 1;
             overflow-y: auto;
-            padding: 1rem;
+            padding: clamp(0.5rem, 2vw, 1rem);
             display: flex;
             flex-direction: column;
-            gap: 1rem;
+            gap: clamp(0.5rem, 2vw, 1rem);
         }
 
         .message {
-            max-width: 80%;
-            padding: 0.75rem 1rem;
-            border-radius: 1rem;
+            max-width: clamp(60%, 80vw, 80%);
+            padding: clamp(0.5rem, 2vw, 0.75rem) clamp(0.75rem, 3vw, 1rem);
+            border-radius: clamp(0.75rem, 3vw, 1rem);
             animation: fadeIn 0.3s;
             position: relative;
-            word-break: break-word; /* Prevent long words from overflowing */
+            word-break: break-word;
+            font-size: clamp(0.875rem, 2.5vw, 1rem);
         }
 
         .message-content {
-            margin-bottom: 0.25rem; /* Space below message text */
+            margin-bottom: 0.25rem;
         }
 
         .message-metadata {
-             font-size: 0.7rem;
-             color: var(--gray-text);
-             text-align: right;
-             display: flex;
-             align-items: center;
-             justify-content: flex-end;
-             gap: 0.5rem;
-         }
+            font-size: clamp(0.6rem, 1.5vw, 0.7rem);
+            color: var(--gray-text);
+            text-align: right;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: clamp(0.25rem, 1vw, 0.5rem);
+        }
 
-         .message.outgoing .message-metadata {
-             color: rgba(255, 255, 255, 0.8);
-         }
-
+        .message.outgoing .message-metadata {
+            color: rgba(255, 255, 255, 0.8);
+        }
 
         .ephemeral-indicator {
             display: flex;
@@ -573,29 +587,28 @@
             border-bottom-right-radius: 0.25rem;
         }
 
-
         .chat-input {
-            padding: 1rem;
+            padding: clamp(0.5rem, 2vw, 1rem);
             background-color: white;
             border-top: 1px solid #e5e7eb;
             display: flex;
-            gap: 0.5rem;
-            align-items: center; /* Align items vertically */
+            gap: clamp(0.25rem, 1vw, 0.5rem);
+            align-items: center;
         }
 
         .chat-input input {
             flex: 1;
-            padding: 0.75rem 1rem;
+            padding: clamp(0.5rem, 2vw, 0.75rem) clamp(0.75rem, 3vw, 1rem);
             border: 1px solid #e5e7eb;
-            border-radius: 20px;
-            font-size: 1rem;
+            border-radius: clamp(1rem, 3vw, 1.25rem);
+            font-size: clamp(0.875rem, 2.5vw, 1rem);
             transition: all 0.3s;
         }
 
         .chat-input input:focus {
             outline: none;
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+            box-shadow: 0 0 0 0.1875rem rgba(79, 70, 229, 0.2);
         }
 
         .chat-input button {
@@ -603,14 +616,15 @@
             color: white;
             border: none;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            width: clamp(2rem, 10vw, 2.5rem);
+            height: clamp(2rem, 10vw, 2.5rem);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             transition: all 0.3s;
-            flex-shrink: 0; /* Prevent shrinking */
+            flex-shrink: 0;
+            font-size: clamp(0.8rem, 2vw, 1rem);
         }
 
         .chat-input button:hover {
@@ -621,7 +635,7 @@
         .chat-input button:disabled {
             background-color: #a5b4fc;
             cursor: not-allowed;
-            transform: none; /* No hover effect when disabled */
+            transform: none;
         }
 
         .no-chat-selected {
@@ -631,35 +645,34 @@
             align-items: center;
             justify-content: center;
             color: var(--gray-text);
-            padding: 2rem;
+            padding: clamp(1rem, 5vw, 2rem);
             text-align: center;
         }
 
         .no-chat-selected i {
-            font-size: 4rem;
-            margin-bottom: 1rem;
+            font-size: clamp(2rem, 10vw, 4rem);
+            margin-bottom: clamp(0.5rem, 2vw, 1rem);
             opacity: 0.5;
         }
 
         .no-chat-selected h3 {
-            font-size: 1.5rem;
+            font-size: clamp(1.25rem, 4vw, 1.5rem);
             margin-bottom: 0.5rem;
         }
 
-        /* Empty States */
         .empty-state {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 2rem;
+            padding: clamp(1rem, 5vw, 2rem);
             text-align: center;
             color: var(--gray-text);
         }
 
         .empty-state i {
-            font-size: 3rem;
-            margin-bottom: 1rem;
+            font-size: clamp(1.5rem, 8vw, 3rem);
+            margin-bottom: clamp(0.5rem, 2vw, 1rem);
             opacity: 0.5;
         }
 
@@ -667,66 +680,64 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 2rem;
+            padding: clamp(1rem, 5vw, 2rem);
         }
 
         .spinner {
-            border: 4px solid rgba(0, 0, 0, 0.1);
+            border: 0.25rem solid rgba(0, 0, 0, 0.1);
             border-radius: 50%;
-            border-top: 4px solid var(--primary-color);
-            width: 40px;
-            height: 40px;
+            border-top: 0.25rem solid var(--primary-color);
+            width: clamp(1.5rem, 8vw, 2.5rem);
+            height: clamp(1.5rem, 8vw, 2.5rem);
             animation: spin 1s linear infinite;
         }
 
-        /* Toast Notifications */
         .toast-container {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
+            bottom: clamp(0.5rem, 2vw, 1rem);
+            right: clamp(0.5rem, 2vw, 1rem);
             z-index: 9999;
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            max-height: 80vh; /* Limit height */
-            overflow-y: auto; /* Allow scrolling if many toasts */
+            gap: clamp(0.5rem, 2vw, 0.75rem);
+            max-height: 80vh;
+            overflow-y: auto;
         }
 
         .toast {
-            padding: 1rem;
+            padding: clamp(0.5rem, 2vw, 1rem);
             background-color: white;
             border-radius: var(--border-radius);
             box-shadow: var(--shadow);
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: clamp(0.25rem, 1vw, 0.5rem);
             animation: slideInRight 0.3s ease-out forwards;
-            max-width: 300px;
+            max-width: clamp(12rem, 80vw, 18rem);
             opacity: 1;
-            transition: opacity 0.5s ease-in-out; /* Smooth fade-out */
-            min-width: 200px; /* Ensure minimum width */
+            transition: opacity 0.5s ease-in-out;
+            min-width: clamp(10rem, 60vw, 12rem);
         }
 
         .toast.hiding {
-             animation: fadeOut 0.5s ease-out forwards;
+            animation: fadeOut 0.5s ease-out forwards;
         }
 
-
         .toast.success {
-            border-left: 4px solid var(--success-color);
+            border-left: 0.25rem solid var(--success-color);
         }
 
         .toast.error {
-            border-left: 4px solid var(--error-color);
+            border-left: 0.25rem solid var(--error-color);
         }
 
         .toast.info {
-            border-left: 4px solid var(--primary-color);
+            border-left: 0.25rem solid var(--primary-color);
         }
 
         .toast-icon {
-            font-size: 1.25rem;
-            flex-shrink: 0; /* Prevent icon from shrinking */
+            font-size: clamp(1rem, 3vw, 1.25rem);
+            flex-shrink: 0;
         }
 
         .toast.success .toast-icon {
@@ -749,15 +760,15 @@
             font-weight: 500;
             color: var(--dark-text);
             margin-bottom: 0.25rem;
+            font-size: clamp(0.875rem, 2.5vw, 1rem);
         }
 
         .toast-message {
-            font-size: 0.9rem;
+            font-size: clamp(0.8rem, 2vw, 0.9rem);
             color: var(--gray-text);
-            word-break: break-word; /* Prevent long messages from overflowing */
+            word-break: break-word;
         }
 
-        /* Animations */
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
@@ -770,12 +781,11 @@
 
         @keyframes fadeOut {
             from { opacity: 1; }
-            to { opacity: 0; display: none; } /* Ensure element is hidden after fading */
+            to { opacity: 0; display: none; }
         }
 
-
         @keyframes slideUp {
-            from { transform: translateY(20px); opacity: 0; }
+            from { transform: translateY(clamp(1rem, 5vw, 2rem)); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
         }
 
@@ -784,9 +794,19 @@
             to { transform: translateX(0); opacity: 1; }
         }
 
-        /* Media Queries */
+        @media (max-width: 1024px) {
+            .app-container {
+                grid-template-columns: minmax(0, var(--sidebar-width)) 1fr;
+            }
+
+            .auth-box {
+                width: clamp(16rem, 95vw, 22rem);
+            }
+        }
+
         @media (max-width: 768px) {
             .app-container {
+                display: flex;
                 flex-direction: column;
             }
 
@@ -806,36 +826,90 @@
                 display: block;
             }
 
-             /* When sidebar is active on mobile, push chat container off-screen */
             .sidebar.active ~ .chat-container #activeChat,
             .sidebar.active ~ .chat-container #noChatSelected {
                 display: none;
             }
 
-             .sidebar.active ~ .chat-container::before {
-                 content: '';
-                 position: absolute;
-                 top: 0;
-                 left: 0;
-                 right: 0;
-                 bottom: 0;
-                 background-color: rgba(0, 0, 0, 0.5); /* Dark overlay */
-                 z-index: 5; /* Below sidebar, above chat content */
-             }
+            .sidebar.active ~ .chat-container::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: rgba(0, 0, 0, 0.5);
+                z-index: 5;
+            }
 
-             /* Show chat header back button only when active chat is displayed on mobile */
-             .app-container .chat-container #activeChat .chat-header .back-button {
-                 display: block;
-             }
+            .app-container .chat-container #activeChat .chat-header .back-button {
+                display: block;
+            }
 
-             /* Hide sidebar user menu button on mobile when chat is active */
-             .sidebar.active .user-menu {
-                 display: block; /* Always show user menu in sidebar on mobile */
-             }
+            .sidebar.active .user-menu {
+                display: block;
+            }
 
-             .app-container .chat-container #activeChat.hidden + #noChatSelected {
-                 display: flex; /* Show no chat selected when active chat is hidden */
-             }
+            .app-container .chat-container #activeChat.hidden + #noChatSelected {
+                display: flex;
+            }
+
+            .auth-box {
+                width: clamp(14rem, 95vw, 20rem);
+                padding: clamp(0.75rem, 4vw, 1.5rem);
+            }
+
+            .chat-input button {
+                width: clamp(1.75rem, 8vw, 2.25rem);
+                height: clamp(1.75rem, 8vw, 2.25rem);
+            }
+
+            .friend-avatar {
+                width: clamp(1.75rem, 8vw, 2.25rem);
+                height: clamp(1.75rem, 8vw, 2.25rem);
+            }
+        }
+
+        @media (max-width: 480px) {
+            :root {
+                --base-font-size: clamp(0.75rem, 3vw, 0.875rem);
+                --sidebar-width: 100%;
+            }
+
+            .auth-box {
+                width: clamp(12rem, 95vw, 18rem);
+                padding: clamp(0.5rem, 3vw, 1rem);
+            }
+
+            .auth-logo h1 {
+                font-size: clamp(1.25rem, 6vw, 1.75rem);
+            }
+
+            .form-group input {
+                padding: clamp(0.4rem, 2.5vw, 0.6rem);
+            }
+
+            .auth-button {
+                padding: clamp(0.4rem, 2.5vw, 0.6rem) 0.75rem;
+            }
+
+            .chat-input input {
+                padding: clamp(0.4rem, 2.5vw, 0.6rem) clamp(0.6rem, 3vw, 0.8rem);
+            }
+
+            .chat-messages {
+                padding: clamp(0.25rem, 1.5vw, 0.5rem);
+            }
+
+            .message {
+                max-width: 90%;
+                padding: clamp(0.4rem, 2.5vw, 0.6rem) clamp(0.6rem, 3vw, 0.8rem);
+            }
+
+            .toast {
+                max-width: clamp(10rem, 90vw, 16rem);
+                min-width: clamp(8rem, 80vw, 10rem);
+            }
         }
     </style>
 </head>
@@ -938,12 +1012,12 @@
                         <h3>No chats yet</h3>
                         <p>Add friends to start chatting</p>
                     </div>
-                     <div id="friendListLoader" class="loader hidden"><div class="spinner"></div></div>
+                    <div id="friendListLoader" class="loader hidden"><div class="spinner"></div></div>
                 </div>
             </div>
 
             <div id="requestsTab" class="tab-content hidden">
-                 <div class="search-bar">
+                <div class="search-bar">
                     <i class="fas fa-search"></i>
                     <input type="text" id="searchRequests" placeholder="Search requests">
                 </div>
@@ -953,7 +1027,7 @@
                         <h3>No friend requests</h3>
                         <p>When someone adds you, they'll appear here</p>
                     </div>
-                     <div id="requestListLoader" class="loader hidden"><div class="spinner"></div></div>
+                    <div id="requestListLoader" class="loader hidden"><div class="spinner"></div></div>
                 </div>
             </div>
 
@@ -964,8 +1038,8 @@
                         <i class="fas fa-user-plus"></i>
                     </button>
                 </form>
-                 <div id="addFriendMessage" class="success-message hidden"></div>
-                 <div id="addFriendError" class="error-message hidden"></div>
+                <div id="addFriendMessage" class="success-message hidden"></div>
+                <div id="addFriendError" class="error-message hidden"></div>
             </div>
         </div>
 
@@ -1020,7 +1094,6 @@
         const db = firebase.firestore();
 
         // DOM Elements
-        // Auth Elements
         const authContainer = document.getElementById('authContainer');
         const loginForm = document.getElementById('loginForm');
         const registerForm = document.getElementById('registerForm');
@@ -1032,15 +1105,11 @@
         const showLogin = document.getElementById('showLogin');
         const loginAlt = document.getElementById('loginAlt');
         const registerAlt = document.getElementById('registerAlt');
-
-        // Username Setup Elements
         const usernameSetup = document.getElementById('usernameSetup');
         const usernameForm = document.getElementById('usernameForm');
         const usernameInput = document.getElementById('username');
         const usernameButton = document.getElementById('usernameButton');
         const usernameError = document.getElementById('usernameError');
-
-        // App Elements
         const appContainer = document.getElementById('appContainer');
         const sidebar = document.getElementById('sidebar');
         const userMenuButton = document.getElementById('userMenuButton');
@@ -1082,10 +1151,9 @@
         let friendsListener = null;
         let requestsListener = null;
         let messagesListener = null;
-        const EPHEMERAL_DURATION_MS = 24 * 60 * 60 * 1000; // 24 hours
+        const EPHEMERAL_DURATION_MS = 24 * 60 * 60 * 1000;
 
-        // --- Helper Functions ---
-
+        // Helper Functions
         function showToast(message, type = 'info', duration = 3000) {
             const toast = document.createElement('div');
             toast.classList.add('toast', type);
@@ -1102,7 +1170,6 @@
 
             toastContainer.appendChild(toast);
 
-            // Automatically remove the toast after the duration
             setTimeout(() => {
                 toast.classList.add('hiding');
                 toast.addEventListener('animationend', () => {
@@ -1117,10 +1184,9 @@
             });
             document.getElementById(screenId).classList.remove('hidden');
 
-             // Hide sidebar on mobile when showing auth or username setup
-             if (window.innerWidth <= 768 && screenId !== 'appContainer') {
-                 sidebar.classList.remove('active');
-             }
+            if (window.innerWidth <= 768 && screenId !== 'appContainer') {
+                sidebar.classList.remove('active');
+            }
         }
 
         function toggleUserDropdown() {
@@ -1132,99 +1198,116 @@
         }
 
         function getInitials(name) {
-             if (!name) return '?';
-             const parts = name.split(' ');
-             if (parts.length > 1) {
-                 return (parts[0][0] + parts[1][0]).toUpperCase();
-             }
-             return name[0].toUpperCase();
-         }
+            if (!name) return '?';
+            const parts = name.split(' ');
+            if (parts.length > 1) {
+                return (parts[0][0] + parts[1][0]).toUpperCase();
+            }
+            return name[0].toUpperCase();
+        }
 
-         function formatTimestamp(timestamp) {
-             if (!timestamp) return '';
-             const date = timestamp.toDate(); // Convert Firestore timestamp to Date object
-             const now = new Date();
-             const diffMs = now.getTime() - date.getTime();
+        function formatTimestamp(timestamp) {
+            if (!timestamp) return '';
+            const date = timestamp.toDate();
+            const now = new Date();
+            const diffMs = now.getTime() - date.getTime();
 
-             // Check if message is older than 24 hours (and therefore should be filtered out)
-             if (diffMs > EPHEMERAL_DURATION_MS) {
-                 return ''; // Indicate message is expired/should be filtered
-             }
+            if (diffMs > EPHEMERAL_DURATION_MS) {
+                return '';
+            }
 
-             const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+            const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
 
-             if (diffHours < 1) {
-                 const diffMinutes = Math.floor(diffMs / (1000 * 60));
-                 return diffMinutes <= 1 ? 'just now' : `${diffMinutes}m ago`;
-             } else if (diffHours < 24) {
-                 return `${diffHours}h ago`;
-             } else {
-                // This case should technically not be reached if filtering works,
-                // but as a fallback, show date for messages older than 24h
-                 const options = { month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric' };
-                 return date.toLocaleDateString(undefined, options);
-             }
-         }
+            if (diffHours < 1) {
+                const diffMinutes = Math.floor(diffMs / (1000 * 60));
+                return diffMinutes <= 1 ? 'just now' : `${diffMinutes}m ago`;
+            } else if (diffHours < 24) {
+                return `${diffHours}h ago`;
+            } else {
+                const options = { month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+                return date.toLocaleDateString(undefined, options);
+            }
+        }
 
-         function filterExpiredMessages(messages) {
-             const now = Date.now();
-             return messages.filter(msg => {
-                 if (!msg.timestamp) return false; // Exclude messages without timestamp
-                 const msgTime = msg.timestamp.toDate().getTime();
-                 return (now - msgTime) <= EPHEMERAL_DURATION_MS;
-             });
-         }
+        function filterExpiredMessages(messages) {
+            const now = Date.now();
+            return messages.filter(msg => {
+                if (!msg.timestamp) return false;
+                const msgTime = msg.timestamp.toDate().getTime();
+                return (now - msgTime) <= EPHEMERAL_DURATION_MS;
+            });
+        }
 
-         function renderMessages(messages) {
-             chatMessages.innerHTML = ''; // Clear current messages
-             if (messages.length === 0) {
-                 chatMessages.innerHTML = `
+        async function cleanUpExpiredMessages(chatId) {
+            if (!chatId) return;
+            try {
+                const messagesRef = db.collection('chats').doc(chatId).collection('messages');
+                const snapshot = await messagesRef.get();
+                const now = Date.now();
+
+                const deletePromises = snapshot.docs
+                    .filter(doc => {
+                        const data = doc.data();
+                        if (!data.timestamp) return true;
+                        const msgTime = data.timestamp.toDate().getTime();
+                        return (now - msgTime) > EPHEMERAL_DURATION_MS;
+                    })
+                    .map(doc => doc.ref.delete());
+
+                await Promise.all(deletePromises);
+            } catch (error) {
+                console.error("Error cleaning up expired messages:", error);
+                showToast('Failed to clean up expired messages.', 'error');
+            }
+        }
+
+        function renderMessages(messages) {
+            chatMessages.innerHTML = '';
+            if (messages.length === 0) {
+                chatMessages.innerHTML = `
                     <div class="empty-state">
-                         <i class="fas fa-clock"></i>
-                         <h3>No messages yet or messages expired</h3>
-                         <p>Start a conversation!</p>
+                        <i class="fas fa-clock"></i>
+                        <h3>No messages yet or messages expired</h3>
+                        <p>Start a conversation!</p>
                     </div>
-                 `;
-                 return;
-             }
+                `;
+                return;
+            }
 
-             const filteredMessages = filterExpiredMessages(messages);
+            const filteredMessages = filterExpiredMessages(messages);
 
-             if (filteredMessages.length === 0) {
-                  chatMessages.innerHTML = `
+            if (filteredMessages.length === 0) {
+                chatMessages.innerHTML = `
                     <div class="empty-state">
-                         <i class="fas fa-clock"></i>
-                         <h3>All messages have expired</h3>
-                         <p>Send a new message to continue the conversation.</p>
+                        <i class="fas fa-clock"></i>
+                        <h3>All messages have expired</h3>
+                        <p>Send a new message to continue the conversation.</p>
                     </div>
-                 `;
-                  return;
-             }
+                `;
+                return;
+            }
 
-             filteredMessages.sort((a, b) => a.timestamp.toDate() - b.timestamp.toDate()); // Sort by timestamp
+            filteredMessages.sort((a, b) => a.timestamp.toDate() - b.timestamp.toDate());
 
-             filteredMessages.forEach(msg => {
-                 const messageElement = document.createElement('div');
-                 messageElement.classList.add('message', msg.senderId === currentUser.uid ? 'outgoing' : 'incoming');
-                 const formattedTime = formatTimestamp(msg.timestamp);
+            filteredMessages.forEach(msg => {
+                const messageElement = document.createElement('div');
+                messageElement.classList.add('message', msg.senderId === currentUser.uid ? 'outgoing' : 'incoming');
+                const formattedTime = formatTimestamp(msg.timestamp);
 
-                 messageElement.innerHTML = `
-                     <div class="message-content">${msg.text}</div>
-                     <div class="message-metadata">
-                         <span class="message-time">${formattedTime}</span>
-                         <span class="ephemeral-indicator"><i class="fas fa-clock"></i></span>
-                     </div>
-                 `;
-                 chatMessages.appendChild(messageElement);
-             });
+                messageElement.innerHTML = `
+                    <div class="message-content">${msg.text}</div>
+                    <div class="message-metadata">
+                        <span class="message-time">${formattedTime}</span>
+                        <span class="ephemeral-indicator"><i class="fas fa-clock"></i></span>
+                    </div>
+                `;
+                chatMessages.appendChild(messageElement);
+            });
 
-             // Scroll to the bottom
-             chatMessages.scrollTop = chatMessages.scrollHeight;
-         }
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
 
-
-        // --- Authentication Functions ---
-
+        // Authentication Functions
         async function handleLogin(e) {
             e.preventDefault();
             const email = loginEmail.value;
@@ -1235,7 +1318,6 @@
 
             try {
                 await auth.signInWithEmailAndPassword(email, password);
-                // auth.onAuthStateChanged will handle screen transition
             } catch (error) {
                 loginError.textContent = error.message;
                 loginError.classList.remove('hidden');
@@ -1255,19 +1337,17 @@
                 return;
             }
 
-             if (password.length < 6) {
-                 registerError.textContent = "Password must be at least 6 characters.";
-                 registerError.classList.remove('hidden');
-                 return;
-             }
-
+            if (password.length < 6) {
+                registerError.textContent = "Password must be at least 6 characters.";
+                registerError.classList.remove('hidden');
+                return;
+            }
 
             registerButton.disabled = true;
             registerError.classList.add('hidden');
 
             try {
                 await auth.createUserWithEmailAndPassword(email, password);
-                // auth.onAuthStateChanged will handle screen transition
             } catch (error) {
                 registerError.textContent = error.message;
                 registerError.classList.remove('hidden');
@@ -1281,15 +1361,15 @@
                 loginAlt.classList.add('hidden');
                 registerForm.classList.remove('hidden');
                 registerAlt.classList.remove('hidden');
-                loginError.classList.add('hidden'); // Hide errors when switching
-                 registerError.classList.add('hidden');
+                loginError.classList.add('hidden');
+                registerError.classList.add('hidden');
             } else {
                 registerForm.classList.add('hidden');
                 registerAlt.classList.add('hidden');
                 loginForm.classList.remove('hidden');
                 loginAlt.classList.remove('hidden');
-                 loginError.classList.add('hidden'); // Hide errors when switching
-                 registerError.classList.add('hidden');
+                loginError.classList.add('hidden');
+                registerError.classList.add('hidden');
             }
         }
 
@@ -1303,18 +1383,16 @@
                 return;
             }
 
-             // Basic validation: alphanumeric, min length
-             if (!/^[a-zA-Z0-9]+$/.test(username) || username.length < 3) {
-                 usernameError.textContent = "Username must be alphanumeric and at least 3 characters.";
-                 usernameError.classList.remove('hidden');
-                 return;
-             }
+            if (!/^[a-zA-Z0-9]+$/.test(username) || username.length < 3) {
+                usernameError.textContent = "Username must be alphanumeric and at least 3 characters.";
+                usernameError.classList.remove('hidden');
+                return;
+            }
 
             usernameButton.disabled = true;
             usernameError.classList.add('hidden');
 
             try {
-                // Check if username is already taken
                 const usersRef = db.collection('users');
                 const snapshot = await usersRef.where('username', '==', username).get();
 
@@ -1325,16 +1403,14 @@
                     return;
                 }
 
-                // Save username to Firestore
                 await usersRef.doc(currentUser.uid).set({
                     username: username,
-                    email: currentUser.email // Store email too
-                }, { merge: true }); // Use merge to not overwrite other potential fields
+                    email: currentUser.email
+                }, { merge: true });
 
                 currentUserData = { username: username, email: currentUser.email };
-                showScreen('appContainer'); // Move to main app
-                 showToast('Username set successfully!', 'success');
-
+                showScreen('appContainer');
+                showToast('Username set successfully!', 'success');
             } catch (error) {
                 usernameError.textContent = "Error setting username: " + error.message;
                 usernameError.classList.remove('hidden');
@@ -1345,653 +1421,571 @@
         async function handleLogout() {
             try {
                 await auth.signOut();
-                // auth.onAuthStateChanged will handle screen transition and cleanup
             } catch (error) {
                 showToast('Logout failed: ' + error.message, 'error');
             }
         }
 
-         // --- App Logic Functions ---
+        function switchTab(tabName) {
+            tabs.forEach(tab => {
+                if (tab.dataset.tab === tabName) {
+                    tab.classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                }
+            });
 
-         function switchTab(tabName) {
-             tabs.forEach(tab => {
-                 if (tab.dataset.tab === tabName) {
-                     tab.classList.add('active');
-                 } else {
-                     tab.classList.remove('active');
-                 }
-             });
+            if (tabName === 'chats') {
+                chatsTabContent.classList.remove('hidden');
+                requestsTabContent.classList.add('hidden');
+                searchRequestsInput.value = '';
+                displayRequests(Object.values(friendRequests).filter(req => req.status === 'pending'));
+            } else {
+                chatsTabContent.classList.add('hidden');
+                requestsTabContent.classList.remove('hidden');
+                searchFriendsInput.value = '';
+                displayFriends(Object.values(friends));
+            }
+        }
 
-             if (tabName === 'chats') {
-                 chatsTabContent.classList.remove('hidden');
-                 requestsTabContent.classList.add('hidden');
-                 // Optionally clear requests search and show all requests when switching back
-                  searchRequestsInput.value = '';
-                  displayRequests(Object.values(friendRequests).filter(req => req.status === 'pending')); // Re-display all pending requests
-             } else { // requests tab
-                 chatsTabContent.classList.add('hidden');
-                 requestsTabContent.classList.remove('hidden');
-                 // Optionally clear friends search and show all friends when switching back
-                  searchFriendsInput.value = '';
-                  displayFriends(Object.values(friends)); // Re-display all friends
-             }
-         }
-
-         let friends = {}; // { friendUserId: { username, email, chatId } }
-         let friendRequests = {}; // { requestId: { senderId, senderUsername, recipientId, status } }
+        let friends = {};
+        let friendRequests = {};
 
         async function fetchUserData(userId) {
-             if (!userId) return null;
-             const userDoc = await db.collection('users').doc(userId).get();
-             return userDoc.exists ? userDoc.data() : null;
-         }
+            if (!userId) return null;
+            const userDoc = await db.collection('users').doc(userId).get();
+            return userDoc.exists ? userDoc.data() : null;
+        }
 
-         async function fetchUserByUsername(username) {
-             if (!username) return null;
-             const snapshot = await db.collection('users').where('username', '==', username).limit(1).get();
-             if (!snapshot.empty) {
-                 const doc = snapshot.docs[0];
-                 return { id: doc.id, ...doc.data() };
-             }
-             return null;
-         }
+        async function fetchUserByUsername(username) {
+            if (!username) return null;
+            const snapshot = await db.collection('users').where('username', '==', username).limit(1).get();
+            if (!snapshot.empty) {
+                const doc = snapshot.docs[0];
+                return { id: doc.id, ...doc.data() };
+            }
+            return null;
+        }
 
+        function displayFriends(friendsToDisplay) {
+            friendList.innerHTML = '';
+            const friendArray = Object.values(friendsToDisplay);
 
-         function displayFriends(friendsToDisplay) {
-              friendList.innerHTML = ''; // Clear current list
-              const friendArray = Object.values(friendsToDisplay);
+            if (friendArray.length === 0) {
+                emptyFriendList.classList.remove('hidden');
+                return;
+            }
+            emptyFriendList.classList.add('hidden');
 
-              if (friendArray.length === 0) {
-                  emptyFriendList.classList.remove('hidden');
-                  return;
-              }
-              emptyFriendList.classList.add('hidden');
+            friendArray.forEach(friend => {
+                const friendElement = document.createElement('div');
+                friendElement.classList.add('friend-item');
+                if (activeChatId === friend.chatId) {
+                    friendElement.classList.add('active');
+                }
+                friendElement.dataset.friendId = friend.id;
+                friendElement.dataset.chatId = friend.chatId;
+                friendElement.dataset.friendUsername = friend.username;
 
+                const avatarInitial = getInitials(friend.username);
 
-              friendArray.forEach(friend => {
-                  const friendElement = document.createElement('div');
-                  friendElement.classList.add('friend-item');
-                  if (activeChatId === friend.chatId) {
-                     friendElement.classList.add('active');
-                  }
-                  friendElement.dataset.friendId = friend.id; // Store friend's user ID
-                  friendElement.dataset.chatId = friend.chatId;
-                  friendElement.dataset.friendUsername = friend.username;
+                friendElement.innerHTML = `
+                    <div class="friend-avatar">${avatarInitial}</div>
+                    <div class="friend-info">
+                        <div class="friend-name">${friend.username}</div>
+                        <div class="friend-status">Start chatting</div>
+                    </div>
+                `;
+                friendList.appendChild(friendElement);
 
-                  const avatarInitial = getInitials(friend.username);
+                friendElement.addEventListener('click', () => {
+                    setActiveChat(friend.chatId, friend.id, friend.username);
+                    if (window.innerWidth <= 768) {
+                        sidebar.classList.remove('active');
+                    }
+                });
+            });
+        }
 
-                  friendElement.innerHTML = `
-                      <div class="friend-avatar">${avatarInitial}</div>
-                      <div class="friend-info">
-                          <div class="friend-name">${friend.username}</div>
-                          <div class="friend-status">Start chatting</div>
-                      </div>
-                  `;
-                  friendList.appendChild(friendElement);
+        function displayRequests(requestsToDisplay) {
+            requestList.innerHTML = '';
+            const requestArray = Object.values(requestsToDisplay);
 
-                  // Add click listener to open chat
-                  friendElement.addEventListener('click', () => {
-                      setActiveChat(friend.chatId, friend.id, friend.username);
-                       // On mobile, hide sidebar after selecting chat
-                      if (window.innerWidth <= 768) {
-                          sidebar.classList.remove('active');
-                      }
-                  });
-              });
-         }
+            if (requestArray.length === 0) {
+                emptyRequestList.classList.remove('hidden');
+                return;
+            }
+            emptyRequestList.classList.add('hidden');
 
-         function displayRequests(requestsToDisplay) {
-             requestList.innerHTML = ''; // Clear current list
-             const requestArray = Object.values(requestsToDisplay);
+            requestArray.forEach(request => {
+                if (request.status !== 'pending') return;
 
-             if (requestArray.length === 0) {
-                 emptyRequestList.classList.remove('hidden');
-                 return;
-             }
-             emptyRequestList.classList.add('hidden');
+                const requestElement = document.createElement('div');
+                requestElement.classList.add('request-item');
+                requestElement.dataset.requestId = request.id;
+                requestElement.dataset.senderId = request.senderId;
 
+                const avatarInitial = getInitials(request.senderUsername);
 
-              requestArray.forEach(request => {
-                   if (request.status !== 'pending') return; // Only display pending requests
+                requestElement.innerHTML = `
+                    <div class="request-info">
+                        <div class="friend-avatar">${avatarInitial}</div>
+                        <div class="friend-info">
+                            <div class="friend-name">${request.senderUsername}</div>
+                            <div class="friend-status">Friend Request</div>
+                        </div>
+                    </div>
+                    <div class="request-buttons">
+                        <button class="request-button accept-button" data-action="accept">Accept</button>
+                        <button class="request-button decline-button" data-action="decline">Decline</button>
+                    </div>
+                `;
+                requestList.appendChild(requestElement);
+            });
+        }
 
-                  const requestElement = document.createElement('div');
-                  requestElement.classList.add('request-item');
-                  requestElement.dataset.requestId = request.id; // Store request document ID
-                  requestElement.dataset.senderId = request.senderId;
+        function listenForFriends() {
+            if (friendsListener) friendsListener();
 
+            friendListLoader.classList.remove('hidden');
+            emptyFriendList.classList.add('hidden');
+            friendList.innerHTML = '';
 
-                   const avatarInitial = getInitials(request.senderUsername);
+            const userFriendsRef = db.collection('users').doc(currentUser.uid).collection('friends');
 
+            friendsListener = userFriendsRef.onSnapshot(snapshot => {
+                friends = {};
+                if (snapshot.empty) {
+                    friendListLoader.classList.add('hidden');
+                    displayFriends({});
+                    return;
+                }
 
-                  requestElement.innerHTML = `
-                      <div class="request-info">
-                           <div class="friend-avatar">${avatarInitial}</div>
-                           <div class="friend-info">
-                                <div class="friend-name">${request.senderUsername}</div>
-                                <div class="friend-status">Friend Request</div>
-                           </div>
-                      </div>
-                      <div class="request-buttons">
-                          <button class="request-button accept-button" data-action="accept">Accept</button>
-                          <button class="request-button decline-button" data-action="decline">Decline</button>
-                      </div>
-                  `;
-                  requestList.appendChild(requestElement);
-              });
-         }
+                const friendDocs = snapshot.docs;
+                let loadedCount = 0;
 
+                friendDocs.forEach(async doc => {
+                    const friendData = doc.data();
+                    const friendUserId = doc.id;
 
-         function listenForFriends() {
-             if (friendsListener) friendsListener(); // Unsubscribe previous listener
+                    const friendUser = await fetchUserData(friendUserId);
+                    if (friendUser) {
+                        friends[friendUserId] = {
+                            id: friendUserId,
+                            username: friendUser.username,
+                            chatId: friendData.chatId
+                        };
+                    }
 
-             friendListLoader.classList.remove('hidden');
-             emptyFriendList.classList.add('hidden');
-             friendList.innerHTML = ''; // Clear previous list
+                    loadedCount++;
+                    if (loadedCount === friendDocs.length) {
+                        friendListLoader.classList.add('hidden');
+                        displayFriends(friends);
 
-              // Listen for changes in the current user's friends subcollection
-              const userFriendsRef = db.collection('users').doc(currentUser.uid).collection('friends');
-
-              friendsListener = userFriendsRef.onSnapshot(snapshot => {
-                  friends = {}; // Clear current friends list
-                  if (snapshot.empty) {
-                      friendListLoader.classList.add('hidden');
-                      displayFriends({}); // Show empty state
-                      return;
-                  }
-
-                  const friendDocs = snapshot.docs;
-                  let loadedCount = 0;
-
-                  friendDocs.forEach(async doc => {
-                      const friendData = doc.data();
-                      const friendUserId = doc.id; // The friend's user ID is the doc ID
-
-                      // Fetch friend's username from the 'users' collection
-                      const friendUser = await fetchUserData(friendUserId);
-                       if (friendUser) {
-                           friends[friendUserId] = {
-                               id: friendUserId,
-                               username: friendUser.username,
-                               chatId: friendData.chatId // Get chat ID from the friend document
-                           };
-                       }
-
-
-                      loadedCount++;
-                      if (loadedCount === friendDocs.length) {
-                          friendListLoader.classList.add('hidden');
-                          displayFriends(friends);
-
-                           // If we just loaded friends and there's an active chat, re-select it to highlight
-                           if (activeChatId) {
-                               const activeFriend = Object.values(friends).find(f => f.chatId === activeChatId);
-                               if (activeFriend) {
-                                    // Find the corresponding friend item in the list and add 'active' class
-                                   const friendItem = friendList.querySelector(`[data-chat-id="${activeChatId}"]`);
-                                   if (friendItem) {
-                                       friendItem.classList.add('active');
-                                   }
-                               } else {
-                                   // Active chat is no longer in the friend list (e.g., friend removed you)
-                                   setActiveChat(null); // Clear active chat
-                               }
-                           }
-                      }
-                  });
-              }, error => {
-                   console.error("Error listening for friends:", error);
-                  showToast('Failed to load friends.', 'error');
-                  friendListLoader.classList.add('hidden');
-                  displayFriends({});
-              });
-         }
-
+                        if (activeChatId) {
+                            const activeFriend = Object.values(friends).find(f => f.chatId === activeChatId);
+                            if (activeFriend) {
+                                const friendItem = friendList.querySelector(`[data-chat-id="${activeChatId}"]`);
+                                if (friendItem) {
+                                    friendItem.classList.add('active');
+                                }
+                            } else {
+                                setActiveChat(null);
+                            }
+                        }
+                    }
+                });
+            }, error => {
+                console.error("Error listening for friends:", error);
+                showToast('Failed to load friends.', 'error');
+                friendListLoader.classList.add('hidden');
+                displayFriends({});
+            });
+        }
 
         function listenForFriendRequests() {
-             if (requestsListener) requestsListener(); // Unsubscribe previous listener
+            if (requestsListener) requestsListener();
 
-             requestListLoader.classList.remove('hidden');
-             emptyRequestList.classList.add('hidden');
-             requestList.innerHTML = ''; // Clear previous list
+            requestListLoader.classList.remove('hidden');
+            emptyRequestList.classList.add('hidden');
+            requestList.innerHTML = '';
 
-             // Listen for friend requests where the current user is the recipient
-             const requestsRef = db.collection('friendRequests').where('recipientId', '==', currentUser.uid);
+            const requestsRef = db.collection('friendRequests').where('recipientId', '==', currentUser.uid);
 
-             requestsListener = requestsRef.onSnapshot(snapshot => {
-                 friendRequests = {}; // Clear current requests list
-                 if (snapshot.empty) {
-                     requestListLoader.classList.add('hidden');
-                     displayRequests({}); // Show empty state
-                     return;
-                 }
+            requestsListener = requestsRef.onSnapshot(snapshot => {
+                friendRequests = {};
+                if (snapshot.empty) {
+                    requestListLoader.classList.add('hidden');
+                    displayRequests({});
+                    return;
+                }
 
-                 const requestDocs = snapshot.docs;
-                 let loadedCount = 0;
+                const requestDocs = snapshot.docs;
+                let loadedCount = 0;
 
-                 requestDocs.forEach(async doc => {
-                     const requestData = doc.data();
-                     const requestId = doc.id; // The request document ID
-                     const senderId = requestData.senderId;
+                requestDocs.forEach(async doc => {
+                    const requestData = doc.data();
+                    const requestId = doc.id;
+                    const senderId = requestData.senderId;
 
-                     // Fetch sender's username from the 'users' collection
-                     const senderUser = await fetchUserData(senderId);
+                    const senderUser = await fetchUserData(senderId);
 
-                      if (senderUser) {
-                          friendRequests[requestId] = {
-                              id: requestId,
-                              senderId: senderId,
-                              senderUsername: senderUser.username,
-                              recipientId: requestData.recipientId,
-                              status: requestData.status
-                          };
-                      }
+                    if (senderUser) {
+                        friendRequests[requestId] = {
+                            id: requestId,
+                            senderId: senderId,
+                            senderUsername: senderUser.username,
+                            recipientId: requestData.recipientId,
+                            status: requestData.status
+                        };
+                    }
 
-                     loadedCount++;
-                     if (loadedCount === requestDocs.length) {
-                         requestListLoader.classList.add('hidden');
-                         displayRequests(friendRequests);
-                     }
-                 });
-             }, error => {
-                 console.error("Error listening for friend requests:", error);
-                 showToast('Failed to load friend requests.', 'error');
-                 requestListLoader.classList.add('hidden');
-                 displayRequests({});
-             });
-         }
-
+                    loadedCount++;
+                    if (loadedCount === requestDocs.length) {
+                        requestListLoader.classList.add('hidden');
+                        displayRequests(friendRequests);
+                    }
+                });
+            }, error => {
+                console.error("Error listening for friend requests:", error);
+                showToast('Failed to load friend requests.', 'error');
+                requestListLoader.classList.add('hidden');
+                displayRequests({});
+            });
+        }
 
         async function handleFriendRequest(requestId, action) {
-             try {
-                 const requestRef = db.collection('friendRequests').doc(requestId);
-                 const requestDoc = await requestRef.get();
+            try {
+                const requestRef = db.collection('friendRequests').doc(requestId);
+                const requestDoc = await requestRef.get();
 
-                 if (!requestDoc.exists) {
-                     showToast('Friend request not found.', 'error');
-                     return;
-                 }
+                if (!requestDoc.exists) {
+                    showToast('Friend request not found.', 'error');
+                    return;
+                }
 
-                 const requestData = requestDoc.data();
-                 const senderId = requestData.senderId;
-                 const recipientId = requestData.recipientId;
+                const requestData = requestDoc.data();
+                const senderId = requestData.senderId;
+                const recipientId = requestData.recipientId;
 
-                 if (action === 'accept') {
-                     // Create a chat room
-                     const chatRef = await db.collection('chats').add({
-                         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                         participants: [senderId, recipientId],
-                          // Optional: add more chat metadata here
-                     });
-                     const chatId = chatRef.id;
+                if (action === 'accept') {
+                    const chatRef = await db.collection('chats').add({
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        participants: [senderId, recipientId],
+                    });
+                    const chatId = chatRef.id;
 
-                     // Add each other to friends list with chat ID
-                     await db.collection('users').doc(senderId).collection('friends').doc(recipientId).set({
-                         chatId: chatId,
-                          addedAt: firebase.firestore.FieldValue.serverTimestamp()
-                     });
-                     await db.collection('users').doc(recipientId).collection('friends').doc(senderId).set({
-                         chatId: chatId,
-                          addedAt: firebase.firestore.FieldValue.serverTimestamp()
-                     });
+                    await db.collection('users').doc(senderId).collection('friends').doc(recipientId).set({
+                        chatId: chatId,
+                        addedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    await db.collection('users').doc(recipientId).collection('friends').doc(senderId).set({
+                        chatId: chatId,
+                        addedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
 
-                     // Update request status (optional, can also just delete)
-                     await requestRef.update({ status: 'accepted', acceptedAt: firebase.firestore.FieldValue.serverTimestamp() });
+                    await requestRef.update({ status: 'accepted', acceptedAt: firebase.firestore.FieldValue.serverTimestamp() });
+                    await requestRef.delete();
 
-                     // Delete the request document after processing
-                     await requestRef.delete();
+                    showToast(`Friend request from ${requestData.senderUsername} accepted!`, 'success');
+                } else if (action === 'decline') {
+                    await requestRef.update({ status: 'declined', declinedAt: firebase.firestore.FieldValue.serverTimestamp() });
+                    await requestRef.delete();
+                    showToast(`Friend request from ${requestData.senderUsername} declined.`, 'info');
+                }
+            } catch (error) {
+                console.error("Error handling friend request:", error);
+                showToast(`Failed to ${action} friend request.`, 'error');
+            }
+        }
 
-                     showToast(`Friend request from ${requestData.senderUsername} accepted!`, 'success');
+        async function handleAddFriend(e) {
+            e.preventDefault();
+            const friendUsername = friendUsernameInput.value.trim();
 
-                 } else if (action === 'decline') {
-                      // Update request status (optional, can also just delete)
-                     await requestRef.update({ status: 'declined', declinedAt: firebase.firestore.FieldValue.serverTimestamp() });
+            addFriendMessage.classList.add('hidden');
+            addFriendError.classList.add('hidden');
+            addFriendButton.disabled = true;
 
-                      // Delete the request document
-                     await requestRef.delete();
-                     showToast(`Friend request from ${requestData.senderUsername} declined.`, 'info');
-                 }
+            if (!friendUsername || friendUsername === currentUserData.username) {
+                addFriendError.textContent = "Enter a valid username other than your own.";
+                addFriendError.classList.remove('hidden');
+                addFriendButton.disabled = false;
+                return;
+            }
 
-                 // UI will update automatically via the listener
-             } catch (error) {
-                 console.error("Error handling friend request:", error);
-                 showToast(`Failed to ${action} friend request.`, 'error');
-             }
-         }
+            try {
+                const friendUser = await fetchUserByUsername(friendUsername);
 
-         async function handleAddFriend(e) {
-             e.preventDefault();
-             const friendUsername = friendUsernameInput.value.trim();
+                if (!friendUser) {
+                    addFriendError.textContent = `User "${friendUsername}" not found.`;
+                    addFriendError.classList.remove('hidden');
+                    addFriendButton.disabled = false;
+                    return;
+                }
 
-              addFriendMessage.classList.add('hidden');
-              addFriendError.classList.add('hidden');
-              addFriendButton.disabled = true;
+                const friendUserId = friendUser.id;
 
-             if (!friendUsername || friendUsername === currentUserData.username) {
-                  addFriendError.textContent = "Enter a valid username other than your own.";
-                  addFriendError.classList.remove('hidden');
-                  addFriendButton.disabled = false;
-                 return;
-             }
+                const currentUserFriendsRef = db.collection('users').doc(currentUser.uid).collection('friends');
+                const friendDoc = await currentUserFriendsRef.doc(friendUserId).get();
+                if (friendDoc.exists) {
+                    addFriendError.textContent = `You are already friends with ${friendUsername}.`;
+                    addFriendError.classList.remove('hidden');
+                    addFriendButton.disabled = false;
+                    return;
+                }
 
-             try {
-                  // Find the user by username
-                 const friendUser = await fetchUserByUsername(friendUsername);
+                const sentRequestSnapshot = await db.collection('friendRequests')
+                    .where('senderId', '==', currentUser.uid)
+                    .where('recipientId', '==', friendUserId)
+                    .where('status', '==', 'pending')
+                    .get();
 
-                 if (!friendUser) {
-                      addFriendError.textContent = `User "${friendUsername}" not found.`;
-                     addFriendError.classList.remove('hidden');
-                     addFriendButton.disabled = false;
-                     return;
-                 }
+                if (!sentRequestSnapshot.empty) {
+                    addFriendError.textContent = `You have already sent a request to ${friendUsername}.`;
+                    addFriendError.classList.remove('hidden');
+                    addFriendButton.disabled = false;
+                    return;
+                }
 
-                 const friendUserId = friendUser.id;
-
-                 // Check if already friends
-                  const currentUserFriendsRef = db.collection('users').doc(currentUser.uid).collection('friends');
-                  const friendDoc = await currentUserFriendsRef.doc(friendUserId).get();
-                  if (friendDoc.exists) {
-                       addFriendError.textContent = `You are already friends with ${friendUsername}.`;
-                       addFriendError.classList.remove('hidden');
-                       addFriendButton.disabled = false;
-                       return;
-                  }
-
-                  // Check if a request is already pending (sent by current user
-
-                  const sentRequestSnapshot = await db.collection('friendRequests')
-                     .where('senderId', '==', currentUser.uid)
-                     .where('recipientId', '==', friendUserId)
-                     .where('status', '==', 'pending')
-                     .get();
-
-                  if (!sentRequestSnapshot.empty) {
-                      addFriendError.textContent = `You have already sent a request to ${friendUsername}.`;
-                      addFriendError.classList.remove('hidden');
-                      addFriendButton.disabled = false;
-                      return;
-                  }
-
-                 // Check if a request is already pending (sent by the other user - should appear in requests tab)
-                 const receivedRequestSnapshot = await db.collection('friendRequests')
+                const receivedRequestSnapshot = await db.collection('friendRequests')
                     .where('senderId', '==', friendUserId)
                     .where('recipientId', '==', currentUser.uid)
                     .where('status', '==', 'pending')
                     .get();
 
-                 if (!receivedRequestSnapshot.empty) {
-                      addFriendError.textContent = `You have a pending friend request from ${friendUsername}. Check your Requests tab.`;
-                      addFriendError.classList.remove('hidden');
-                      addFriendButton.disabled = false;
-                      return;
-                 }
+                if (!receivedRequestSnapshot.empty) {
+                    addFriendError.textContent = `You have a pending friend request from ${friendUsername}. Check your Requests tab.`;
+                    addFriendError.classList.remove('hidden');
+                    addFriendButton.disabled = false;
+                    return;
+                }
 
+                await db.collection('friendRequests').add({
+                    senderId: currentUser.uid,
+                    recipientId: friendUserId,
+                    senderUsername: currentUserData.username,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    status: 'pending'
+                });
 
-                 // Send the friend request
-                 await db.collection('friendRequests').add({
-                     senderId: currentUser.uid,
-                     recipientId: friendUserId,
-                     senderUsername: currentUserData.username, // Store sender's username for easier display
-                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                     status: 'pending' // pending, accepted, declined
-                 });
+                addFriendMessage.textContent = `Friend request sent to ${friendUsername}!`;
+                addFriendMessage.classList.remove('hidden');
+                friendUsernameInput.value = '';
+                addFriendButton.disabled = false;
+                showToast(`Friend request sent to ${friendUsername}.`, 'success');
+            } catch (error) {
+                console.error("Error adding friend:", error);
+                addFriendError.textContent = "Error sending friend request: " + error.message;
+                addFriendError.classList.remove('hidden');
+                addFriendButton.disabled = false;
+            }
+        }
 
-                 addFriendMessage.textContent = `Friend request sent to ${friendUsername}!`;
-                 addFriendMessage.classList.remove('hidden');
-                 friendUsernameInput.value = ''; // Clear input
-                  addFriendButton.disabled = false;
-                 showToast(`Friend request sent to ${friendUsername}.`, 'success');
+        function setActiveChat(chatId, friendUserId, friendUsername) {
+            if (messagesListener) {
+                messagesListener();
+                messagesListener = null;
+            }
 
+            activeChatId = chatId;
+            activeChatFriend = friendUserId ? { id: friendUserId, username: friendUsername } : null;
 
-             } catch (error) {
-                 console.error("Error adding friend:", error);
-                 addFriendError.textContent = "Error sending friend request: " + error.message;
-                 addFriendError.classList.remove('hidden');
-                 addFriendButton.disabled = false;
-             }
-         }
+            if (chatId) {
+                noChatSelected.classList.add('hidden');
+                activeChat.classList.remove('hidden');
+                chatName.textContent = friendUsername;
+                chatMessages.innerHTML = '';
+                messageInput.value = '';
+                sendButton.disabled = true;
 
-         function setActiveChat(chatId, friendUserId, friendUsername) {
-              // Unsubscribe from previous messages listener
-             if (messagesListener) {
-                 messagesListener();
-                 messagesListener = null;
-             }
+                document.querySelectorAll('.friend-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                const selectedFriendItem = friendList.querySelector(`[data-chat-id="${chatId}"]`);
+                if (selectedFriendItem) {
+                    selectedFriendItem.classList.add('active');
+                }
 
-             activeChatId = chatId;
-             activeChatFriend = friendUserId ? { id: friendUserId, username: friendUsername } : null; // Store friend info
+                listenForMessages(chatId);
+                messageInput.focus();
+            } else {
+                activeChat.classList.add('hidden');
+                noChatSelected.classList.remove('hidden');
+                chatName.textContent = '';
+                chatMessages.innerHTML = '';
+                messageInput.value = '';
+                sendButton.disabled = true;
 
+                document.querySelectorAll('.friend-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+            }
+        }
 
-              // Update UI
-             if (chatId) {
-                 noChatSelected.classList.add('hidden');
-                 activeChat.classList.remove('hidden');
-                 chatName.textContent = friendUsername;
-                 chatMessages.innerHTML = ''; // Clear messages area
-                 messageInput.value = '';
-                 sendButton.disabled = true; // Disable send button initially
+        function listenForMessages(chatId) {
+            if (!chatId) return;
 
-                 // Highlight the selected friend in the sidebar
-                 document.querySelectorAll('.friend-item').forEach(item => {
-                     item.classList.remove('active');
-                 });
-                 const selectedFriendItem = friendList.querySelector(`[data-chat-id="${chatId}"]`);
-                 if (selectedFriendItem) {
-                     selectedFriendItem.classList.add('active');
-                 }
+            chatLoader.classList.remove('hidden');
+            chatMessages.innerHTML = '';
 
-                 listenForMessages(chatId); // Start listening for messages
-                  messageInput.focus(); // Focus input field
-             } else {
-                 // No chat selected or chat closed
-                 activeChat.classList.add('hidden');
-                 noChatSelected.classList.remove('hidden');
-                 chatName.textContent = '';
-                 chatMessages.innerHTML = '';
-                 messageInput.value = '';
-                 sendButton.disabled = true;
+            cleanUpExpiredMessages(chatId).then(() => {
+                const messagesRef = db.collection('chats').doc(chatId).collection('messages').orderBy('timestamp');
 
-                  // Remove highlighting from sidebar
-                  document.querySelectorAll('.friend-item').forEach(item => {
-                     item.classList.remove('active');
-                 });
-             }
-         }
+                messagesListener = messagesRef.onSnapshot(snapshot => {
+                    chatLoader.classList.add('hidden');
+                    const messages = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    renderMessages(messages);
+                }, error => {
+                    console.error("Error listening for messages:", error);
+                    chatLoader.classList.add('hidden');
+                    showToast('Failed to load messages.', 'error');
+                });
+            });
+        }
 
+        async function sendMessage(e) {
+            if (e) e.preventDefault();
 
-         function listenForMessages(chatId) {
-             if (!chatId) return;
+            const messageText = messageInput.value.trim();
 
-              chatLoader.classList.remove('hidden');
-              chatMessages.innerHTML = ''; // Clear messages while loading
+            if (!activeChatId || !messageText) {
+                return;
+            }
 
+            sendButton.disabled = true;
 
-             const messagesRef = db.collection('chats').doc(chatId).collection('messages').orderBy('timestamp');
+            try {
+                await db.collection('chats').doc(activeChatId).collection('messages').add({
+                    senderId: currentUser.uid,
+                    text: messageText,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                });
 
-             messagesListener = messagesRef.onSnapshot(snapshot => {
-                  chatLoader.classList.add('hidden');
-                 const messages = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                 renderMessages(messages);
-             }, error => {
-                 console.error("Error listening for messages:", error);
-                  chatLoader.classList.add('hidden');
-                 showToast('Failed to load messages.', 'error');
-             });
-         }
+                messageInput.value = '';
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            } catch (error) {
+                console.error("Error sending message:", error);
+                showToast('Failed to send message.', 'error');
+            } finally {
+                sendButton.disabled = messageInput.value.trim() === '';
+            }
+        }
 
-         async function sendMessage(e) {
-              if (e) e.preventDefault(); // Prevent form submission if called from form
+        function filterFriends(searchText) {
+            const filtered = {};
+            const lowerSearchText = searchText.toLowerCase();
+            for (const id in friends) {
+                if (friends[id].username.toLowerCase().includes(lowerSearchText)) {
+                    filtered[id] = friends[id];
+                }
+            }
+            displayFriends(filtered);
+        }
 
-             const messageText = messageInput.value.trim();
+        function filterRequests(searchText) {
+            const filtered = {};
+            const lowerSearchText = searchText.toLowerCase();
+            for (const id in friendRequests) {
+                if (friendRequests[id].status === 'pending' && friendRequests[id].senderUsername.toLowerCase().includes(lowerSearchText)) {
+                    filtered[id] = friendRequests[id];
+                }
+            }
+            displayRequests(filtered);
+        }
 
-             if (!activeChatId || !messageText) {
-                 return; // Don't send empty messages or if no chat is active
-             }
-
-             sendButton.disabled = true; // Disable button while sending
-
-             try {
-                 await db.collection('chats').doc(activeChatId).collection('messages').add({
-                     senderId: currentUser.uid,
-                     text: messageText,
-                     timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                      // No explicit expiry needed on write if Firestore rules handle it
-                      // or if we filter on read. For this example, filtering on read is done.
-                 });
-
-                 messageInput.value = ''; // Clear input
-                 // The listener will render the new message
-                 chatMessages.scrollTop = chatMessages.scrollHeight; // Scroll to bottom after sending
-
-             } catch (error) {
-                 console.error("Error sending message:", error);
-                 showToast('Failed to send message.', 'error');
-             } finally {
-                 sendButton.disabled = messageInput.value.trim() === ''; // Re-enable if there's text
-             }
-         }
-
-
-         function filterFriends(searchText) {
-              const filtered = {};
-              const lowerSearchText = searchText.toLowerCase();
-             for (const id in friends) {
-                  if (friends[id].username.toLowerCase().includes(lowerSearchText)) {
-                     filtered[id] = friends[id];
-                 }
-              }
-              displayFriends(filtered);
-         }
-
-         function filterRequests(searchText) {
-              const filtered = {};
-              const lowerSearchText = searchText.toLowerCase();
-              for (const id in friendRequests) {
-                   if (friendRequests[id].status === 'pending' && friendRequests[id].senderUsername.toLowerCase().includes(lowerSearchText)) {
-                      filtered[id] = friendRequests[id];
-                  }
-              }
-              displayRequests(filtered);
-         }
-
-
-        // --- Event Listeners ---
-
-        // Auth form toggling
+        // Event Listeners
         showRegister.addEventListener('click', () => switchAuthForm('register'));
         showLogin.addEventListener('click', () => switchAuthForm('login'));
 
-        // Auth form submissions
         loginForm.addEventListener('submit', handleLogin);
         registerForm.addEventListener('submit', handleRegister);
         usernameForm.addEventListener('submit', handleUsernameSetup);
 
-        // User menu dropdown
         userMenuButton.addEventListener('click', toggleUserDropdown);
-        // Close dropdown when clicking outside
         document.addEventListener('click', (event) => {
             if (!userMenuButton.contains(event.target) && !userDropdown.contains(event.target)) {
                 hideUserDropdown();
             }
         });
 
-        // Logout button
         logoutBtn.addEventListener('click', handleLogout);
 
-         // Profile button (placeholder)
-         userProfileBtn.addEventListener('click', () => {
-             showToast('Profile feature coming soon!', 'info');
-              hideUserDropdown();
-         });
+        userProfileBtn.addEventListener('click', () => {
+            showToast('Profile feature coming soon!', 'info');
+            hideUserDropdown();
+        });
 
-
-        // Sidebar tabs
         tabs.forEach(tab => {
             tab.addEventListener('click', () => {
                 switchTab(tab.dataset.tab);
             });
         });
 
-         // Friend Request actions (using event delegation)
-         requestList.addEventListener('click', (event) => {
-             const targetButton = event.target.closest('.request-button');
-             if (targetButton) {
-                 const requestItem = targetButton.closest('.request-item');
-                 const requestId = requestItem.dataset.requestId;
-                 const action = targetButton.dataset.action;
-                 if (requestId && action) {
-                     handleFriendRequest(requestId, action);
-                 }
-             }
-         });
+        requestList.addEventListener('click', (event) => {
+            const targetButton = event.target.closest('.request-button');
+            if (targetButton) {
+                const requestItem = targetButton.closest('.request-item');
+                const requestId = requestItem.dataset.requestId;
+                const action = targetButton.dataset.action;
+                if (requestId && action) {
+                    handleFriendRequest(requestId, action);
+                }
+            }
+        });
 
+        addFriendForm.addEventListener('submit', handleAddFriend);
+        friendUsernameInput.addEventListener('input', () => {
+            addFriendMessage.classList.add('hidden');
+            addFriendError.classList.add('hidden');
+            addFriendButton.disabled = friendUsernameInput.value.trim() === '';
+        });
+        addFriendButton.disabled = true;
 
-         // Add Friend form
-         addFriendForm.addEventListener('submit', handleAddFriend);
-         friendUsernameInput.addEventListener('input', () => {
-              addFriendMessage.classList.add('hidden');
-              addFriendError.classList.add('hidden');
-              addFriendButton.disabled = friendUsernameInput.value.trim() === '';
-         });
-         addFriendButton.disabled = true; // Disable initially
-
-
-        // Chat input and send button
         messageInput.addEventListener('input', () => {
             sendButton.disabled = messageInput.value.trim() === '' || !activeChatId;
         });
-         messageInput.addEventListener('keypress', (e) => {
-             if (e.key === 'Enter' && !sendButton.disabled) {
-                  e.preventDefault(); // Prevent newline
-                  sendMessage();
-             }
-         });
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !sendButton.disabled) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
         sendButton.addEventListener('click', () => sendMessage());
 
+        backButton.addEventListener('click', () => {
+            setActiveChat(null);
+            sidebar.classList.add('active');
+        });
 
-         // Back button on mobile
-         backButton.addEventListener('click', () => {
-              setActiveChat(null); // Clear the active chat
-              sidebar.classList.add('active'); // Show sidebar
-         });
+        searchFriendsInput.addEventListener('input', (e) => {
+            filterFriends(e.target.value);
+        });
+        searchRequestsInput.addEventListener('input', (e) => {
+            filterRequests(e.target.value);
+        });
 
-         // Search functionality
-         searchFriendsInput.addEventListener('input', (e) => {
-              filterFriends(e.target.value);
-         });
-         searchRequestsInput.addEventListener('input', (e) => {
-              filterRequests(e.target.value);
-         });
-
-
-        // --- Firebase Auth State Observer ---
         auth.onAuthStateChanged(async (user) => {
             if (user) {
-                // User is signed in.
                 currentUser = user;
 
-                // Check if user has a username
                 const userDoc = await db.collection('users').doc(user.uid).get();
                 if (userDoc.exists && userDoc.data().username) {
                     currentUserData = userDoc.data();
-                    showScreen('appContainer'); // Show main app
+                    showScreen('appContainer');
 
-                     // Start listening for friends and requests
-                     listenForFriends();
-                     listenForFriendRequests();
-
+                    listenForFriends();
+                    listenForFriendRequests();
                 } else {
-                    // User is new or doesn't have a username yet
+                    currentUserData = { email: user.email };
                     showScreen('usernameSetup');
                 }
-
             } else {
-                // User is signed out.
                 currentUser = null;
                 currentUserData = null;
-                showScreen('authContainer'); // Show auth screen
+                showScreen('authContainer');
 
-                // Clear app state and listeners
-                setActiveChat(null); // Close any active chat
+                setActiveChat(null);
                 if (friendsListener) friendsListener();
                 if (requestsListener) requestsListener();
                 friendsListener = null;
@@ -2002,27 +1996,18 @@
                 displayRequests({});
                 friendUsernameInput.value = '';
                 addFriendButton.disabled = true;
-                 searchFriendsInput.value = '';
-                 searchRequestsInput.value = '';
+                searchFriendsInput.value = '';
+                searchRequestsInput.value = '';
 
-                // Reset auth forms
                 loginForm.reset();
                 registerForm.reset();
                 loginError.classList.add('hidden');
                 registerError.classList.add('hidden');
                 loginButton.disabled = false;
                 registerButton.disabled = false;
-                switchAuthForm('login'); // Default to login form
+                switchAuthForm('login');
             }
         });
-
-         // Initial state check (auth observer handles this, but can be useful)
-         // const initialUser = auth.currentUser;
-         // if (!initialUser) {
-         //     showScreen('authContainer');
-         // }
-
-
     </script>
 </body>
 </html>
