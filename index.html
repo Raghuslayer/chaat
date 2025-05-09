@@ -495,6 +495,7 @@
             flex-direction: column;
             background-color: #f9fafb;
             position: relative;
+            height: 100vh;
         }
 
         .chat-header {
@@ -503,6 +504,7 @@
             border-bottom: 1px solid #e5e7eb;
             display: flex;
             align-items: center;
+            flex-shrink: 0;
         }
 
         .menu-button, .back-button {
@@ -530,13 +532,22 @@
             color: var(--gray-text);
         }
 
-        .chat-messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: clamp(0.5rem, 2vw, 1rem);
+        /* Ensure activeChat takes up available vertical space */
+        #activeChat {
             display: flex;
             flex-direction: column;
-            gap: clamp(0.5rem, 2vw, 1rem);
+            flex: 1;
+            overflow: hidden; /* Prevent activeChat from scrolling */
+        }
+
+        #chatMessages {
+            flex: 1; /* Allow chatMessages to grow and take available space */
+            overflow-y: auto; /* Enable vertical scrolling */
+            padding: clamp(0.5rem, 2vw, 1rem);
+            display: flex; /* Use flexbox for message alignment */
+            flex-direction: column; /* Stack messages vertically */
+            /* Removed gap - replaced by margin-bottom on .message */
+            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
         }
 
         .message {
@@ -547,6 +558,11 @@
             position: relative;
             word-break: break-word;
             font-size: clamp(0.875rem, 2.5vw, 1rem);
+            margin-bottom: clamp(0.5rem, 2vw, 1rem); /* Added margin-bottom for spacing */
+        }
+
+        .message:last-child {
+            margin-bottom: 0; /* No margin on the last message */
         }
 
         .message-content {
@@ -573,15 +589,16 @@
             gap: 0.25rem;
         }
 
+        /* Corrected alignment for incoming and outgoing messages */
         .message.incoming {
-            align-self: flex-start;
+            align-self: flex-start; /* Align incoming messages to the left */
             background-color: white;
             border: 1px solid #e5e7eb;
             border-bottom-left-radius: 0.25rem;
         }
 
         .message.outgoing {
-            align-self: flex-end;
+            align-self: flex-end; /* Align outgoing messages to the right */
             background-color: var(--primary-color);
             color: white;
             border-bottom-right-radius: 0.25rem;
@@ -594,6 +611,7 @@
             display: flex;
             gap: clamp(0.25rem, 1vw, 0.5rem);
             align-items: center;
+            flex-shrink: 0;
         }
 
         .chat-input input {
@@ -873,6 +891,28 @@
                 height: clamp(1.75rem, 8vw, 2.25rem);
             }
 
+            .chat-container {
+                height: 100vh;
+                overflow: hidden;
+            }
+
+             /* Ensure activeChat takes full height on mobile */
+            #activeChat {
+                display: flex;
+                flex-direction: column;
+                height: 100%; /* Explicit height for mobile */
+            }
+
+            #chatMessages {
+                flex: 1;
+                /* Adjusted height calculation to account for header and input */
+                height: calc(100% - clamp(3rem, 10vw, 4rem) - clamp(3.5rem, 12vw, 4.5rem));
+                overflow-y: auto;
+                padding: clamp(0.5rem, 2vw, 1rem);
+                -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+                /* Removed display: flex, flex-direction: column, gap for mobile */
+            }
+
             .chat-input {
                 position: fixed;
                 bottom: 0;
@@ -882,10 +922,6 @@
                 padding: clamp(0.5rem, 2vw, 1rem) clamp(0.5rem, 2vw, 1rem);
                 border-top: 1px solid #e5e7eb;
                 background-color: white;
-            }
-
-            .chat-messages {
-                padding-bottom: clamp(4rem, 15vw, 5rem);
             }
         }
 
@@ -916,9 +952,10 @@
                 padding: clamp(0.4rem, 2.5vw, 0.6rem) clamp(0.6rem, 3vw, 0.8rem);
             }
 
-            .chat-messages {
+            /* Adjusted height calculation for smaller screens */
+            #chatMessages {
                 padding: clamp(0.25rem, 1.5vw, 0.5rem);
-                padding-bottom: clamp(4rem, 15vw, 5rem);
+                height: calc(100% - clamp(2.5rem, 8vw, 3.5rem) - clamp(3rem, 10vw, 4rem));
             }
 
             .message {
@@ -1340,6 +1377,7 @@
                 chatMessages.appendChild(messageElement);
             });
 
+            // Auto-scroll to the bottom after rendering messages
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
 
@@ -1425,7 +1463,7 @@
                 return;
             }
 
- oroUsernameButton.disabled = true;
+            usernameButton.disabled = true;
             usernameError.classList.add('hidden');
 
             try {
@@ -1892,103 +1930,99 @@
             sendButton.disabled = true;
 
             try {
-                await db.collection('chats').doc(activeChatId).collection('messages').add({
+                const messagesRef = db.collection('chats').doc(activeChatId).collection('messages');
+                await messagesRef.add({
                     senderId: currentUser.uid,
                     text: messageText,
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
                 });
 
                 messageInput.value = '';
-                chatMessages.scrollTop = chatMessages.scrollHeight;
+                sendButton.disabled = true;
             } catch (error) {
                 console.error("Error sending message:", error);
                 showToast('Failed to send message.', 'error');
-            } finally {
-                sendButton.disabled = messageInput.value.trim() === '';
+                sendButton.disabled = false;
             }
-        }
-
-        function filterFriends(searchText) {
-            const filtered = {};
-            const lowerSearchText = searchText.toLowerCase();
-            for (const id in friends) {
-                if (friends[id].username.toLowerCase().includes(lowerSearchText)) {
-                    filtered[id] = friends[id];
-                }
-            }
-            displayFriends(filtered);
-        }
-
-        function filterRequests(searchText) {
-            const filtered = {};
-            const lowerSearchText = searchText.toLowerCase();
-            for (const id in friendRequests) {
-                if (friendRequests[id].status === 'pending' && friendRequests[id].senderUsername.toLowerCase().includes(lowerSearchText)) {
-                    filtered[id] = friendRequests[id];
-                }
-            }
-            displayRequests(filtered);
         }
 
         // Event Listeners
-        showRegister.addEventListener('click', () => switchAuthForm('register'));
-        showLogin.addEventListener('click', () => switchAuthForm('login'));
-
-        loginForm.addEventListener('submit', handleLogin);
-        registerForm.addEventListener('submit', handleRegister);
-        usernameForm.addEventListener('submit', handleUsernameSetup);
-
-        userMenuButton.addEventListener('click', toggleUserDropdown);
-        document.addEventListener('click', (event) => {
-            if (!userMenuButton.contains(event.target) && !userDropdown.contains(event.target)) {
-                hideUserDropdown();
+        auth.onAuthStateChanged(async user => {
+            if (user) {
+                currentUser = user;
+                const userDoc = await db.collection('users').doc(user.uid).get();
+                if (userDoc.exists && userDoc.data().username) {
+                    currentUserData = userDoc.data();
+                    showScreen('appContainer');
+                    listenForFriends();
+                    listenForFriendRequests();
+                } else {
+                    showScreen('usernameSetup');
+                }
+            } else {
+                currentUser = null;
+                currentUserData = null;
+                if (friendsListener) friendsListener();
+                if (requestsListener) requestsListener();
+                if (messagesListener) messagesListener();
+                friends = {};
+                friendRequests = {};
+                setActiveChat(null);
+                showScreen('authContainer');
             }
         });
 
-        logoutBtn.addEventListener('click', handleLogout);
+        loginForm.addEventListener('submit', handleLogin);
+        registerForm.addEventListener('submit', handleRegister);
+        showRegister.addEventListener('click', () => switchAuthForm('register'));
+        showLogin.addEventListener('click', () => switchAuthForm('login'));
+        usernameForm.addEventListener('submit', handleUsernameSetup);
 
+        userMenuButton.addEventListener('click', toggleUserDropdown);
+        document.addEventListener('click', (e) => {
+            if (!userMenuButton.contains(e.target) && !userDropdown.contains(e.target)) {
+                hideUserDropdown();
+            }
+        });
+        logoutBtn.addEventListener('click', handleLogout);
         userProfileBtn.addEventListener('click', () => {
-            showToast('Profile feature coming soon!', 'info');
-            hideUserDropdown();
+            showToast('Profile view not implemented yet.', 'info');
         });
 
         tabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                switchTab(tab.dataset.tab);
-            });
+            tab.addEventListener('click', () => switchTab(tab.dataset.tab));
         });
 
-        requestList.addEventListener('click', (event) => {
-            const targetButton = event.target.closest('.request-button');
-            if (targetButton) {
-                const requestItem = targetButton.closest('.request-item');
+        searchFriendsInput.addEventListener('input', () => {
+            const query = searchFriendsInput.value.toLowerCase();
+            const filteredFriends = Object.values(friends).filter(friend =>
+                friend.username.toLowerCase().includes(query)
+            );
+            displayFriends(filteredFriends);
+        });
+
+        searchRequestsInput.addEventListener('input', () => {
+            const query = searchRequestsInput.value.toLowerCase();
+            const filteredRequests = Object.values(friendRequests).filter(req =>
+                req.senderUsername.toLowerCase().includes(query) && req.status === 'pending'
+            );
+            displayRequests(filteredRequests);
+        });
+
+        requestList.addEventListener('click', (e) => {
+            const button = e.target.closest('.request-button');
+            if (button) {
+                const requestItem = button.closest('.request-item');
                 const requestId = requestItem.dataset.requestId;
-                const action = targetButton.dataset.action;
-                if (requestId && action) {
-                    handleFriendRequest(requestId, action);
-                }
+                const action = button.dataset.action;
+                handleFriendRequest(requestId, action);
             }
         });
 
         addFriendForm.addEventListener('submit', handleAddFriend);
-        friendUsernameInput.addEventListener('input', () => {
-            addFriendMessage.classList.add('hidden');
-            addFriendError.classList.add('hidden');
-            addFriendButton.disabled = friendUsernameInput.value.trim() === '';
-        });
-        addFriendButton.disabled = true;
 
-        messageInput.addEventListener('input', () => {
-            sendButton.disabled = messageInput.value.trim() === '' || !activeChatId;
-        });
-        messageInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !sendButton.disabled) {
-                e.preventDefault();
-                sendMessage();
-            }
-        });
-        sendButton.addEventListener('click', () => sendMessage());
-
+        menuButton.addEventListener('click', toggleSidebar);
+        menuButtonActive.addEventListener('click', toggleSidebar);
         backButton.addEventListener('click', () => {
             setActiveChat(null);
             if (window.innerWidth <= 768) {
@@ -1996,59 +2030,17 @@
             }
         });
 
-        menuButton.addEventListener('click', toggleSidebar);
-        menuButtonActive.addEventListener('click', toggleSidebar);
-
-        searchFriendsInput.addEventListener('input', (e) => {
-            filterFriends(e.target.value);
-        });
-        searchRequestsInput.addEventListener('input', (e) => {
-            filterRequests(e.target.value);
+        messageInput.addEventListener('input', () => {
+            sendButton.disabled = !messageInput.value.trim() || !activeChatId;
         });
 
-        auth.onAuthStateChanged(async (user) => {
-            if (user) {
-                currentUser = user;
-
-                const userDoc = await db.collection('users').doc(user.uid).get();
-                if (userDoc.exists && userDoc.data().username) {
-                    currentUserData = userDoc.data();
-                    showScreen('appContainer');
-
-                    listenForFriends();
-                    listenForFriendRequests();
-                } else {
-                    currentUserData = { email: user.email };
-                    showScreen('usernameSetup');
-                }
-            } else {
-                currentUser = null;
-                currentUserData = null;
-                showScreen('authContainer');
-
-                setActiveChat(null);
-                if (friendsListener) friendsListener();
-                if (requestsListener) requestsListener();
-                friendsListener = null;
-                requestsListener = null;
-                friends = {};
-                friendRequests = {};
-                displayFriends({});
-                displayRequests({});
-                friendUsernameInput.value = '';
-                addFriendButton.disabled = true;
-                searchFriendsInput.value = '';
-                searchRequestsInput.value = '';
-
-                loginForm.reset();
-                registerForm.reset();
-                loginError.classList.add('hidden');
-                registerError.classList.add('hidden');
-                loginButton.disabled = false;
-                registerButton.disabled = false;
-                switchAuthForm('login');
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                sendMessage(e);
             }
         });
+
+        sendButton.addEventListener('click', sendMessage);
     </script>
 </body>
 </html>
