@@ -24,6 +24,9 @@
             --base-font-size: clamp(0.875rem, 2.5vw, 1rem);
             --sidebar-width: clamp(15rem, 25vw, 20rem);
             --container-max-width: 90rem;
+            /* Added new color variables for gradients */
+            --gradient-start: #667eea;
+            --gradient-end: #764ba2;
         }
 
         * {
@@ -38,11 +41,22 @@
         }
 
         body {
-            background-color: #f9fafb;
+            /* Updated background with a gradient and animation */
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+            background-size: 400% 400%;
+            animation: gradientAnimation 15s ease infinite;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             font-size: var(--base-font-size);
+            color: var(--dark-text); /* Default text color */
+        }
+
+        /* Gradient animation */
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         .container {
@@ -63,17 +77,21 @@
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            background: linear-gradient(135deg, #4f46e5 0%, #10b981 100%);
+            /* Auth container uses the same animated gradient background */
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+            background-size: 400% 400%;
+            animation: gradientAnimation 15s ease infinite;
             padding: clamp(1rem, 5vw, 2rem);
         }
 
         .auth-box {
-            background-color: white;
+            background-color: rgba(255, 255, 255, 0.95); /* Slightly transparent white */
             border-radius: var(--border-radius);
             box-shadow: var(--shadow);
             width: clamp(18rem, 90vw, 25rem);
             padding: clamp(1rem, 5vw, 2rem);
             animation: slideUp 0.5s ease-out;
+            backdrop-filter: blur(5px); /* Blur effect behind the box */
         }
 
         .auth-logo {
@@ -85,6 +103,7 @@
             color: var(--primary-color);
             font-size: clamp(1.5rem, 5vw, 2rem);
             margin-bottom: 0.5rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); /* Subtle text shadow */
         }
 
         .auth-logo p {
@@ -115,18 +134,20 @@
             border: 1px solid #d1d5db;
             border-radius: var(--border-radius);
             font-size: clamp(0.875rem, 2.5vw, 1rem);
-            transition: border 0.3s;
+            transition: border 0.3s, box-shadow 0.3s; /* Added box-shadow transition */
             width: 100%;
+            background-color: rgba(255, 255, 255, 0.8); /* Slightly transparent input background */
         }
 
         .form-group input:focus {
             outline: none;
             border-color: var(--primary-color);
             box-shadow: 0 0 0 0.1875rem rgba(79, 70, 229, 0.2);
+            background-color: white; /* Solid white on focus */
         }
 
         .auth-button {
-            background-color: var(--primary-color);
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color)); /* Gradient button */
             color: white;
             border: none;
             border-radius: var(--border-radius);
@@ -134,20 +155,41 @@
             font-size: clamp(0.875rem, 2.5vw, 1rem);
             font-weight: 500;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: all 0.3s ease; /* Smooth transition for hover effects */
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 0.5rem;
+            overflow: hidden; /* Hide pseudo-element overflow */
+            position: relative; /* Needed for pseudo-element positioning */
+        }
+
+        /* Button hover effect */
+        .auth-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2); /* White overlay */
+            transition: all 0.3s ease;
+        }
+
+        .auth-button:hover::before {
+            left: 0; /* Slide overlay on hover */
         }
 
         .auth-button:hover {
-            background-color: var(--primary-hover);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow on hover */
+            transform: translateY(-2px); /* Slight lift on hover */
         }
 
         .auth-button:disabled {
-            background-color: #a5b4fc;
+            background: #a5b4fc; /* Solid color for disabled */
             cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
         }
 
         .auth-alt {
@@ -165,22 +207,32 @@
             text-decoration: none;
             font-weight: 500;
             cursor: pointer;
+            transition: color 0.3s ease;
         }
 
         .auth-alt a:hover {
             text-decoration: underline;
+            color: var(--primary-hover);
         }
 
         .error-message {
             color: var(--error-color);
             font-size: clamp(0.75rem, 2vw, 0.9rem);
             margin-top: 0.5rem;
+            animation: shake 0.5s ease-in-out; /* Shake animation for errors */
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
         }
 
         .success-message {
             color: var(--success-color);
             font-size: clamp(0.75rem, 2vw, 0.9rem);
             margin-top: 0.5rem;
+            animation: fadeIn 0.5s ease-out;
         }
 
         .username-setup {
@@ -205,15 +257,18 @@
             grid-template-columns: minmax(0, var(--sidebar-width)) 1fr;
             height: 100vh;
             overflow: hidden;
+            background-color: rgba(249, 250, 251, 0.8); /* Slightly transparent background */
+            backdrop-filter: blur(5px); /* Blur effect behind the app */
         }
 
         .sidebar {
-            background-color: white;
+            background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent sidebar */
             border-right: 1px solid #e5e7eb;
             display: flex;
             flex-direction: column;
             transition: transform 0.3s ease;
             width: 100%;
+            backdrop-filter: blur(5px); /* Blur effect for sidebar */
         }
 
         .sidebar-header {
@@ -239,6 +294,11 @@
             cursor: pointer;
             color: var(--dark-text);
             font-size: clamp(1rem, 3vw, 1.25rem);
+            transition: color 0.3s ease;
+        }
+
+        .user-button:hover {
+            color: var(--primary-color);
         }
 
         .dropdown-menu {
@@ -251,27 +311,39 @@
             z-index: 10;
             min-width: clamp(8rem, 20vw, 10rem);
             margin-top: 0.5rem;
-            animation: fadeIn 0.2s ease-out;
+            animation: fadeInScale 0.2s ease-out; /* Added scale animation */
+            transform-origin: top right;
+        }
+
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
         }
 
         .dropdown-menu ul {
             list-style: none;
+            padding: 0.25rem 0; /* Added padding */
         }
 
         .dropdown-menu li {
             padding: clamp(0.5rem, 2vw, 0.75rem) 1rem;
             cursor: pointer;
-            transition: background-color 0.2s;
+            transition: background-color 0.2s, color 0.2s;
             font-size: clamp(0.875rem, 2.5vw, 1rem);
+            display: flex; /* Align icon and text */
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .dropdown-menu li:hover {
             background-color: var(--light-bg);
+            color: var(--primary-color);
         }
 
         .tabs {
             display: flex;
             border-bottom: 1px solid #e5e7eb;
+            background-color: rgba(255, 255, 255, 0.8); /* Slightly transparent tabs */
         }
 
         .tab {
@@ -312,12 +384,14 @@
             border: 1px solid #e5e7eb;
             font-size: clamp(0.8rem, 2vw, 0.9rem);
             transition: all 0.3s;
+            background-color: rgba(255, 255, 255, 0.8); /* Slightly transparent input */
         }
 
         .search-bar input:focus {
             outline: none;
             border-color: var(--primary-color);
             box-shadow: 0 0 0 0.1875rem rgba(79, 70, 229, 0.2);
+            background-color: white; /* Solid white on focus */
         }
 
         .search-bar i {
@@ -340,13 +414,14 @@
             align-items: center;
             padding: clamp(0.5rem, 2vw, 0.75rem);
             border-radius: var(--border-radius);
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, transform 0.1s ease-in-out; /* Added transform transition */
             cursor: pointer;
             animation: fadeIn 0.3s;
         }
 
         .friend-item:hover {
             background-color: var(--light-bg);
+            transform: translateX(5px); /* Slide effect on hover */
         }
 
         .friend-item.active {
@@ -357,7 +432,7 @@
             width: clamp(2rem, 10vw, 2.5rem);
             height: clamp(2rem, 10vw, 2.5rem);
             border-radius: 50%;
-            background-color: var(--primary-color);
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color)); /* Gradient avatar background */
             color: white;
             display: flex;
             align-items: center;
@@ -366,10 +441,12 @@
             margin-right: clamp(0.5rem, 2vw, 1rem);
             flex-shrink: 0;
             font-size: clamp(0.8rem, 2vw, 1rem);
+            box-shadow: var(--shadow); /* Added shadow to avatar */
         }
 
         .request-item .friend-avatar {
-            background-color: var(--gray-text);
+            background-color: var(--gray-text); /* Keep gray for request avatars */
+            box-shadow: none;
         }
 
         .friend-info {
@@ -393,6 +470,11 @@
             flex-direction: column;
             align-items: flex-start;
             padding: clamp(0.75rem, 3vw, 1rem);
+            transition: background-color 0.3s; /* Keep background transition */
+        }
+
+         .request-item:hover {
+            background-color: #e5e7eb; /* Hover effect for request item */
         }
 
         .request-info {
@@ -447,7 +529,7 @@
             padding: clamp(0.5rem, 2vw, 1rem);
             border-top: 1px solid #e5e7eb;
             margin-top: auto;
-            background-color: white;
+            background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent add friend section */
         }
 
         .add-friend-form {
@@ -461,12 +543,14 @@
             border: 1px solid #e5e7eb;
             border-radius: var(--border-radius);
             font-size: clamp(0.8rem, 2vw, 0.9rem);
+            background-color: rgba(255, 255, 255, 0.8); /* Slightly transparent input */
         }
 
         .add-friend-form input:focus {
             outline: none;
             border-color: var(--primary-color);
             box-shadow: 0 0 0 0.1875rem rgba(79, 70, 229, 0.2);
+            background-color: white; /* Solid white on focus */
         }
 
         .add-friend-form button {
@@ -493,18 +577,20 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            background-color: #f9fafb;
+            background-color: rgba(249, 250, 251, 0.8); /* Slightly transparent chat background */
             position: relative;
             height: 100vh;
+            backdrop-filter: blur(5px); /* Blur effect for chat container */
         }
 
         .chat-header {
             padding: clamp(0.5rem, 2vw, 1rem);
-            background-color: white;
+            background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent header */
             border-bottom: 1px solid #e5e7eb;
             display: flex;
             align-items: center;
             flex-shrink: 0;
+            backdrop-filter: blur(5px); /* Blur effect for header */
         }
 
         .menu-button, .back-button {
@@ -515,6 +601,11 @@
             font-size: clamp(1rem, 3vw, 1.25rem);
             cursor: pointer;
             color: var(--gray-text);
+            transition: color 0.3s ease;
+        }
+
+        .menu-button:hover, .back-button:hover {
+            color: var(--primary-color);
         }
 
         .chat-info {
@@ -546,7 +637,6 @@
             padding: clamp(0.5rem, 2vw, 1rem);
             display: flex; /* Use flexbox for message alignment */
             flex-direction: column; /* Stack messages vertically */
-            /* Removed gap - replaced by margin-bottom on .message */
             -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
         }
 
@@ -554,15 +644,28 @@
             max-width: clamp(60%, 80vw, 80%);
             padding: clamp(0.5rem, 2vw, 0.75rem) clamp(0.75rem, 3vw, 1rem);
             border-radius: clamp(0.75rem, 3vw, 1rem);
-            animation: fadeIn 0.3s;
             position: relative;
             word-break: break-word;
             font-size: clamp(0.875rem, 2.5vw, 1rem);
-            margin-bottom: clamp(0.5rem, 2vw, 1rem); /* Added margin-bottom for spacing */
+            margin-bottom: clamp(0.5rem, 2vw, 1rem);
+            transition: transform 0.2s ease-in-out; /* Added transition for hover effect */
+            animation: messageEntry 0.3s ease-out; /* Message entry animation */
         }
+
+        /* Message entry animation */
+        @keyframes messageEntry {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
 
         .message:last-child {
             margin-bottom: 0; /* No margin on the last message */
+        }
+
+        /* Hover effect on messages */
+        .message:hover {
+             transform: scale(1.02); /* Slightly enlarge on hover */
         }
 
         .message-content {
@@ -595,23 +698,32 @@
             background-color: white;
             border: 1px solid #e5e7eb;
             border-bottom-left-radius: 0.25rem;
+            box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.05); /* Subtle shadow */
         }
 
         .message.outgoing {
             align-self: flex-end; /* Align outgoing messages to the right */
-            background-color: var(--primary-color);
+            background-color: var(--primary-color); /* Solid color for outgoing */
             color: white;
             border-bottom-right-radius: 0.25rem;
+            box-shadow: -1px 1px 3px rgba(0, 0, 0, 0.05); /* Subtle shadow */
         }
+
+         /* Added gradient to outgoing messages */
+        .message.outgoing {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+        }
+
 
         .chat-input {
             padding: clamp(0.5rem, 2vw, 1rem);
-            background-color: white;
+            background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent input area */
             border-top: 1px solid #e5e7eb;
             display: flex;
             gap: clamp(0.25rem, 1vw, 0.5rem);
             align-items: center;
             flex-shrink: 0;
+            backdrop-filter: blur(5px); /* Blur effect for input area */
         }
 
         .chat-input input {
@@ -621,16 +733,18 @@
             border-radius: clamp(1rem, 3vw, 1.25rem);
             font-size: clamp(0.875rem, 2.5vw, 1rem);
             transition: all 0.3s;
+            background-color: rgba(255, 255, 255, 0.8); /* Slightly transparent input */
         }
 
         .chat-input input:focus {
             outline: none;
             border-color: var(--primary-color);
             box-shadow: 0 0 0 0.1875rem rgba(79, 70, 229, 0.2);
+            background-color: white; /* Solid white on focus */
         }
 
         .chat-input button {
-            background-color: var(--primary-color);
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color)); /* Gradient send button */
             color: white;
             border: none;
             border-radius: 50%;
@@ -640,21 +754,25 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s ease; /* Smooth transition */
             flex-shrink: 0;
             font-size: clamp(0.8rem, 2vw, 1rem);
+            box-shadow: var(--shadow); /* Added shadow */
         }
 
         .chat-input button:hover {
-            background-color: var(--primary-hover);
-            transform: scale(1.05);
+            background-color: var(--primary-hover); /* Fallback for hover */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Smaller shadow on hover */
+            transform: scale(1.1); /* Slightly larger scale on hover */
         }
 
         .chat-input button:disabled {
-            background-color: #a5b4fc;
+            background: #a5b4fc; /* Solid color for disabled */
             cursor: not-allowed;
             transform: none;
+            box-shadow: none;
         }
+
 
         .no-chat-selected {
             flex: 1;
@@ -708,6 +826,31 @@
             width: clamp(1.5rem, 8vw, 2.5rem);
             height: clamp(1.5rem, 8vw, 2.5rem);
             animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; display: none; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(clamp(1rem, 5vw, 2rem)); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
 
         .toast-container {
@@ -787,30 +930,73 @@
             word-break: break-word;
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        /* Profile Modal Styles */
+        .profile-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.6); /* Dark overlay */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000; /* Above other content */
+            animation: fadeIn 0.3s ease-out;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        .profile-modal {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: clamp(1.5rem, 5vw, 2rem);
+            width: clamp(20rem, 90vw, 30rem);
+            animation: slideUp 0.4s ease-out;
+            position: relative;
         }
 
-        @keyframes fadeOut {
-            from { opacity: 1; }
-            to { opacity: 0; display: none; }
+        .profile-modal h2 {
+            margin-top: 0;
+            margin-bottom: clamp(1rem, 3vw, 1.5rem);
+            color: var(--dark-text);
+            text-align: center;
+            font-size: clamp(1.5rem, 5vw, 2rem);
         }
 
-        @keyframes slideUp {
-            from { transform: translateY(clamp(1rem, 5vw, 2rem)); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+        .profile-info-item {
+            margin-bottom: clamp(0.75rem, 2vw, 1rem);
         }
 
-        @keyframes slideInRight {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+        .profile-info-item label {
+            font-weight: 500;
+            color: var(--gray-text);
+            display: block;
+            margin-bottom: 0.25rem;
+            font-size: clamp(0.875rem, 2.5vw, 1rem);
         }
+
+        .profile-info-item p {
+            color: var(--dark-text);
+            font-size: clamp(1rem, 3vw, 1.25rem);
+            word-break: break-all; /* Prevent overflow for long emails/usernames */
+        }
+
+        .close-modal-button {
+            position: absolute;
+            top: clamp(0.75rem, 2vw, 1rem);
+            right: clamp(0.75rem, 2vw, 1rem);
+            background: none;
+            border: none;
+            font-size: clamp(1.25rem, 4vw, 1.5rem);
+            cursor: pointer;
+            color: var(--gray-text);
+            transition: color 0.3s ease;
+        }
+
+        .close-modal-button:hover {
+            color: var(--error-color);
+        }
+
 
         @media (max-width: 1024px) {
             .app-container {
@@ -910,7 +1096,6 @@
                 overflow-y: auto;
                 padding: clamp(0.5rem, 2vw, 1rem);
                 -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
-                /* Removed display: flex, flex-direction: column, gap for mobile */
             }
 
             .chat-input {
@@ -921,7 +1106,8 @@
                 z-index: 10;
                 padding: clamp(0.5rem, 2vw, 1rem) clamp(0.5rem, 2vw, 1rem);
                 border-top: 1px solid #e5e7eb;
-                background-color: white;
+                background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent input area */
+                backdrop-filter: blur(5px); /* Blur effect for input area */
             }
         }
 
@@ -1142,6 +1328,21 @@
 
     <div id="toastContainer" class="toast-container"></div>
 
+    <div id="profileModalOverlay" class="profile-modal-overlay hidden">
+        <div class="profile-modal">
+            <button id="closeProfileModal" class="close-modal-button"><i class="fas fa-times"></i></button>
+            <h2>My Profile</h2>
+            <div class="profile-info-item">
+                <label>Username:</label>
+                <p id="profileUsername"></p>
+            </div>
+            <div class="profile-info-item">
+                <label>Email:</label>
+                <p id="profileEmail"></p>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Firebase Configuration
         const firebaseConfig = {
@@ -1209,6 +1410,13 @@
         const messageInput = document.getElementById('messageInput');
         const sendButton = document.getElementById('sendButton');
         const toastContainer = document.getElementById('toastContainer');
+
+        // Profile Modal Elements
+        const profileModalOverlay = document.getElementById('profileModalOverlay');
+        const profileUsername = document.getElementById('profileUsername');
+        const profileEmail = document.getElementById('profileEmail');
+        const closeProfileModalButton = document.getElementById('closeProfileModal');
+
 
         // State Variables
         let currentUser = null;
@@ -1486,6 +1694,7 @@
                 showScreen('appContainer');
                 showToast('Username set successfully!', 'success');
             } catch (error) {
+                console.error("Error setting username:", error);
                 usernameError.textContent = "Error setting username: " + error.message;
                 usernameError.classList.remove('hidden');
                 usernameButton.disabled = false;
@@ -1946,6 +2155,22 @@
             }
         }
 
+        // Profile Modal Functions
+        function showProfileModal() {
+            if (currentUserData) {
+                profileUsername.textContent = currentUserData.username;
+                profileEmail.textContent = currentUserData.email;
+                profileModalOverlay.classList.remove('hidden');
+            } else {
+                showToast('User data not available.', 'error');
+            }
+        }
+
+        function hideProfileModal() {
+            profileModalOverlay.classList.add('hidden');
+        }
+
+
         // Event Listeners
         auth.onAuthStateChanged(async user => {
             if (user) {
@@ -1986,7 +2211,8 @@
         });
         logoutBtn.addEventListener('click', handleLogout);
         userProfileBtn.addEventListener('click', () => {
-            showToast('Profile view not implemented yet.', 'info');
+            hideUserDropdown(); // Hide dropdown when profile is clicked
+            showProfileModal(); // Show the profile modal
         });
 
         tabs.forEach(tab => {
@@ -2041,6 +2267,16 @@
         });
 
         sendButton.addEventListener('click', sendMessage);
+
+        // Event listeners for the profile modal
+        closeProfileModalButton.addEventListener('click', hideProfileModal);
+        profileModalOverlay.addEventListener('click', (e) => {
+            // Close modal if clicking outside the modal content
+            if (e.target === profileModalOverlay) {
+                hideProfileModal();
+            }
+        });
+
     </script>
 </body>
 </html>
