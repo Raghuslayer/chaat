@@ -24,9 +24,6 @@
             --base-font-size: clamp(0.875rem, 2.5vw, 1rem);
             --sidebar-width: clamp(15rem, 25vw, 20rem);
             --container-max-width: 90rem;
-            /* Added new color variables for gradients */
-            --gradient-start: #667eea;
-            --gradient-end: #764ba2;
         }
 
         * {
@@ -41,22 +38,11 @@
         }
 
         body {
-            /* Updated background with a gradient and animation */
-            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
-            background-size: 400% 400%;
-            animation: gradientAnimation 15s ease infinite;
+            background-color: #f9fafb;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             font-size: var(--base-font-size);
-            color: var(--dark-text); /* Default text color */
-        }
-
-        /* Gradient animation */
-        @keyframes gradientAnimation {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
         }
 
         .container {
@@ -77,21 +63,17 @@
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            /* Auth container uses the same animated gradient background */
-            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
-            background-size: 400% 400%;
-            animation: gradientAnimation 15s ease infinite;
+            background: linear-gradient(135deg, #4f46e5 0%, #10b981 100%);
             padding: clamp(1rem, 5vw, 2rem);
         }
 
         .auth-box {
-            background-color: rgba(255, 255, 255, 0.95); /* Slightly transparent white */
+            background-color: white;
             border-radius: var(--border-radius);
             box-shadow: var(--shadow);
             width: clamp(18rem, 90vw, 25rem);
             padding: clamp(1rem, 5vw, 2rem);
             animation: slideUp 0.5s ease-out;
-            backdrop-filter: blur(5px); /* Blur effect behind the box */
         }
 
         .auth-logo {
@@ -103,7 +85,6 @@
             color: var(--primary-color);
             font-size: clamp(1.5rem, 5vw, 2rem);
             margin-bottom: 0.5rem;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); /* Subtle text shadow */
         }
 
         .auth-logo p {
@@ -134,20 +115,18 @@
             border: 1px solid #d1d5db;
             border-radius: var(--border-radius);
             font-size: clamp(0.875rem, 2.5vw, 1rem);
-            transition: border 0.3s, box-shadow 0.3s; /* Added box-shadow transition */
+            transition: border 0.3s;
             width: 100%;
-            background-color: rgba(255, 255, 255, 0.8); /* Slightly transparent input background */
         }
 
         .form-group input:focus {
             outline: none;
             border-color: var(--primary-color);
             box-shadow: 0 0 0 0.1875rem rgba(79, 70, 229, 0.2);
-            background-color: white; /* Solid white on focus */
         }
 
         .auth-button {
-            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color)); /* Gradient button */
+            background-color: var(--primary-color);
             color: white;
             border: none;
             border-radius: var(--border-radius);
@@ -155,41 +134,20 @@
             font-size: clamp(0.875rem, 2.5vw, 1rem);
             font-weight: 500;
             cursor: pointer;
-            transition: all 0.3s ease; /* Smooth transition for hover effects */
+            transition: background-color 0.3s;
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 0.5rem;
-            overflow: hidden; /* Hide pseudo-element overflow */
-            position: relative; /* Needed for pseudo-element positioning */
-        }
-
-        /* Button hover effect */
-        .auth-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.2); /* White overlay */
-            transition: all 0.3s ease;
-        }
-
-        .auth-button:hover::before {
-            left: 0; /* Slide overlay on hover */
         }
 
         .auth-button:hover {
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow on hover */
-            transform: translateY(-2px); /* Slight lift on hover */
+            background-color: var(--primary-hover);
         }
 
         .auth-button:disabled {
-            background: #a5b4fc; /* Solid color for disabled */
+            background-color: #a5b4fc;
             cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
         }
 
         .auth-alt {
@@ -207,32 +165,22 @@
             text-decoration: none;
             font-weight: 500;
             cursor: pointer;
-            transition: color 0.3s ease;
         }
 
         .auth-alt a:hover {
             text-decoration: underline;
-            color: var(--primary-hover);
         }
 
         .error-message {
             color: var(--error-color);
             font-size: clamp(0.75rem, 2vw, 0.9rem);
             margin-top: 0.5rem;
-            animation: shake 0.5s ease-in-out; /* Shake animation for errors */
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            20%, 60% { transform: translateX(-5px); }
-            40%, 80% { transform: translateX(5px); }
         }
 
         .success-message {
             color: var(--success-color);
             font-size: clamp(0.75rem, 2vw, 0.9rem);
             margin-top: 0.5rem;
-            animation: fadeIn 0.5s ease-out;
         }
 
         .username-setup {
@@ -257,18 +205,15 @@
             grid-template-columns: minmax(0, var(--sidebar-width)) 1fr;
             height: 100vh;
             overflow: hidden;
-            background-color: rgba(249, 250, 251, 0.8); /* Slightly transparent background */
-            backdrop-filter: blur(5px); /* Blur effect behind the app */
         }
 
         .sidebar {
-            background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent sidebar */
+            background-color: white;
             border-right: 1px solid #e5e7eb;
             display: flex;
             flex-direction: column;
             transition: transform 0.3s ease;
             width: 100%;
-            backdrop-filter: blur(5px); /* Blur effect for sidebar */
         }
 
         .sidebar-header {
@@ -294,11 +239,6 @@
             cursor: pointer;
             color: var(--dark-text);
             font-size: clamp(1rem, 3vw, 1.25rem);
-            transition: color 0.3s ease;
-        }
-
-        .user-button:hover {
-            color: var(--primary-color);
         }
 
         .dropdown-menu {
@@ -311,39 +251,27 @@
             z-index: 10;
             min-width: clamp(8rem, 20vw, 10rem);
             margin-top: 0.5rem;
-            animation: fadeInScale 0.2s ease-out; /* Added scale animation */
-            transform-origin: top right;
-        }
-
-        @keyframes fadeInScale {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
+            animation: fadeIn 0.2s ease-out;
         }
 
         .dropdown-menu ul {
             list-style: none;
-            padding: 0.25rem 0; /* Added padding */
         }
 
         .dropdown-menu li {
             padding: clamp(0.5rem, 2vw, 0.75rem) 1rem;
             cursor: pointer;
-            transition: background-color 0.2s, color 0.2s;
+            transition: background-color 0.2s;
             font-size: clamp(0.875rem, 2.5vw, 1rem);
-            display: flex; /* Align icon and text */
-            align-items: center;
-            gap: 0.5rem;
         }
 
         .dropdown-menu li:hover {
             background-color: var(--light-bg);
-            color: var(--primary-color);
         }
 
         .tabs {
             display: flex;
             border-bottom: 1px solid #e5e7eb;
-            background-color: rgba(255, 255, 255, 0.8); /* Slightly transparent tabs */
         }
 
         .tab {
@@ -384,14 +312,12 @@
             border: 1px solid #e5e7eb;
             font-size: clamp(0.8rem, 2vw, 0.9rem);
             transition: all 0.3s;
-            background-color: rgba(255, 255, 255, 0.8); /* Slightly transparent input */
         }
 
         .search-bar input:focus {
             outline: none;
             border-color: var(--primary-color);
             box-shadow: 0 0 0 0.1875rem rgba(79, 70, 229, 0.2);
-            background-color: white; /* Solid white on focus */
         }
 
         .search-bar i {
@@ -414,14 +340,13 @@
             align-items: center;
             padding: clamp(0.5rem, 2vw, 0.75rem);
             border-radius: var(--border-radius);
-            transition: background-color 0.3s, transform 0.1s ease-in-out; /* Added transform transition */
+            transition: background-color 0.3s;
             cursor: pointer;
             animation: fadeIn 0.3s;
         }
 
         .friend-item:hover {
             background-color: var(--light-bg);
-            transform: translateX(5px); /* Slide effect on hover */
         }
 
         .friend-item.active {
@@ -432,7 +357,7 @@
             width: clamp(2rem, 10vw, 2.5rem);
             height: clamp(2rem, 10vw, 2.5rem);
             border-radius: 50%;
-            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color)); /* Gradient avatar background */
+            background-color: var(--primary-color);
             color: white;
             display: flex;
             align-items: center;
@@ -441,12 +366,10 @@
             margin-right: clamp(0.5rem, 2vw, 1rem);
             flex-shrink: 0;
             font-size: clamp(0.8rem, 2vw, 1rem);
-            box-shadow: var(--shadow); /* Added shadow to avatar */
         }
 
         .request-item .friend-avatar {
-            background-color: var(--gray-text); /* Keep gray for request avatars */
-            box-shadow: none;
+            background-color: var(--gray-text);
         }
 
         .friend-info {
@@ -470,11 +393,6 @@
             flex-direction: column;
             align-items: flex-start;
             padding: clamp(0.75rem, 3vw, 1rem);
-            transition: background-color 0.3s; /* Keep background transition */
-        }
-
-         .request-item:hover {
-            background-color: #e5e7eb; /* Hover effect for request item */
         }
 
         .request-info {
@@ -529,7 +447,7 @@
             padding: clamp(0.5rem, 2vw, 1rem);
             border-top: 1px solid #e5e7eb;
             margin-top: auto;
-            background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent add friend section */
+            background-color: white;
         }
 
         .add-friend-form {
@@ -543,14 +461,12 @@
             border: 1px solid #e5e7eb;
             border-radius: var(--border-radius);
             font-size: clamp(0.8rem, 2vw, 0.9rem);
-            background-color: rgba(255, 255, 255, 0.8); /* Slightly transparent input */
         }
 
         .add-friend-form input:focus {
             outline: none;
             border-color: var(--primary-color);
             box-shadow: 0 0 0 0.1875rem rgba(79, 70, 229, 0.2);
-            background-color: white; /* Solid white on focus */
         }
 
         .add-friend-form button {
@@ -577,20 +493,18 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            background-color: rgba(249, 250, 251, 0.8); /* Slightly transparent chat background */
+            background-color: #f9fafb;
             position: relative;
             height: 100vh;
-            backdrop-filter: blur(5px); /* Blur effect for chat container */
         }
 
         .chat-header {
             padding: clamp(0.5rem, 2vw, 1rem);
-            background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent header */
+            background-color: white;
             border-bottom: 1px solid #e5e7eb;
             display: flex;
             align-items: center;
             flex-shrink: 0;
-            backdrop-filter: blur(5px); /* Blur effect for header */
         }
 
         .menu-button, .back-button {
@@ -601,11 +515,6 @@
             font-size: clamp(1rem, 3vw, 1.25rem);
             cursor: pointer;
             color: var(--gray-text);
-            transition: color 0.3s ease;
-        }
-
-        .menu-button:hover, .back-button:hover {
-            color: var(--primary-color);
         }
 
         .chat-info {
@@ -623,49 +532,23 @@
             color: var(--gray-text);
         }
 
-        /* Ensure activeChat takes up available vertical space */
-        #activeChat {
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: clamp(0.5rem, 2vw, 1rem);
             display: flex;
             flex-direction: column;
-            flex: 1;
-            overflow: hidden; /* Prevent activeChat from scrolling */
-        }
-
-        #chatMessages {
-            flex: 1; /* Allow chatMessages to grow and take available space */
-            overflow-y: auto; /* Enable vertical scrolling */
-            padding: clamp(0.5rem, 2vw, 1rem);
-            display: flex; /* Use flexbox for message alignment */
-            flex-direction: column; /* Stack messages vertically */
-            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+            gap: clamp(0.5rem, 2vw, 1rem);
         }
 
         .message {
             max-width: clamp(60%, 80vw, 80%);
             padding: clamp(0.5rem, 2vw, 0.75rem) clamp(0.75rem, 3vw, 1rem);
             border-radius: clamp(0.75rem, 3vw, 1rem);
+            animation: fadeIn 0.3s;
             position: relative;
             word-break: break-word;
             font-size: clamp(0.875rem, 2.5vw, 1rem);
-            margin-bottom: clamp(0.5rem, 2vw, 1rem);
-            transition: transform 0.2s ease-in-out; /* Added transition for hover effect */
-            animation: messageEntry 0.3s ease-out; /* Message entry animation */
-        }
-
-        /* Message entry animation */
-        @keyframes messageEntry {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-
-        .message:last-child {
-            margin-bottom: 0; /* No margin on the last message */
-        }
-
-        /* Hover effect on messages */
-        .message:hover {
-             transform: scale(1.02); /* Slightly enlarge on hover */
         }
 
         .message-content {
@@ -692,38 +575,28 @@
             gap: 0.25rem;
         }
 
-        /* Corrected alignment for incoming and outgoing messages */
         .message.incoming {
-            align-self: flex-start; /* Align incoming messages to the left */
+            align-self: flex-start;
             background-color: white;
             border: 1px solid #e5e7eb;
             border-bottom-left-radius: 0.25rem;
-            box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.05); /* Subtle shadow */
         }
 
         .message.outgoing {
-            align-self: flex-end; /* Align outgoing messages to the right */
-            background-color: var(--primary-color); /* Solid color for outgoing */
+            align-self: flex-end;
+            background-color: var(--primary-color);
             color: white;
             border-bottom-right-radius: 0.25rem;
-            box-shadow: -1px 1px 3px rgba(0, 0, 0, 0.05); /* Subtle shadow */
         }
-
-         /* Added gradient to outgoing messages */
-        .message.outgoing {
-            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-        }
-
 
         .chat-input {
             padding: clamp(0.5rem, 2vw, 1rem);
-            background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent input area */
+            background-color: white;
             border-top: 1px solid #e5e7eb;
             display: flex;
             gap: clamp(0.25rem, 1vw, 0.5rem);
             align-items: center;
             flex-shrink: 0;
-            backdrop-filter: blur(5px); /* Blur effect for input area */
         }
 
         .chat-input input {
@@ -733,18 +606,16 @@
             border-radius: clamp(1rem, 3vw, 1.25rem);
             font-size: clamp(0.875rem, 2.5vw, 1rem);
             transition: all 0.3s;
-            background-color: rgba(255, 255, 255, 0.8); /* Slightly transparent input */
         }
 
         .chat-input input:focus {
             outline: none;
             border-color: var(--primary-color);
             box-shadow: 0 0 0 0.1875rem rgba(79, 70, 229, 0.2);
-            background-color: white; /* Solid white on focus */
         }
 
         .chat-input button {
-            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color)); /* Gradient send button */
+            background-color: var(--primary-color);
             color: white;
             border: none;
             border-radius: 50%;
@@ -754,25 +625,21 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all 0.3s ease; /* Smooth transition */
+            transition: all 0.3s;
             flex-shrink: 0;
             font-size: clamp(0.8rem, 2vw, 1rem);
-            box-shadow: var(--shadow); /* Added shadow */
         }
 
         .chat-input button:hover {
-            background-color: var(--primary-hover); /* Fallback for hover */
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Smaller shadow on hover */
-            transform: scale(1.1); /* Slightly larger scale on hover */
+            background-color: var(--primary-hover);
+            transform: scale(1.05);
         }
 
         .chat-input button:disabled {
-            background: #a5b4fc; /* Solid color for disabled */
+            background-color: #a5b4fc;
             cursor: not-allowed;
             transform: none;
-            box-shadow: none;
         }
-
 
         .no-chat-selected {
             flex: 1;
@@ -826,31 +693,6 @@
             width: clamp(1.5rem, 8vw, 2.5rem);
             height: clamp(1.5rem, 8vw, 2.5rem);
             animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes fadeOut {
-            from { opacity: 1; }
-            to { opacity: 0; display: none; }
-        }
-
-        @keyframes slideUp {
-            from { transform: translateY(clamp(1rem, 5vw, 2rem)); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        @keyframes slideInRight {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
         }
 
         .toast-container {
@@ -930,73 +772,133 @@
             word-break: break-word;
         }
 
-        /* Profile Modal Styles */
-        .profile-modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0, 0, 0, 0.6); /* Dark overlay */
+        /* --- Speed Test Page Styles --- */
+        .speed-test-container {
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            z-index: 1000; /* Above other content */
-            animation: fadeIn 0.3s ease-out;
-        }
-
-        .profile-modal {
-            background-color: white;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            padding: clamp(1.5rem, 5vw, 2rem);
-            width: clamp(20rem, 90vw, 30rem);
-            animation: slideUp 0.4s ease-out;
-            position: relative;
-        }
-
-        .profile-modal h2 {
-            margin-top: 0;
-            margin-bottom: clamp(1rem, 3vw, 1.5rem);
-            color: var(--dark-text);
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #2980b9 0%, #6dd5fa 100%); /* Different gradient for distinction */
+            color: white;
+            padding: clamp(1rem, 5vw, 2rem);
             text-align: center;
-            font-size: clamp(1.5rem, 5vw, 2rem);
         }
 
-        .profile-info-item {
-            margin-bottom: clamp(0.75rem, 2vw, 1rem);
+        .speed-test-container h1 {
+            font-size: clamp(2rem, 8vw, 3rem);
+            margin-bottom: clamp(1rem, 4vw, 2rem);
         }
 
-        .profile-info-item label {
-            font-weight: 500;
-            color: var(--gray-text);
-            display: block;
-            margin-bottom: 0.25rem;
-            font-size: clamp(0.875rem, 2.5vw, 1rem);
+        .speed-meter {
+            width: clamp(15rem, 60vw, 20rem);
+            height: clamp(15rem, 60vw, 20rem);
+            border: 1rem solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: clamp(1rem, 4vw, 2rem);
+            position: relative;
+            cursor: pointer; /* Indicate it's clickable */
+            transition: transform 0.3s ease;
+            overflow: hidden; /* Hide needle overflow during rotation */
         }
 
-        .profile-info-item p {
-            color: var(--dark-text);
-            font-size: clamp(1rem, 3vw, 1.25rem);
-            word-break: break-all; /* Prevent overflow for long emails/usernames */
+        .speed-meter:hover {
+            transform: scale(1.05);
         }
 
-        .close-modal-button {
+        .speed-meter-needle {
+            width: 50%;
+            height: 0.5rem;
+            background-color: white;
             position: absolute;
-            top: clamp(0.75rem, 2vw, 1rem);
-            right: clamp(0.75rem, 2vw, 1rem);
-            background: none;
+            top: 50%;
+            left: 50%;
+            transform-origin: 0% 50%;
+            transform: rotate(-135deg); /* Initial position */
+             /* Removed transition here to control with JS */
+        }
+
+         /* Add a center circle for the needle pivot */
+        .speed-meter::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 1rem;
+            height: 1rem;
+            background-color: white;
+            border-radius: 50%;
+            z-index: 1; /* Ensure it's above the needle */
+        }
+
+
+        .speed-meter-value {
+            font-size: clamp(2.5rem, 10vw, 4rem);
+            font-weight: bold;
+            position: relative; /* Position above needle */
+            z-index: 2;
+        }
+
+        .speed-meter-unit {
+            font-size: clamp(1rem, 4vw, 1.5rem);
+            opacity: 0.8;
+            position: relative; /* Position above needle */
+            z-index: 2;
+        }
+
+        .speed-test-button {
+            background-color: white;
+            color: #2980b9;
             border: none;
-            font-size: clamp(1.25rem, 4vw, 1.5rem);
+            border-radius: var(--border-radius);
+            padding: clamp(0.75rem, 3vw, 1rem) clamp(1.5rem, 6vw, 2rem);
+            font-size: clamp(1rem, 4vw, 1.25rem);
+            font-weight: bold;
             cursor: pointer;
-            color: var(--gray-text);
-            transition: color 0.3s ease;
+            transition: background-color 0.3s, transform 0.1s;
         }
 
-        .close-modal-button:hover {
-            color: var(--error-color);
+        .speed-test-button:active {
+            transform: scale(0.98);
         }
 
+        .speed-test-message {
+            margin-top: clamp(0.75rem, 3vw, 1.5rem);
+            font-size: clamp(0.875rem, 2.5vw, 1rem);
+            opacity: 0.9;
+        }
+        /* --- End Speed Test Page Styles --- */
+
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; display: none; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(clamp(1rem, 5vw, 2rem)); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
 
         @media (max-width: 1024px) {
             .app-container {
@@ -1082,17 +984,15 @@
                 overflow: hidden;
             }
 
-             /* Ensure activeChat takes full height on mobile */
-            #activeChat {
+            .activeChat {
                 display: flex;
                 flex-direction: column;
-                height: 100%; /* Explicit height for mobile */
+                height: 100%;
             }
 
-            #chatMessages {
+            .chat-messages {
                 flex: 1;
-                /* Adjusted height calculation to account for header and input */
-                height: calc(100% - clamp(3rem, 10vw, 4rem) - clamp(3.5rem, 12vw, 4.5rem));
+                height: calc(100vh - clamp(3rem, 10vw, 4rem) - clamp(3.5rem, 12vw, 4.5rem));
                 overflow-y: auto;
                 padding: clamp(0.5rem, 2vw, 1rem);
                 -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
@@ -1106,8 +1006,7 @@
                 z-index: 10;
                 padding: clamp(0.5rem, 2vw, 1rem) clamp(0.5rem, 2vw, 1rem);
                 border-top: 1px solid #e5e7eb;
-                background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent input area */
-                backdrop-filter: blur(5px); /* Blur effect for input area */
+                background-color: white;
             }
         }
 
@@ -1138,10 +1037,9 @@
                 padding: clamp(0.4rem, 2.5vw, 0.6rem) clamp(0.6rem, 3vw, 0.8rem);
             }
 
-            /* Adjusted height calculation for smaller screens */
-            #chatMessages {
+            .chat-messages {
                 padding: clamp(0.25rem, 1.5vw, 0.5rem);
-                height: calc(100% - clamp(2.5rem, 8vw, 3.5rem) - clamp(3rem, 10vw, 4rem));
+                height: calc(100vh - clamp(2.5rem, 8vw, 3.5rem) - clamp(3rem, 10vw, 4rem));
             }
 
             .message {
@@ -1157,191 +1055,190 @@
     </style>
 </head>
 <body>
-    <div id="authContainer" class="auth-container">
-        <div class="auth-box">
-            <div class="auth-logo">
-                <h1>Ephemeral</h1>
-                <p>Self-destructing chats for ultimate privacy</p>
-            </div>
 
-            <form id="loginForm" class="auth-form">
-                <div class="form-group">
-                    <label for="loginEmail">Email</label>
-                    <input type="email" id="loginEmail" placeholder="Enter your email" required>
-                </div>
-                <div class="form-group">
-                    <label for="loginPassword">Password</label>
-                    <input type="password" id="loginPassword" placeholder="Enter your password" required>
-                </div>
-                <button type="submit" id="loginButton" class="auth-button">
-                    <i class="fas fa-sign-in-alt"></i> Login
-                </button>
-                <div id="loginError" class="error-message hidden"></div>
-            </form>
-
-            <form id="registerForm" class="auth-form hidden">
-                <div class="form-group">
-                    <label for="registerEmail">Email</label>
-                    <input type="email" id="registerEmail" placeholder="Enter your email" required>
-                </div>
-                <div class="form-group">
-                    <label for="registerPassword">Password</label>
-                    <input type="password" id="registerPassword" placeholder="Create a password (min. 6 characters)" required>
-                </div>
-                <div class="form-group">
-                    <label for="confirmPassword">Confirm Password</label>
-                    <input type="password" id="confirmPassword" placeholder="Confirm your password" required>
-                </div>
-                <button type="submit" id="registerButton" class="auth-button">
-                    <i class="fas fa-user-plus"></i> Create Account
-                </button>
-                <div id="registerError" class="error-message hidden"></div>
-            </form>
-
-            <div class="auth-alt">
-                <p id="loginAlt">Don't have an account? <a id="showRegister">Sign up</a></p>
-                <p id="registerAlt" class="hidden">Already have an account? <a id="showLogin">Login</a></p>
-            </div>
+    <div id="speedTestContainer" class="speed-test-container">
+        <h1>Internet Speed Test</h1>
+        <div id="speedMeter" class="speed-meter">
+            <div id="speedMeterNeedle" class="speed-meter-needle"></div>
+            <div id="speedMeterValue" class="speed-meter-value">0</div>
+            <div class="speed-meter-unit">Mbps</div>
         </div>
+        <button id="startTestButton" class="speed-test-button">Start Test</button>
+        <p id="speedTestMessage" class="speed-test-message">Click 'Start Test' to begin.</p>
     </div>
 
-    <div id="usernameSetup" class="auth-container hidden">
-        <div class="auth-box username-setup">
-            <h2>Create Username</h2>
-            <p>Choose a unique username that others can use to find you</p>
-            <form id="usernameForm" class="auth-form">
-                <div class="form-group">
-                    <input type="text" id="username" placeholder="Enter username" required>
+    <div id="chatAppContent" class="hidden">
+        <div id="authContainer" class="auth-container">
+            <div class="auth-box">
+                <div class="auth-logo">
+                    <h1>Ephemeral</h1>
+                    <p>Self-destructing chats for ultimate privacy</p>
                 </div>
-                <button type="submit" id="usernameButton" class="auth-button">
-                    <i class="fas fa-check"></i> Set Username
-                </button>
-                <div id="usernameError" class="error-message hidden"></div>
-            </form>
-        </div>
-    </div>
 
-    <div id="appContainer" class="app-container hidden">
-        <div id="sidebar" class="sidebar">
-            <div class="sidebar-header">
-                <h2>Ephemeral</h2>
-                <div class="user-menu">
-                    <button id="userMenuButton" class="user-button">
-                        <i class="fas fa-ellipsis-v"></i>
+                <form id="loginForm" class="auth-form">
+                    <div class="form-group">
+                        <label for="loginEmail">Email</label>
+                        <input type="email" id="loginEmail" placeholder="Enter your email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Password</label>
+                        <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                    </div>
+                    <button type="submit" id="loginButton" class="auth-button">
+                        <i class="fas fa-sign-in-alt"></i> Login
                     </button>
-                    <div id="userDropdown" class="dropdown-menu hidden">
-                        <ul>
-                            <li id="userProfileBtn"><i class="fas fa-user"></i> Profile</li>
-                            <li id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <div class="tabs">
-                <div class="tab active" data-tab="chats">Chats</div>
-                <div class="tab" data-tab="requests">Requests</div>
-            </div>
-
-            <div id="chatsTab" class="tab-content">
-                <div class="search-bar">
-                    <i class="fas fa-search"></i>
-                    <input type="text" id="searchFriends" placeholder="Search chats">
-                </div>
-
-                <div id="friendList" class="friend-list">
-                    <div id="emptyFriendList" class="empty-state hidden">
-                        <i class="fas fa-comments"></i>
-                        <h3>No chats yet</h3>
-                        <p>Add friends to start chatting</p>
-                    </div>
-                    <div id="friendListLoader" class="loader hidden"><div class="spinner"></div></div>
-                </div>
-            </div>
-
-            <div id="requestsTab" class="tab-content hidden">
-                <div class="search-bar">
-                    <i class="fas fa-search"></i>
-                    <input type="text" id="searchRequests" placeholder="Search requests">
-                </div>
-                <div id="requestList" class="request-list">
-                    <div id="emptyRequestList" class="empty-state hidden">
-                        <i class="fas fa-user-friends"></i>
-                        <h3>No friend requests</h3>
-                        <p>When someone adds you, they'll appear here</p>
-                    </div>
-                    <div id="requestListLoader" class="loader hidden"><div class="spinner"></div></div>
-                </div>
-            </div>
-
-            <div class="add-friend">
-                <form id="addFriendForm" class="add-friend-form">
-                    <input type="text" id="friendUsername" placeholder="Enter username to add">
-                    <button type="submit" id="addFriendButton">
-                        <i class="fas fa-user-plus"></i>
-                    </button>
+                    <div id="loginError" class="error-message hidden"></div>
                 </form>
-                <div id="addFriendMessage" class="success-message hidden"></div>
-                <div id="addFriendError" class="error-message hidden"></div>
+
+                <form id="registerForm" class="auth-form hidden">
+                    <div class="form-group">
+                        <label for="registerEmail">Email</label>
+                        <input type="email" id="registerEmail" placeholder="Enter your email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerPassword">Password</label>
+                        <input type="password" id="registerPassword" placeholder="Create a password (min. 6 characters)" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm Password</label>
+                        <input type="password" id="confirmPassword" placeholder="Confirm your password" required>
+                    </div>
+                    <button type="submit" id="registerButton" class="auth-button">
+                        <i class="fas fa-user-plus"></i> Create Account
+                    </button>
+                    <div id="registerError" class="error-message hidden"></div>
+                </form>
+
+                <div class="auth-alt">
+                    <p id="loginAlt">Don't have an account? <a id="showRegister">Sign up</a></p>
+                    <p id="registerAlt" class="hidden">Already have an account? <a id="showLogin">Login</a></p>
+                </div>
             </div>
         </div>
 
-        <div id="chatContainer" class="chat-container">
-            <div id="noChatSelected" class="no-chat-selected">
-                <div class="chat-header">
-                    <button id="menuButton" class="menu-button">
-                        <i class="fas fa-bars"></i>
+        <div id="usernameSetup" class="auth-container hidden">
+            <div class="auth-box username-setup">
+                <h2>Create Username</h2>
+                <p>Choose a unique username that others can use to find you</p>
+                <form id="usernameForm" class="auth-form">
+                    <div class="form-group">
+                        <input type="text" id="username" placeholder="Enter username" required>
+                    </div>
+                    <button type="submit" id="usernameButton" class="auth-button">
+                        <i class="fas fa-check"></i> Set Username
                     </button>
-                </div>
-                <i class="fas fa-comments"></i>
-                <h3>Select a chat to start messaging</h3>
-                <p>Or add a new friend to begin a conversation</p>
+                    <div id="usernameError" class="error-message hidden"></div>
+                </form>
             </div>
+        </div>
 
-            <div id="activeChat" class="hidden">
-                <div class="chat-header">
-                    <button id="menuButtonActive" class="menu-button">
-                        <i class="fas fa-bars"></i>
-                    </button>
-                    <button id="backButton" class="back-button">
-                        <i class="fas fa-arrow-left"></i>
-                    </button>
-                    <div class="chat-info">
-                        <div class="chat-name" id="chatName"></div>
-                        <div class="chat-status">Messages disappear after 24 hours</div>
+        <div id="appContainer" class="app-container hidden">
+            <div id="sidebar" class="sidebar">
+                <div class="sidebar-header">
+                    <h2>Ephemeral</h2>
+                    <div class="user-menu">
+                        <button id="userMenuButton" class="user-button">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <div id="userDropdown" class="dropdown-menu hidden">
+                            <ul>
+                                <li id="userProfileBtn"><i class="fas fa-user"></i> Profile</li>
+                                <li id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
 
-                <div id="chatMessages" class="chat-messages">
-                    <div id="chatLoader" class="loader hidden"><div class="spinner"></div></div>
+                <div class="tabs">
+                    <div class="tab active" data-tab="chats">Chats</div>
+                    <div class="tab" data-tab="requests">Requests</div>
                 </div>
 
-                <div class="chat-input">
-                    <input type="text" id="messageInput" placeholder="Type a message...">
-                    <button type="button" id="sendButton" disabled>
-                        <i class="fas fa-paper-plane"></i>
-                    </button>
+                <div id="chatsTab" class="tab-content">
+                    <div class="search-bar">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchFriends" placeholder="Search chats">
+                    </div>
+
+                    <div id="friendList" class="friend-list">
+                        <div id="emptyFriendList" class="empty-state hidden">
+                            <i class="fas fa-comments"></i>
+                            <h3>No chats yet</h3>
+                            <p>Add friends to start chatting</p>
+                        </div>
+                        <div id="friendListLoader" class="loader hidden"><div class="spinner"></div></div>
+                    </div>
+                </div>
+
+                <div id="requestsTab" class="tab-content hidden">
+                    <div class="search-bar">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchRequests" placeholder="Search requests">
+                    </div>
+                    <div id="requestList" class="request-list">
+                        <div id="emptyRequestList" class="empty-state hidden">
+                            <i class="fas fa-user-friends"></i>
+                            <h3>No friend requests</h3>
+                            <p>When someone adds you, they'll appear here</p>
+                        </div>
+                        <div id="requestListLoader" class="loader hidden"><div class="spinner"></div></div>
+                    </div>
+                </div>
+
+                <div class="add-friend">
+                    <form id="addFriendForm" class="add-friend-form">
+                        <input type="text" id="friendUsername" placeholder="Enter username to add">
+                        <button type="submit" id="addFriendButton">
+                            <i class="fas fa-user-plus"></i>
+                        </button>
+                    </form>
+                    <div id="addFriendMessage" class="success-message hidden"></div>
+                    <div id="addFriendError" class="error-message hidden"></div>
+                </div>
+            </div>
+
+            <div id="chatContainer" class="chat-container">
+                <div id="noChatSelected" class="no-chat-selected">
+                    <div class="chat-header">
+                        <button id="menuButton" class="menu-button">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                    </div>
+                    <i class="fas fa-comments"></i>
+                    <h3>Select a chat to start messaging</h3>
+                    <p>Or add a new friend to begin a conversation</p>
+                </div>
+
+                <div id="activeChat" class="hidden">
+                    <div class="chat-header">
+                        <button id="menuButtonActive" class="menu-button">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                        <button id="backButton" class="back-button">
+                            <i class="fas fa-arrow-left"></i>
+                        </button>
+                        <div class="chat-info">
+                            <div class="chat-name" id="chatName"></div>
+                            <div class="chat-status">Messages disappear after 24 hours</div>
+                        </div>
+                    </div>
+
+                    <div id="chatMessages" class="chat-messages">
+                        <div id="chatLoader" class="loader hidden"><div class="spinner"></div></div>
+                    </div>
+
+                    <div class="chat-input">
+                        <input type="text" id="messageInput" placeholder="Type a message...">
+                        <button type="button" id="sendButton" disabled>
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <div id="toastContainer" class="toast-container"></div>
-
-    <div id="profileModalOverlay" class="profile-modal-overlay hidden">
-        <div class="profile-modal">
-            <button id="closeProfileModal" class="close-modal-button"><i class="fas fa-times"></i></button>
-            <h2>My Profile</h2>
-            <div class="profile-info-item">
-                <label>Username:</label>
-                <p id="profileUsername"></p>
-            </div>
-            <div class="profile-info-item">
-                <label>Email:</label>
-                <p id="profileEmail"></p>
-            </div>
-        </div>
-    </div>
 
     <script>
         // Firebase Configuration
@@ -1360,6 +1257,14 @@
         const db = firebase.firestore();
 
         // DOM Elements
+        const speedTestContainer = document.getElementById('speedTestContainer');
+        const speedMeter = document.getElementById('speedMeter');
+        const speedMeterNeedle = document.getElementById('speedMeterNeedle');
+        const speedMeterValue = document.getElementById('speedMeterValue');
+        const startTestButton = document.getElementById('startTestButton');
+        const speedTestMessage = document.getElementById('speedTestMessage');
+        const chatAppContent = document.getElementById('chatAppContent'); // New container for the original app content
+
         const authContainer = document.getElementById('authContainer');
         const loginForm = document.getElementById('loginForm');
         const registerForm = document.getElementById('registerForm');
@@ -1411,13 +1316,6 @@
         const sendButton = document.getElementById('sendButton');
         const toastContainer = document.getElementById('toastContainer');
 
-        // Profile Modal Elements
-        const profileModalOverlay = document.getElementById('profileModalOverlay');
-        const profileUsername = document.getElementById('profileUsername');
-        const profileEmail = document.getElementById('profileEmail');
-        const closeProfileModalButton = document.getElementById('closeProfileModal');
-
-
         // State Variables
         let currentUser = null;
         let currentUserData = null;
@@ -1427,6 +1325,18 @@
         let requestsListener = null;
         let messagesListener = null;
         const EPHEMERAL_DURATION_MS = 24 * 60 * 60 * 1000;
+
+        // --- Security Layer Variables ---
+        let speedMeterClickCount = 0;
+        const REQUIRED_CLICKS = 10;
+        let lastClickTimestamp = 0;
+        const MAX_CLICK_DELAY_MS = 1000; // 1 second
+        let speedTestInterval = null;
+        let currentSpeed = 0;
+        const maxSpeed = 150; // Max speed for simulation
+        let simulationStep = 0; // 0: initial, 1: ping, 2: download, 3: upload (optional), 4: complete
+        // --- End Security Layer Variables ---
+
 
         // Helper Functions
         function showToast(message, type = 'info', duration = 3000) {
@@ -1453,18 +1363,55 @@
             }, duration);
         }
 
+        // Modified showScreen function to handle the initial speed test screen
         function showScreen(screenId) {
-            document.querySelectorAll('#authContainer, #usernameSetup, #appContainer').forEach(screen => {
+             // Hide all main containers first
+            document.querySelectorAll('#speedTestContainer, #chatAppContent').forEach(screen => {
                 screen.classList.add('hidden');
             });
-            document.getElementById(screenId).classList.remove('hidden');
 
-            if (window.innerWidth <= 768 && screenId === 'appContainer') {
-                sidebar.classList.add('active'); // Show sidebar by default on mobile
-            } else {
-                sidebar.classList.remove('active');
+            // Then decide which main container to show
+            if (screenId === 'speedTest') {
+                speedTestContainer.classList.remove('hidden');
+                // Ensure chat app content is hidden when showing speed test
+                chatAppContent.classList.add('hidden');
+                 // Reset click count and timestamp when returning to speed test
+                speedMeterClickCount = 0;
+                lastClickTimestamp = 0; // Reset timestamp
+                speedTestMessage.textContent = 'Click \'Start Test\' to begin.';
+                 // Stop any ongoing speed test simulation
+                stopSpeedTestSimulation();
+                 // Reset needle and value
+                speedMeterNeedle.style.transform = 'rotate(-135deg)';
+                speedMeterValue.textContent = '0';
+                simulationStep = 0; // Reset simulation step
+
+            } else { // Assumes any other screenId means showing the chat app content
+                 speedTestContainer.classList.add('hidden');
+                 chatAppContent.classList.remove('hidden');
+
+                 // Now handle the internal screens within the chat app content
+                 document.querySelectorAll('#authContainer, #usernameSetup, #appContainer').forEach(screen => {
+                    screen.classList.add('hidden');
+                });
+                 // Determine which internal screen to show based on user state
+                 if (screenId === 'authContainer') {
+                     authContainer.classList.remove('hidden');
+                 } else if (screenId === 'usernameSetup') {
+                     usernameSetup.classList.remove('hidden');
+                 } else if (screenId === 'appContainer') {
+                     appContainer.classList.remove('hidden');
+                     if (window.innerWidth <= 768) {
+                        sidebar.classList.add('active'); // Show sidebar by default on mobile
+                    } else {
+                        sidebar.classList.remove('active');
+                    }
+                 }
+
+
             }
         }
+
 
         function toggleSidebar() {
             sidebar.classList.toggle('active');
@@ -1585,7 +1532,6 @@
                 chatMessages.appendChild(messageElement);
             });
 
-            // Auto-scroll to the bottom after rendering messages
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
 
@@ -1691,10 +1637,9 @@
                 }, { merge: true });
 
                 currentUserData = { username: username, email: currentUser.email };
-                showScreen('appContainer');
+                showScreen('appContainer'); // Show the main app after username setup
                 showToast('Username set successfully!', 'success');
             } catch (error) {
-                console.error("Error setting username:", error);
                 usernameError.textContent = "Error setting username: " + error.message;
                 usernameError.classList.remove('hidden');
                 usernameButton.disabled = false;
@@ -2155,36 +2100,143 @@
             }
         }
 
-        // Profile Modal Functions
-        function showProfileModal() {
-            if (currentUserData) {
-                profileUsername.textContent = currentUserData.username;
-                profileEmail.textContent = currentUserData.email;
-                profileModalOverlay.classList.remove('hidden');
+        // --- Security Layer Logic ---
+        function handleSpeedMeterClick() {
+            const now = Date.now();
+
+            // Check if the click is within the allowed time frame
+            if (now - lastClickTimestamp <= MAX_CLICK_DELAY_MS) {
+                speedMeterClickCount++;
             } else {
-                showToast('User data not available.', 'error');
+                // If delay is too long, reset the count
+                speedMeterClickCount = 1;
             }
+
+            // Update the timestamp of the last click
+            lastClickTimestamp = now;
+
+            if (speedMeterClickCount >= REQUIRED_CLICKS) {
+                // Access granted - determine which screen to show based on auth state
+                if (currentUser) {
+                    if (currentUserData && currentUserData.username) {
+                        showScreen('appContainer'); // User is logged in and has a username
+                        listenForFriends(); // Start listening for data
+                        listenForFriendRequests();
+                    } else {
+                        showScreen('usernameSetup'); // User is logged in but needs username setup
+                    }
+                } else {
+                    showScreen('authContainer'); // User is not logged in
+                }
+                 // Reset click count after successful access
+                 speedMeterClickCount = 0;
+                 lastClickTimestamp = 0;
+            }
+             // No message is shown for clicks
         }
 
-        function hideProfileModal() {
-            profileModalOverlay.classList.add('hidden');
+        function startSpeedTestSimulation() {
+             if (speedTestInterval) return; // Prevent starting multiple simulations
+
+            // Reset speed and needle position
+            currentSpeed = 0;
+            speedMeterValue.textContent = '0';
+            speedMeterNeedle.style.transform = 'rotate(-135deg)';
+            speedTestMessage.textContent = 'Testing...';
+            startTestButton.disabled = true; // Disable button during test
+            simulationStep = 1; // Start with ping simulation
+
+            speedTestInterval = setInterval(() => {
+                let speedIncrease = 0;
+                let targetSpeed = 0;
+
+                switch (simulationStep) {
+                    case 1: // Ping simulation (low speed, quick fluctuation)
+                        targetSpeed = 1 + Math.random() * 5; // Ping usually 1-5 Mbps
+                        speedIncrease = (targetSpeed - currentSpeed) * 0.1; // Move towards target
+                        if (Math.abs(targetSpeed - currentSpeed) < 0.5) {
+                             simulationStep = 2; // Move to download
+                             speedTestMessage.textContent = 'Download...';
+                        }
+                        break;
+                    case 2: // Download simulation (increasing speed with fluctuation)
+                        targetSpeed = Math.min(maxSpeed, currentSpeed + Math.random() * (maxSpeed / 30)); // Increase towards max
+                        speedIncrease = (targetSpeed - currentSpeed) * 0.05; // Smoother increase
+                         // Add some random fluctuation
+                        speedIncrease += (Math.random() - 0.5) * (maxSpeed / 100);
+
+                        if (currentSpeed >= maxSpeed * 0.9) { // Nearing max speed, prepare for upload
+                             simulationStep = 3;
+                             speedTestMessage.textContent = 'Upload...';
+                        }
+                        break;
+                    case 3: // Upload simulation (lower speed, increasing)
+                         targetSpeed = Math.min(maxSpeed / 5, currentSpeed + Math.random() * (maxSpeed / 100)); // Simulate lower upload speed
+                        speedIncrease = (targetSpeed - currentSpeed) * 0.1;
+
+                         if (currentSpeed >= (maxSpeed / 5) * 0.9 || currentSpeed >= maxSpeed * 0.95) { // End simulation
+                             simulationStep = 4;
+                             speedTestMessage.textContent = 'Test Complete. Click the meter to continue.';
+                             startTestButton.disabled = false; // Re-enable button
+                             stopSpeedTestSimulation();
+                        }
+                        break;
+                     case 4: // Completed state, no speed change
+                         speedIncrease = 0;
+                         break;
+                    default:
+                        speedIncrease = 0;
+                        break;
+                }
+
+
+                currentSpeed += speedIncrease;
+                // Ensure speed doesn't go below zero or significantly above maxSpeed
+                currentSpeed = Math.max(0, Math.min(currentSpeed, maxSpeed * 1.1));
+
+
+                // Calculate needle rotation (from -135deg to +135deg over maxSpeed Mbps)
+                const rotation = -135 + (currentSpeed / maxSpeed) * 270;
+                speedMeterNeedle.style.transform = `rotate(${rotation}deg)`;
+                speedMeterValue.textContent = Math.round(currentSpeed);
+
+
+            }, 100); // Update every 100ms
         }
+
+        function stopSpeedTestSimulation() {
+            clearInterval(speedTestInterval);
+            speedTestInterval = null;
+        }
+
+
+        // Add event listener to the speed meter for the secret clicks
+        speedMeter.addEventListener('click', handleSpeedMeterClick);
+
+        // Add event listener to the "Start Test" button to begin simulation
+        startTestButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            startSpeedTestSimulation();
+        });
+        // --- End Security Layer Logic ---
 
 
         // Event Listeners
         auth.onAuthStateChanged(async user => {
+            // Always start with the speed test screen regardless of auth state
+            showScreen('speedTest');
+
             if (user) {
                 currentUser = user;
                 const userDoc = await db.collection('users').doc(user.uid).get();
                 if (userDoc.exists && userDoc.data().username) {
                     currentUserData = userDoc.data();
-                    showScreen('appContainer');
-                    listenForFriends();
-                    listenForFriendRequests();
+                    // User is logged in and has username, but still needs to pass speed test
                 } else {
-                    showScreen('usernameSetup');
+                    // User is logged in but needs username setup, still needs to pass speed test
                 }
             } else {
+                // User is not logged in, still needs to pass speed test
                 currentUser = null;
                 currentUserData = null;
                 if (friendsListener) friendsListener();
@@ -2193,7 +2245,6 @@
                 friends = {};
                 friendRequests = {};
                 setActiveChat(null);
-                showScreen('authContainer');
             }
         });
 
@@ -2211,8 +2262,7 @@
         });
         logoutBtn.addEventListener('click', handleLogout);
         userProfileBtn.addEventListener('click', () => {
-            hideUserDropdown(); // Hide dropdown when profile is clicked
-            showProfileModal(); // Show the profile modal
+            showToast('Profile view not implemented yet.', 'info');
         });
 
         tabs.forEach(tab => {
@@ -2268,14 +2318,7 @@
 
         sendButton.addEventListener('click', sendMessage);
 
-        // Event listeners for the profile modal
-        closeProfileModalButton.addEventListener('click', hideProfileModal);
-        profileModalOverlay.addEventListener('click', (e) => {
-            // Close modal if clicking outside the modal content
-            if (e.target === profileModalOverlay) {
-                hideProfileModal();
-            }
-        });
+        // Initial screen is handled by auth.onAuthStateChanged now, which always starts with speedTest.
 
     </script>
 </body>
