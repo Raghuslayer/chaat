@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>InternetSpeed</title>
+    <title>Ephemeral Chat</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.2/firebase-app-compat.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.2/firebase-auth-compat.min.js"></script>
@@ -772,109 +772,6 @@
             word-break: break-word;
         }
 
-        /* --- Speed Test Page Styles --- */
-        .speed-test-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #2980b9 0%, #6dd5fa 100%); /* Different gradient for distinction */
-            color: white;
-            padding: clamp(1rem, 5vw, 2rem);
-            text-align: center;
-        }
-
-        .speed-test-container h1 {
-            font-size: clamp(2rem, 8vw, 3rem);
-            margin-bottom: clamp(1rem, 4vw, 2rem);
-        }
-
-        .speed-meter {
-            width: clamp(15rem, 60vw, 20rem);
-            height: clamp(15rem, 60vw, 20rem);
-            border: 1rem solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: clamp(1rem, 4vw, 2rem);
-            position: relative;
-            cursor: pointer; /* Indicate it's clickable */
-            transition: transform 0.3s ease;
-            overflow: hidden; /* Hide needle overflow during rotation */
-        }
-
-        .speed-meter:hover {
-            transform: scale(1.05);
-        }
-
-        .speed-meter-needle {
-            width: 50%;
-            height: 0.5rem;
-            background-color: white;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform-origin: 0% 50%;
-            transform: rotate(-135deg); /* Initial position */
-             /* Removed transition here to control with JS */
-        }
-
-         /* Add a center circle for the needle pivot */
-        .speed-meter::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 1rem;
-            height: 1rem;
-            background-color: white;
-            border-radius: 50%;
-            z-index: 1; /* Ensure it's above the needle */
-        }
-
-
-        .speed-meter-value {
-            font-size: clamp(2.5rem, 10vw, 4rem);
-            font-weight: bold;
-            position: relative; /* Position above needle */
-            z-index: 2;
-        }
-
-        .speed-meter-unit {
-            font-size: clamp(1rem, 4vw, 1.5rem);
-            opacity: 0.8;
-            position: relative; /* Position above needle */
-            z-index: 2;
-        }
-
-        .speed-test-button {
-            background-color: white;
-            color: #2980b9;
-            border: none;
-            border-radius: var(--border-radius);
-            padding: clamp(0.75rem, 3vw, 1rem) clamp(1.5rem, 6vw, 2rem);
-            font-size: clamp(1rem, 4vw, 1.25rem);
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.1s;
-        }
-
-        .speed-test-button:active {
-            transform: scale(0.98);
-        }
-
-        .speed-test-message {
-            margin-top: clamp(0.75rem, 3vw, 1.5rem);
-            font-size: clamp(0.875rem, 2.5vw, 1rem);
-            opacity: 0.9;
-        }
-        /* --- End Speed Test Page Styles --- */
-
-
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
@@ -1055,190 +952,178 @@
     </style>
 </head>
 <body>
+    <div id="authContainer" class="auth-container">
+        <div class="auth-box">
+            <div class="auth-logo">
+                <h1>Ephemeral</h1>
+                <p>Self-destructing chats for ultimate privacy</p>
+            </div>
 
-    <div id="speedTestContainer" class="speed-test-container">
-        <h1>Internet Speed Test</h1>
-        <div id="speedMeter" class="speed-meter">
-            <div id="speedMeterNeedle" class="speed-meter-needle"></div>
-            <div id="speedMeterValue" class="speed-meter-value">0</div>
-            <div class="speed-meter-unit">Mbps</div>
+            <form id="loginForm" class="auth-form">
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                </div>
+                <button type="submit" id="loginButton" class="auth-button">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+                <div id="loginError" class="error-message hidden"></div>
+            </form>
+
+            <form id="registerForm" class="auth-form hidden">
+                <div class="form-group">
+                    <label for="registerEmail">Email</label>
+                    <input type="email" id="registerEmail" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Password</label>
+                    <input type="password" id="registerPassword" placeholder="Create a password (min. 6 characters)" required>
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" placeholder="Confirm your password" required>
+                </div>
+                <button type="submit" id="registerButton" class="auth-button">
+                    <i class="fas fa-user-plus"></i> Create Account
+                </button>
+                <div id="registerError" class="error-message hidden"></div>
+            </form>
+
+            <div class="auth-alt">
+                <p id="loginAlt">Don't have an account? <a id="showRegister">Sign up</a></p>
+                <p id="registerAlt" class="hidden">Already have an account? <a id="showLogin">Login</a></p>
+            </div>
         </div>
-        <button id="startTestButton" class="speed-test-button">Start Test</button>
-        <p id="speedTestMessage" class="speed-test-message">Click 'Start Test' to begin.</p>
     </div>
 
-    <div id="chatAppContent" class="hidden">
-        <div id="authContainer" class="auth-container">
-            <div class="auth-box">
-                <div class="auth-logo">
-                    <h1>Ephemeral</h1>
-                    <p>Realtime Speed test</p>
+    <div id="usernameSetup" class="auth-container hidden">
+        <div class="auth-box username-setup">
+            <h2>Create Username</h2>
+            <p>Choose a unique username that others can use to find you</p>
+            <form id="usernameForm" class="auth-form">
+                <div class="form-group">
+                    <input type="text" id="username" placeholder="Enter username" required>
+                </div>
+                <button type="submit" id="usernameButton" class="auth-button">
+                    <i class="fas fa-check"></i> Set Username
+                </button>
+                <div id="usernameError" class="error-message hidden"></div>
+            </form>
+        </div>
+    </div>
+
+    <div id="appContainer" class="app-container hidden">
+        <div id="sidebar" class="sidebar">
+            <div class="sidebar-header">
+                <h2>Ephemeral</h2>
+                <div class="user-menu">
+                    <button id="userMenuButton" class="user-button">
+                        <i class="fas fa-ellipsis-v"></i>
+                    </button>
+                    <div id="userDropdown" class="dropdown-menu hidden">
+                        <ul>
+                            <li id="userProfileBtn"><i class="fas fa-user"></i> Profile</li>
+                            <li id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tabs">
+                <div class="tab active" data-tab="chats">Chats</div>
+                <div class="tab" data-tab="requests">Requests</div>
+            </div>
+
+            <div id="chatsTab" class="tab-content">
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchFriends" placeholder="Search chats">
                 </div>
 
-                <form id="loginForm" class="auth-form">
-                    <div class="form-group">
-                        <label for="loginEmail">Email</label>
-                        <input type="email" id="loginEmail" placeholder="Enter your email" required>
+                <div id="friendList" class="friend-list">
+                    <div id="emptyFriendList" class="empty-state hidden">
+                        <i class="fas fa-comments"></i>
+                        <h3>No chats yet</h3>
+                        <p>Add friends to start chatting</p>
                     </div>
-                    <div class="form-group">
-                        <label for="loginPassword">Password</label>
-                        <input type="password" id="loginPassword" placeholder="Enter your password" required>
-                    </div>
-                    <button type="submit" id="loginButton" class="auth-button">
-                        <i class="fas fa-sign-in-alt"></i> Login
-                    </button>
-                    <div id="loginError" class="error-message hidden"></div>
-                </form>
-
-                <form id="registerForm" class="auth-form hidden">
-                    <div class="form-group">
-                        <label for="registerEmail">Email</label>
-                        <input type="email" id="registerEmail" placeholder="Enter your email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="registerPassword">Password</label>
-                        <input type="password" id="registerPassword" placeholder="Create a password (min. 6 characters)" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="confirmPassword">Confirm Password</label>
-                        <input type="password" id="confirmPassword" placeholder="Confirm your password" required>
-                    </div>
-                    <button type="submit" id="registerButton" class="auth-button">
-                        <i class="fas fa-user-plus"></i> Create Account
-                    </button>
-                    <div id="registerError" class="error-message hidden"></div>
-                </form>
-
-                <div class="auth-alt">
-                    <p id="loginAlt">Don't have an account? <a id="showRegister">Sign up</a></p>
-                    <p id="registerAlt" class="hidden">Already have an account? <a id="showLogin">Login</a></p>
+                    <div id="friendListLoader" class="loader hidden"><div class="spinner"></div></div>
                 </div>
+            </div>
+
+            <div id="requestsTab" class="tab-content hidden">
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchRequests" placeholder="Search requests">
+                </div>
+                <div id="requestList" class="request-list">
+                    <div id="emptyRequestList" class="empty-state hidden">
+                        <i class="fas fa-user-friends"></i>
+                        <h3>No friend requests</h3>
+                        <p>When someone adds you, they'll appear here</p>
+                    </div>
+                    <div id="requestListLoader" class="loader hidden"><div class="spinner"></div></div>
+                </div>
+            </div>
+
+            <div class="add-friend">
+                <form id="addFriendForm" class="add-friend-form">
+                    <input type="text" id="friendUsername" placeholder="Enter username to add">
+                    <button type="submit" id="addFriendButton">
+                        <i class="fas fa-user-plus"></i>
+                    </button>
+                </form>
+                <div id="addFriendMessage" class="success-message hidden"></div>
+                <div id="addFriendError" class="error-message hidden"></div>
             </div>
         </div>
 
-        <div id="usernameSetup" class="auth-container hidden">
-            <div class="auth-box username-setup">
-                <h2>Create Username</h2>
-                <p>Choose a unique username that others can use to find you</p>
-                <form id="usernameForm" class="auth-form">
-                    <div class="form-group">
-                        <input type="text" id="username" placeholder="Enter username" required>
-                    </div>
-                    <button type="submit" id="usernameButton" class="auth-button">
-                        <i class="fas fa-check"></i> Set Username
+        <div id="chatContainer" class="chat-container">
+            <div id="noChatSelected" class="no-chat-selected">
+                <div class="chat-header">
+                    <button id="menuButton" class="menu-button">
+                        <i class="fas fa-bars"></i>
                     </button>
-                    <div id="usernameError" class="error-message hidden"></div>
-                </form>
-            </div>
-        </div>
-
-        <div id="appContainer" class="app-container hidden">
-            <div id="sidebar" class="sidebar">
-                <div class="sidebar-header">
-                    <h2>Ephemeral</h2>
-                    <div class="user-menu">
-                        <button id="userMenuButton" class="user-button">
-                            <i class="fas fa-ellipsis-v"></i>
-                        </button>
-                        <div id="userDropdown" class="dropdown-menu hidden">
-                            <ul>
-                                <li id="userProfileBtn"><i class="fas fa-user"></i> Profile</li>
-                                <li id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</li>
-                            </ul>
-                        </div>
-                    </div>
                 </div>
-
-                <div class="tabs">
-                    <div class="tab active" data-tab="chats">Chats</div>
-                    <div class="tab" data-tab="requests">Requests</div>
-                </div>
-
-                <div id="chatsTab" class="tab-content">
-                    <div class="search-bar">
-                        <i class="fas fa-search"></i>
-                        <input type="text" id="searchFriends" placeholder="Search chats">
-                    </div>
-
-                    <div id="friendList" class="friend-list">
-                        <div id="emptyFriendList" class="empty-state hidden">
-                            <i class="fas fa-comments"></i>
-                            <h3>No chats yet</h3>
-                            <p>Add friends to start chatting</p>
-                        </div>
-                        <div id="friendListLoader" class="loader hidden"><div class="spinner"></div></div>
-                    </div>
-                </div>
-
-                <div id="requestsTab" class="tab-content hidden">
-                    <div class="search-bar">
-                        <i class="fas fa-search"></i>
-                        <input type="text" id="searchRequests" placeholder="Search requests">
-                    </div>
-                    <div id="requestList" class="request-list">
-                        <div id="emptyRequestList" class="empty-state hidden">
-                            <i class="fas fa-user-friends"></i>
-                            <h3>No friend requests</h3>
-                            <p>When someone adds you, they'll appear here</p>
-                        </div>
-                        <div id="requestListLoader" class="loader hidden"><div class="spinner"></div></div>
-                    </div>
-                </div>
-
-                <div class="add-friend">
-                    <form id="addFriendForm" class="add-friend-form">
-                        <input type="text" id="friendUsername" placeholder="Enter username to add">
-                        <button type="submit" id="addFriendButton">
-                            <i class="fas fa-user-plus"></i>
-                        </button>
-                    </form>
-                    <div id="addFriendMessage" class="success-message hidden"></div>
-                    <div id="addFriendError" class="error-message hidden"></div>
-                </div>
+                <i class="fas fa-comments"></i>
+                <h3>Select a chat to start messaging</h3>
+                <p>Or add a new friend to begin a conversation</p>
             </div>
 
-            <div id="chatContainer" class="chat-container">
-                <div id="noChatSelected" class="no-chat-selected">
-                    <div class="chat-header">
-                        <button id="menuButton" class="menu-button">
-                            <i class="fas fa-bars"></i>
-                        </button>
+            <div id="activeChat" class="hidden">
+                <div class="chat-header">
+                    <button id="menuButtonActive" class="menu-button">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <button id="backButton" class="back-button">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <div class="chat-info">
+                        <div class="chat-name" id="chatName"></div>
+                        <div class="chat-status">Messages disappear after 24 hours</div>
                     </div>
-                    <i class="fas fa-comments"></i>
-                    <h3>Select a chat to start messaging</h3>
-                    <p>Or add a new friend to begin a conversation</p>
                 </div>
 
-                <div id="activeChat" class="hidden">
-                    <div class="chat-header">
-                        <button id="menuButtonActive" class="menu-button">
-                            <i class="fas fa-bars"></i>
-                        </button>
-                        <button id="backButton" class="back-button">
-                            <i class="fas fa-arrow-left"></i>
-                        </button>
-                        <div class="chat-info">
-                            <div class="chat-name" id="chatName"></div>
-                            <div class="chat-status">Realtime chat</div>
-                        </div>
-                    </div>
+                <div id="chatMessages" class="chat-messages">
+                    <div id="chatLoader" class="loader hidden"><div class="spinner"></div></div>
+                </div>
 
-                    <div id="chatMessages" class="chat-messages">
-                        <div id="chatLoader" class="loader hidden"><div class="spinner"></div></div>
-                    </div>
-
-                    <div class="chat-input">
-                        <input type="text" id="messageInput" placeholder="Type a message...">
-                        <button type="button" id="sendButton" disabled>
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
-                    </div>
+                <div class="chat-input">
+                    <input type="text" id="messageInput" placeholder="Type a message...">
+                    <button type="button" id="sendButton" disabled>
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
     <div id="toastContainer" class="toast-container"></div>
+    <!-- Audio element for notification sound -->
+    <audio id="notificationSound" src="https://res.cloudinary.com/dpragculd/video/upload/v1750265901/mixkit-positive-notification-951_ld8uqq.wav" preload="auto"></audio>
 
     <script>
         // Firebase Configuration
@@ -1257,14 +1142,6 @@
         const db = firebase.firestore();
 
         // DOM Elements
-        const speedTestContainer = document.getElementById('speedTestContainer');
-        const speedMeter = document.getElementById('speedMeter');
-        const speedMeterNeedle = document.getElementById('speedMeterNeedle');
-        const speedMeterValue = document.getElementById('speedMeterValue');
-        const startTestButton = document.getElementById('startTestButton');
-        const speedTestMessage = document.getElementById('speedTestMessage');
-        const chatAppContent = document.getElementById('chatAppContent'); // New container for the original app content
-
         const authContainer = document.getElementById('authContainer');
         const loginForm = document.getElementById('loginForm');
         const registerForm = document.getElementById('registerForm');
@@ -1315,6 +1192,8 @@
         const messageInput = document.getElementById('messageInput');
         const sendButton = document.getElementById('sendButton');
         const toastContainer = document.getElementById('toastContainer');
+        // Get the audio element for notification sound
+        const notificationSound = document.getElementById('notificationSound');
 
         // State Variables
         let currentUser = null;
@@ -1325,18 +1204,6 @@
         let requestsListener = null;
         let messagesListener = null;
         const EPHEMERAL_DURATION_MS = 24 * 60 * 60 * 1000;
-
-        // --- Security Layer Variables ---
-        let speedMeterClickCount = 0;
-        const REQUIRED_CLICKS = 10;
-        let lastClickTimestamp = 0;
-        const MAX_CLICK_DELAY_MS = 1000; // 1 second
-        let speedTestInterval = null;
-        let currentSpeed = 0;
-        const maxSpeed = 150; // Max speed for simulation
-        let simulationStep = 0; // 0: initial, 1: ping, 2: download, 3: upload (optional), 4: complete
-        // --- End Security Layer Variables ---
-
 
         // Helper Functions
         function showToast(message, type = 'info', duration = 3000) {
@@ -1363,55 +1230,18 @@
             }, duration);
         }
 
-        // Modified showScreen function to handle the initial speed test screen
         function showScreen(screenId) {
-             // Hide all main containers first
-            document.querySelectorAll('#speedTestContainer, #chatAppContent').forEach(screen => {
+            document.querySelectorAll('#authContainer, #usernameSetup, #appContainer').forEach(screen => {
                 screen.classList.add('hidden');
             });
+            document.getElementById(screenId).classList.remove('hidden');
 
-            // Then decide which main container to show
-            if (screenId === 'speedTest') {
-                speedTestContainer.classList.remove('hidden');
-                // Ensure chat app content is hidden when showing speed test
-                chatAppContent.classList.add('hidden');
-                 // Reset click count and timestamp when returning to speed test
-                speedMeterClickCount = 0;
-                lastClickTimestamp = 0; // Reset timestamp
-                speedTestMessage.textContent = 'Click \'Start Test\' to begin.';
-                 // Stop any ongoing speed test simulation
-                stopSpeedTestSimulation();
-                 // Reset needle and value
-                speedMeterNeedle.style.transform = 'rotate(-135deg)';
-                speedMeterValue.textContent = '0';
-                simulationStep = 0; // Reset simulation step
-
-            } else { // Assumes any other screenId means showing the chat app content
-                 speedTestContainer.classList.add('hidden');
-                 chatAppContent.classList.remove('hidden');
-
-                 // Now handle the internal screens within the chat app content
-                 document.querySelectorAll('#authContainer, #usernameSetup, #appContainer').forEach(screen => {
-                    screen.classList.add('hidden');
-                });
-                 // Determine which internal screen to show based on user state
-                 if (screenId === 'authContainer') {
-                     authContainer.classList.remove('hidden');
-                 } else if (screenId === 'usernameSetup') {
-                     usernameSetup.classList.remove('hidden');
-                 } else if (screenId === 'appContainer') {
-                     appContainer.classList.remove('hidden');
-                     if (window.innerWidth <= 768) {
-                        sidebar.classList.add('active'); // Show sidebar by default on mobile
-                    } else {
-                        sidebar.classList.remove('active');
-                    }
-                 }
-
-
+            if (window.innerWidth <= 768 && screenId === 'appContainer') {
+                sidebar.classList.add('active'); // Show sidebar by default on mobile
+            } else {
+                sidebar.classList.remove('active');
             }
         }
-
 
         function toggleSidebar() {
             sidebar.classList.toggle('active');
@@ -1535,6 +1365,64 @@
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
 
+        // --- Notification and Sound Functions ---
+
+        /**
+         * Requests permission from the user for desktop notifications.
+         * Shows a toast message if permission is denied.
+         */
+        function requestNotificationPermission() {
+            if ('Notification' in window) {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        console.log('Notification permission granted.');
+                    } else if (permission === 'denied') {
+                        console.warn('Notification permission denied.');
+                        showToast('Notification permission denied. You will not receive desktop notifications for new messages.', 'info', 5000);
+                    }
+                });
+            } else {
+                console.warn('Browser does not support desktop notifications.');
+                showToast('Your browser does not support desktop notifications.', 'info', 5000);
+            }
+        }
+
+        /**
+         * Displays a desktop notification and plays a beep sound for new incoming messages.
+         * @param {string} messageText - The content of the new message.
+         * @param {string} senderUsername - The username of the message sender.
+         */
+        function showNewMessageNotification(messageText, senderUsername) {
+            // Check if Notification API is available and permission is granted
+            if ('Notification' in window && Notification.permission === 'granted') {
+                const options = {
+                    body: messageText,
+                    // IMPORTANT: Replace 'path/to/your/app/icon.png' with the actual path to your app's icon.
+                    // This icon will be displayed in the notification.
+                    icon: 'https://placehold.co/48x48/4f46e5/ffffff?text=C', // Placeholder icon
+                    silent: true // Ensures our custom sound plays, not the browser's default
+                };
+
+                // Create the notification with the specified title and options
+                const notification = new Notification(`Internet Speed Check Alert`, options);
+
+                // Optional: Automatically close the notification after a few seconds
+                setTimeout(notification.close.bind(notification), 5000); // Close after 5 seconds
+            }
+
+            // Play the beep sound if the audio element exists
+            if (notificationSound) {
+                notificationSound.play().catch(error => {
+                    console.warn("Audio playback failed:", error);
+                    // This error can occur if the user has not interacted with the page,
+                    // as browsers often block autoplay of media.
+                });
+            }
+        }
+
+        // --- End Notification and Sound Functions ---
+
+
         // Authentication Functions
         async function handleLogin(e) {
             e.preventDefault();
@@ -1637,7 +1525,7 @@
                 }, { merge: true });
 
                 currentUserData = { username: username, email: currentUser.email };
-                showScreen('appContainer'); // Show the main app after username setup
+                showScreen('appContainer');
                 showToast('Username set successfully!', 'success');
             } catch (error) {
                 usernameError.textContent = "Error setting username: " + error.message;
@@ -2011,6 +1899,7 @@
         }
 
         function setActiveChat(chatId, friendUserId, friendUsername) {
+            // Detach previous messages listener if it exists
             if (messagesListener) {
                 messagesListener();
                 messagesListener = null;
@@ -2035,6 +1924,7 @@
                     selectedFriendItem.classList.add('active');
                 }
 
+                // Start listening for messages in the newly active chat
                 listenForMessages(chatId);
                 messageInput.focus();
             } else {
@@ -2060,9 +1950,31 @@
             cleanUpExpiredMessages(chatId).then(() => {
                 const messagesRef = db.collection('chats').doc(chatId).collection('messages').orderBy('timestamp');
 
+                // Detach previous listener if any before attaching a new one
+                if (messagesListener) {
+                    messagesListener();
+                    messagesListener = null;
+                }
+
                 messagesListener = messagesRef.onSnapshot(snapshot => {
                     chatLoader.classList.add('hidden');
                     const messages = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+                    // Check for new incoming messages and trigger notification/sound
+                    snapshot.docChanges().forEach(change => {
+                        if (change.type === 'added') {
+                            const newMessageData = change.doc.data();
+                            // Only notify if the message is incoming and not from the currently active chat
+                            // This prevents self-notifications and notifications for messages in the chat you're actively viewing.
+                            if (newMessageData.senderId !== currentUser.uid && chatId !== activeChatId) {
+                                // Find sender username from the 'friends' state
+                                const senderInfo = Object.values(friends).find(f => f.id === newMessageData.senderId);
+                                const senderUsername = senderInfo ? senderInfo.username : 'Unknown User';
+                                showNewMessageNotification(newMessageData.text, senderUsername);
+                            }
+                        }
+                    });
+
                     renderMessages(messages);
                 }, error => {
                     console.error("Error listening for messages:", error);
@@ -2100,143 +2012,21 @@
             }
         }
 
-        // --- Security Layer Logic ---
-        function handleSpeedMeterClick() {
-            const now = Date.now();
-
-            // Check if the click is within the allowed time frame
-            if (now - lastClickTimestamp <= MAX_CLICK_DELAY_MS) {
-                speedMeterClickCount++;
-            } else {
-                // If delay is too long, reset the count
-                speedMeterClickCount = 1;
-            }
-
-            // Update the timestamp of the last click
-            lastClickTimestamp = now;
-
-            if (speedMeterClickCount >= REQUIRED_CLICKS) {
-                // Access granted - determine which screen to show based on auth state
-                if (currentUser) {
-                    if (currentUserData && currentUserData.username) {
-                        showScreen('appContainer'); // User is logged in and has a username
-                        listenForFriends(); // Start listening for data
-                        listenForFriendRequests();
-                    } else {
-                        showScreen('usernameSetup'); // User is logged in but needs username setup
-                    }
-                } else {
-                    showScreen('authContainer'); // User is not logged in
-                }
-                 // Reset click count after successful access
-                 speedMeterClickCount = 0;
-                 lastClickTimestamp = 0;
-            }
-             // No message is shown for clicks
-        }
-
-        function startSpeedTestSimulation() {
-             if (speedTestInterval) return; // Prevent starting multiple simulations
-
-            // Reset speed and needle position
-            currentSpeed = 0;
-            speedMeterValue.textContent = '0';
-            speedMeterNeedle.style.transform = 'rotate(-135deg)';
-            speedTestMessage.textContent = 'Testing...';
-            startTestButton.disabled = true; // Disable button during test
-            simulationStep = 1; // Start with ping simulation
-
-            speedTestInterval = setInterval(() => {
-                let speedIncrease = 0;
-                let targetSpeed = 0;
-
-                switch (simulationStep) {
-                    case 1: // Ping simulation (low speed, quick fluctuation)
-                        targetSpeed = 1 + Math.random() * 5; // Ping usually 1-5 Mbps
-                        speedIncrease = (targetSpeed - currentSpeed) * 0.1; // Move towards target
-                        if (Math.abs(targetSpeed - currentSpeed) < 0.5) {
-                             simulationStep = 2; // Move to download
-                             speedTestMessage.textContent = 'Download...';
-                        }
-                        break;
-                    case 2: // Download simulation (increasing speed with fluctuation)
-                        targetSpeed = Math.min(maxSpeed, currentSpeed + Math.random() * (maxSpeed / 30)); // Increase towards max
-                        speedIncrease = (targetSpeed - currentSpeed) * 0.05; // Smoother increase
-                         // Add some random fluctuation
-                        speedIncrease += (Math.random() - 0.5) * (maxSpeed / 100);
-
-                        if (currentSpeed >= maxSpeed * 0.9) { // Nearing max speed, prepare for upload
-                             simulationStep = 3;
-                             speedTestMessage.textContent = 'Upload...';
-                        }
-                        break;
-                    case 3: // Upload simulation (lower speed, increasing)
-                         targetSpeed = Math.min(maxSpeed / 5, currentSpeed + Math.random() * (maxSpeed / 100)); // Simulate lower upload speed
-                        speedIncrease = (targetSpeed - currentSpeed) * 0.1;
-
-                         if (currentSpeed >= (maxSpeed / 5) * 0.9 || currentSpeed >= maxSpeed * 0.95) { // End simulation
-                             simulationStep = 4;
-                             speedTestMessage.textContent = 'Test Complete. Click the meter to continue.';
-                             startTestButton.disabled = false; // Re-enable button
-                             stopSpeedTestSimulation();
-                        }
-                        break;
-                     case 4: // Completed state, no speed change
-                         speedIncrease = 0;
-                         break;
-                    default:
-                        speedIncrease = 0;
-                        break;
-                }
-
-
-                currentSpeed += speedIncrease;
-                // Ensure speed doesn't go below zero or significantly above maxSpeed
-                currentSpeed = Math.max(0, Math.min(currentSpeed, maxSpeed * 1.1));
-
-
-                // Calculate needle rotation (from -135deg to +135deg over maxSpeed Mbps)
-                const rotation = -135 + (currentSpeed / maxSpeed) * 270;
-                speedMeterNeedle.style.transform = `rotate(${rotation}deg)`;
-                speedMeterValue.textContent = Math.round(currentSpeed);
-
-
-            }, 100); // Update every 100ms
-        }
-
-        function stopSpeedTestSimulation() {
-            clearInterval(speedTestInterval);
-            speedTestInterval = null;
-        }
-
-
-        // Add event listener to the speed meter for the secret clicks
-        speedMeter.addEventListener('click', handleSpeedMeterClick);
-
-        // Add event listener to the "Start Test" button to begin simulation
-        startTestButton.addEventListener('click', (e) => {
-            e.preventDefault();
-            startSpeedTestSimulation();
-        });
-        // --- End Security Layer Logic ---
-
-
         // Event Listeners
         auth.onAuthStateChanged(async user => {
-            // Always start with the speed test screen regardless of auth state
-            showScreen('speedTest');
-
             if (user) {
                 currentUser = user;
                 const userDoc = await db.collection('users').doc(user.uid).get();
                 if (userDoc.exists && userDoc.data().username) {
                     currentUserData = userDoc.data();
-                    // User is logged in and has username, but still needs to pass speed test
+                    showScreen('appContainer');
+                    listenForFriends();
+                    listenForFriendRequests();
+                    requestNotificationPermission(); // Request permission when user is logged in
                 } else {
-                    // User is logged in but needs username setup, still needs to pass speed test
+                    showScreen('usernameSetup');
                 }
             } else {
-                // User is not logged in, still needs to pass speed test
                 currentUser = null;
                 currentUserData = null;
                 if (friendsListener) friendsListener();
@@ -2245,6 +2035,7 @@
                 friends = {};
                 friendRequests = {};
                 setActiveChat(null);
+                showScreen('authContainer');
             }
         });
 
@@ -2271,7 +2062,7 @@
 
         searchFriendsInput.addEventListener('input', () => {
             const query = searchFriendsInput.value.toLowerCase();
-            const filteredFriends = Object.values(friends).filter(friend =>
+            const filteredFriends = Object.values(friends).filter(friend => 
                 friend.username.toLowerCase().includes(query)
             );
             displayFriends(filteredFriends);
@@ -2279,7 +2070,7 @@
 
         searchRequestsInput.addEventListener('input', () => {
             const query = searchRequestsInput.value.toLowerCase();
-            const filteredRequests = Object.values(friendRequests).filter(req =>
+            const filteredRequests = Object.values(friendRequests).filter(req => 
                 req.senderUsername.toLowerCase().includes(query) && req.status === 'pending'
             );
             displayRequests(filteredRequests);
@@ -2317,9 +2108,6 @@
         });
 
         sendButton.addEventListener('click', sendMessage);
-
-        // Initial screen is handled by auth.onAuthStateChanged now, which always starts with speedTest.
-
     </script>
 </body>
 </html>
