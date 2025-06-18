@@ -855,7 +855,7 @@
             justify-content: center;
             box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
             margin-bottom: 1rem;
-            cursor: default; /* No pointer to indicate no direct click effect */
+            cursor: pointer; /* Change to pointer for direct click */
             user-select: none; /* Prevent text selection on rapid clicks */
             -webkit-user-select: none;
             -moz-user-select: none;
@@ -864,6 +864,7 @@
 
         .speed-meter-analog.disabled {
             opacity: 0.7;
+            cursor: default; /* Change cursor back to default when disabled */
         }
 
         .speed-meter-fill {
@@ -1161,16 +1162,14 @@
     <div id="speedCheckContainer" class="speed-check-container">
         <div class="speed-check-box">
             <h2>Security Check</h2>
-            <p id="speedCheckInstruction">To access Ephemeral Chat, please click the meter below to verify your internet speed.</p>
+            <p id="speedCheckInstruction">To access Ephemeral Chat, please click the analog meter below to verify your internet speed.</p>
             <div class="speed-meter-analog" id="speedMeterAnalog">
                 <div class="speed-meter-fill"></div>
                 <div class="speed-meter-needle"></div>
                 <div class="speed-meter-center"></div>
                 <div class="speed-meter-value-overlay" id="speedValue">0<span class="speed-unit">Mbps</span></div>
             </div>
-            <button id="speedCheckButton" class="speed-check-button">
-                Begin Speed Test
-            </button>
+            <!-- Removed the speedCheckButton as per user request -->
         </div>
     </div>
 
@@ -1367,7 +1366,7 @@
         const speedMeterFill = document.querySelector('.speed-meter-fill');
         const speedMeterNeedle = document.querySelector('.speed-meter-needle');
         const speedMeterAnalog = document.getElementById('speedMeterAnalog');
-        const speedCheckButton = document.getElementById('speedCheckButton');
+        // const speedCheckButton = document.getElementById('speedCheckButton'); // Removed
         const speedCheckInstruction = document.getElementById('speedCheckInstruction');
 
         const authContainer = document.getElementById('authContainer');
@@ -1435,7 +1434,7 @@
         let speedCheckCount = 0;
         const REQUIRED_CLICKS = 10;
         const CLICK_TIMEOUT_MS = 1000; // 1 second
-        let speedTestActive = false; // To control if the speed simulation is running
+        // let speedTestActive = false; // No longer needed
         let clickTimeout = null; // Timer for continuous clicks
         let speedSimulationInterval = null; // Interval for updating simulated speed
         let currentSimulatedSpeed = 0; // Current simulated speed in Mbps
@@ -2368,23 +2367,21 @@
         function resetSpeedTest() {
             stopSpeedSimulation();
             speedCheckCount = 0;
-            speedTestActive = false;
+            // speedTestActive = false; // No longer needed
             currentSimulatedSpeed = 0; // Ensure speed resets to 0
-            speedCheckButton.disabled = false;
-            speedCheckButton.textContent = "Begin Speed Test";
-            speedCheckInstruction.textContent = "To access Ephemeral Chat, please click the meter below to verify your internet speed.";
-            speedMeterAnalog.classList.remove('disabled'); // Meter is enabled visually when test is not running (though clicks only count during active test)
+            // speedCheckButton.disabled = false; // Button removed
+            // speedCheckButton.textContent = "Begin Speed Test"; // Button removed
+            speedCheckInstruction.textContent = "To access Ephemeral Chat, please click the analog meter below to verify your internet speed.";
+            speedMeterAnalog.classList.remove('disabled'); 
             updateMeterVisuals(); // Reset meter visuals to 0
             if (clickTimeout) clearTimeout(clickTimeout);
             clickTimeout = null;
         }
 
         function handleSpeedMeterClick() {
-            if (!speedTestActive) {
-                // If test is not active, clicking the meter does nothing.
-                // The test can only be started by clicking the "Begin Speed Test" button.
-                return; 
-            }
+            // Speed test is initiated by clicking the meter
+            // No need for `speedTestActive` flag check here as per new request
+            startSpeedSimulation(); // Start speed simulation immediately on click
 
             if (speedCheckCount < REQUIRED_CLICKS) { 
                 speedCheckCount++;
@@ -2399,10 +2396,10 @@
 
                 // If required clicks met, transition to next screen
                 if (speedCheckCount >= REQUIRED_CLICKS) {
-                    speedTestActive = false; // Deactivate meter clicks
+                    // speedTestActive = false; // No longer needed
                     speedMeterAnalog.classList.add('disabled'); // Visually disable meter (no hover/pointer)
-                    speedCheckButton.disabled = true;
-                    speedCheckButton.textContent = "Accessing Chat...";
+                    // speedCheckButton.disabled = true; // Button removed
+                    // speedCheckButton.textContent = "Accessing Chat..."; // Button removed
                     speedCheckInstruction.textContent = "Speed check passed. Loading chat...";
                     stopSpeedSimulation(); // Stop speed simulation when test is complete
                     if (clickTimeout) clearTimeout(clickTimeout);
@@ -2428,23 +2425,7 @@
             }
         }
         
-        function handleInitialSpeedCheckButtonClick() {
-            if (!speedTestActive) {
-                speedTestActive = true;
-                speedCheckButton.disabled = true; // Disable button after first click
-                speedCheckButton.textContent = "Testing..."; // Indicate test in progress
-                speedCheckInstruction.textContent = `Click the meter ${REQUIRED_CLICKS} times to continue!`; // Instructions for continuous clicking
-                speedMeterAnalog.classList.remove('disabled'); // Ensure meter is visually interactive for clicks (though no cursor change)
-                startSpeedSimulation(); // Start the continuous speed updates
-                
-                // Initialize the continuous click timeout
-                if (clickTimeout) clearTimeout(clickTimeout);
-                clickTimeout = setTimeout(() => {
-                    showToast("Speed check failed. Please click continuously.", "error");
-                    resetSpeedTest();
-                }, CLICK_TIMEOUT_MS);
-            }
-        }
+        // Removed handleInitialSpeedCheckButtonClick as button is removed
 
         // --- Initial Screen Load ---
         // Always start with the speed check container
@@ -2544,7 +2525,7 @@
         sendButton.addEventListener('click', sendMessage);
 
         // Speed Check Event Listeners
-        speedCheckButton.addEventListener('click', handleInitialSpeedCheckButtonClick);
+        // speedCheckButton.addEventListener('click', handleInitialSpeedCheckButtonClick); // Removed
         speedMeterAnalog.addEventListener('click', handleSpeedMeterClick);
     </script>
 </body>
