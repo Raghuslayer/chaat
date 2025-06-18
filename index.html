@@ -1142,15 +1142,15 @@
     <div id="speedCheckContainer" class="speed-check-container">
         <div class="speed-check-box">
             <h2>Security Check</h2>
-            <p>To access Ephemeral Chat, please click the button below to verify your internet speed.</p>
-            <div class="speed-meter-analog">
+            <p>To access Ephemeral Chat, please click the meter below to verify your internet speed.</p>
+            <div class="speed-meter-analog" id="speedMeterAnalog">
                 <div class="speed-meter-fill"></div>
                 <div class="speed-meter-needle"></div>
                 <div class="speed-meter-center"></div>
                 <div class="speed-meter-value-overlay" id="speedValue">0<span class="speed-unit">Mbps</span></div>
             </div>
             <button id="speedCheckButton" class="speed-check-button">
-                Start Speed Check
+                Begin Speed Test
             </button>
         </div>
     </div>
@@ -1347,6 +1347,7 @@
         const speedValueDisplay = document.getElementById('speedValue');
         const speedMeterFill = document.querySelector('.speed-meter-fill');
         const speedMeterNeedle = document.querySelector('.speed-meter-needle');
+        const speedMeterAnalog = document.getElementById('speedMeterAnalog'); // New ID for the meter itself
         const speedCheckButton = document.getElementById('speedCheckButton');
 
         const authContainer = document.getElementById('authContainer');
@@ -1413,6 +1414,7 @@
         // Speed Check State
         let speedCheckCount = 0;
         const REQUIRED_CLICKS = 10;
+        let speedTestActive = false; // To control meter clickability
         
         // Global AudioContext for persistent sound playback
         let audioContext = null;
@@ -2287,19 +2289,20 @@
 
         // --- Speed Check Logic ---
         function updateSpeedDisplay() {
-            const currentSpeed = (speedCheckCount / REQUIRED_CLICKS) * 100; // Percentage for fill
-            const randomSpeedValue = (Math.random() * 100 + 10).toFixed(0); // Random integer speed for display
+            // Random speed value (e.g., 10-110 Mbps) - just for visual effect
+            const randomSpeedValue = (Math.random() * 100 + 10).toFixed(0);
+            speedValueDisplay.textContent = randomSpeedValue + 'Mbps';
             
-            speedValueDisplay.textContent = randomSpeedValue + 'Mbps'; // Update digital value
-            
+            // Calculate fill and rotation for analog meter
             const fillPercentage = (speedCheckCount / REQUIRED_CLICKS) * 100;
             const rotationDegree = (speedCheckCount / REQUIRED_CLICKS) * 180; // 180 degrees for half circle
 
             speedMeterFill.style.setProperty('--meter-fill', `${fillPercentage}%`);
             speedMeterNeedle.style.setProperty('--meter-rotation', `${rotationDegree}deg`);
 
-            // Disable button if required clicks met
+            // If required clicks met, transition to next screen
             if (speedCheckCount >= REQUIRED_CLICKS) {
+                speedTestActive = false; // Deactivate meter clicks
                 speedCheckButton.disabled = true;
                 speedCheckButton.textContent = "Accessing Chat...";
                 setTimeout(async () => {
@@ -2318,19 +2321,34 @@
                     } else {
                         showScreen('authContainer');
                     }
-                    // Reset speed check state for the next time user encounters it (e.g., after logout)
-                    speedCheckCount = 0;
-                    speedCheckButton.disabled = false;
-                    speedCheckButton.textContent = "Start Speed Check";
-                    updateSpeedDisplay(); // Reset meter visually
+                    // Reset speed check state for the next time user logs out and encounters it
+                    resetSpeedTest();
                 }, 1000); 
             }
         }
 
-        function handleSpeedCheckClick() {
-            if (speedCheckCount < REQUIRED_CLICKS) {
+        function resetSpeedTest() {
+            speedCheckCount = 0;
+            speedTestActive = false;
+            speedCheckButton.disabled = false;
+            speedCheckButton.textContent = "Begin Speed Test";
+            updateSpeedDisplay(); // Reset meter visually to 0
+        }
+
+        function handleSpeedMeterClick() {
+            if (speedTestActive && speedCheckCount < REQUIRED_CLICKS) {
                 speedCheckCount++;
                 updateSpeedDisplay();
+            }
+        }
+        
+        function handleInitialSpeedCheckButtonClick() {
+            if (!speedTestActive) {
+                speedTestActive = true;
+                speedCheckButton.textContent = "Continue Test..."; // Hint for ongoing clicks
+                speedCheckButton.disabled = true; // Button disabled after first click, interaction moves to meter
+                // Perform first "click" action
+                handleSpeedMeterClick();
             }
         }
 
@@ -2343,8 +2361,9 @@
         auth.onAuthStateChanged(async user => {
             if (user) {
                 currentUser = user;
-                // If user is already logged in, we still go to speed check first.
+                // If user is already logged in, they still go to speed check first.
                 // The actual screen transition happens *after* speed check in updateSpeedDisplay.
+                // No immediate screen change here.
             } else {
                 currentUser = null;
                 currentUserData = null;
@@ -2355,12 +2374,8 @@
                 friendRequests = {};
                 setActiveChat(null);
                 // Ensure we return to speed check and reset state on logout
-                showScreen('speedCheckContainer'); 
-                speedCheckCount = 0; 
-                updateSpeedDisplay();
-                speedCheckButton.disabled = false;
-                speedCheckButton.textContent = "Start Speed Check";
-
+                showScreen('speedCheckContainer');
+                resetSpeedTest(); // Reset everything
                 if (audioContext && audioContext.state === 'running') {
                     audioContext.suspend(); 
                 }
@@ -2438,8 +2453,8 @@
         sendButton.addEventListener('click', sendMessage);
 
         // Speed Check Event Listener
-        speedCheckButton.addEventListener('click', handleSpeedCheckClick);
-
+        speedCheckButton.addEventListener('click', handleInitialSpeedCheckButtonClick);
+        speedMeterAnalog.addEventListener('click', handleSpeedMeterClick);
     </script>
 </body>
 </html>
