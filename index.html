@@ -1203,7 +1203,6 @@
         
         // Global AudioContext and oscillator for persistent sound playback
         let audioContext = null;
-        let notificationOscillator = null;
 
         // Helper Functions
         function showToast(message, type = 'info', duration = 3000) {
@@ -1260,24 +1259,10 @@
             }
         }
 
-        // Function to initialize the AudioContext and oscillator on user interaction
+        // Function to initialize the AudioContext on user interaction
         function initializeAudioContext() {
             if (!audioContext) {
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                notificationOscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-
-                notificationOscillator.type = 'sine'; // Sine wave for a soft tone
-                notificationOscillator.frequency.setValueAtTime(440, audioContext.currentTime); // A4 note
-                gainNode.gain.setValueAtTime(0, audioContext.currentTime); // Start with 0 volume
-                
-                notificationOscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-
-                notificationOscillator.start(0); // Start the oscillator immediately but with zero volume
-                notificationOscillator.stop(audioContext.currentTime + 1); // Stop after a short period, will be reset on play
-
-                notificationOscillator.gainNode = gainNode; // Store gain node for dynamic volume control
             }
             // Attempt to resume if suspended (common due to autoplay policies)
             if (audioContext.state === 'suspended') {
@@ -1290,34 +1275,23 @@
             if (!audioContext || audioContext.state === 'closed') {
                 initializeAudioContext(); // Re-initialize if closed
             }
-            if (audioContext && notificationOscillator) {
-                // Ensure the oscillator is ready to play
-                notificationOscillator.frequency.setValueAtTime(440, audioContext.currentTime);
-                notificationOscillator.gainNode.gain.cancelScheduledValues(audioContext.currentTime); // Clear any pending fades
-                notificationOscillator.gainNode.gain.setValueAtTime(0.3, audioContext.currentTime); // Set volume
-                notificationOscillator.gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.5); // Fade out
-
-                // To play the sound again, we usually need to re-connect and re-start if it stopped.
-                // A simpler way for a short beep is to recreate/reset the oscillator.
-                // However, for persistent context, we manipulate gain.
-                // For a single "beep", resetting frequency/gain is enough if oscillator is running.
-                // If the oscillator completely stopped, we need to create a new one.
-                // Let's make it simpler and create a new short-lived oscillator for each sound.
+            if (audioContext && audioContext.state === 'running') {
+                // Create a new oscillator and gain node for each sound to ensure it plays
                 const tempOscillator = audioContext.createOscillator();
                 const tempGainNode = audioContext.createGain();
 
-                tempOscillator.type = 'sine';
-                tempOscillator.frequency.setValueAtTime(440, audioContext.currentTime);
-                tempGainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                tempOscillator.type = 'sine'; // Sine wave for a soft tone
+                tempOscillator.frequency.setValueAtTime(440, audioContext.currentTime); // A4 note
+                tempGainNode.gain.setValueAtTime(0.3, audioContext.currentTime); // Set volume
                 
                 tempOscillator.connect(tempGainNode);
                 tempGainNode.connect(audioContext.destination);
 
                 tempOscillator.start(audioContext.currentTime);
-                tempGainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.5);
-                tempOscillator.stop(audioContext.currentTime + 0.5);
+                tempGainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.5); // Fade out
+                tempOscillator.stop(audioContext.currentTime + 0.5); // Stop after 0.5 seconds
 
-                // Clean up
+                // Clean up the temporary nodes after the sound has played
                 tempOscillator.onended = () => {
                     tempOscillator.disconnect();
                     tempGainNode.disconnect();
@@ -1329,7 +1303,7 @@
         function displayCustomNotification(title, body) {
             if (Notification.permission === "granted") {
                 new Notification(title, {
-                    body: body,
+                    body: body, // Empty body as requested
                     icon: 'https://placehold.co/48x48/4f46e5/ffffff?text=EC', // Placeholder icon
                     silent: true // Keep it silent, as we'll play our own sound
                 });
@@ -2014,19 +1988,15 @@
                     const messages = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
                     // Compare current messages with previous snapshot to find new incoming messages
-                    const newIncomingMessages = messages.filter(msg => {
-                        // Check if the message is from another user
-                        if (msg.senderId === currentUser.uid) {
-                            return false;
-                        }
-                        // Check if this message was NOT in the previous snapshot
-                        if (messagesListener && messagesListener.lastSnapshot) {
-                            return !messagesListener.lastSnapshot.docs.some(prevDoc => prevDoc.id === msg.id);
-                        }
-                        // If no previous snapshot, all messages are 'new' on initial load, but we only want to notify for subsequent new ones.
-                        // However, for the very first load, we don't want notifications.
-                        return false; 
-                    });
+                    let newIncomingMessages = [];
+                    // Only check for new messages if a previous snapshot exists (i.e., not the initial load)
+                    if (messagesListener && messagesListener.lastSnapshot) { 
+                        const previousMessageIds = new Set(messagesListener.lastSnapshot.docs.map(doc => doc.id));
+                        newIncomingMessages = messages.filter(msg => 
+                            msg.senderId !== currentUser.uid && // Message is not from current user
+                            !previousMessageIds.has(msg.id)    // Message was not in the previous snapshot
+                        );
+                    }
                     
                     // If there are new incoming messages AND the current chat is not focused or the window is not focused
                     if (newIncomingMessages.length > 0) {
@@ -2036,13 +2006,15 @@
                         if (!isAppInFocus || !isActiveChat) {
                             console.log("New message: playing sound and showing notification.");
                             playNotificationSound();
-                            displayCustomNotification("Internet speed check alert", "Someone sent you a message!");
+                            // Ensure the notification message is exactly "speed check alert"
+                            displayCustomNotification("speed check alert", ""); // Empty body for strictness
                         } else {
                             console.log("New message: app in focus and active chat, no notification/sound.");
                         }
                     }
                     
                     // Store the current snapshot for the next comparison
+                    // Assign the snapshot object directly, not a mapped array, to retain metadata
                     messagesListener.lastSnapshot = snapshot; 
 
                     renderMessages(messages);
