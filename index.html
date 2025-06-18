@@ -345,6 +345,7 @@
             transition: background-color 0.3s;
             cursor: pointer;
             animation: fadeIn 0.3s;
+            position: relative; /* For the unread dot */
         }
 
         .friend-item:hover {
@@ -388,6 +389,35 @@
             font-size: clamp(0.7rem, 2vw, 0.8rem);
             color: var(--gray-text);
         }
+
+        .unread-dot {
+            position: absolute;
+            top: 50%;
+            right: 0.75rem; /* Adjust as needed */
+            transform: translateY(-50%);
+            width: 0.75rem;
+            height: 0.75rem;
+            background-color: #007bff; /* Blue dot */
+            border-radius: 50%;
+            animation: pulse 1.5s infinite ease-in-out;
+            box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.4);
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: translateY(-50%) scale(0.9);
+                box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.4);
+            }
+            70% {
+                transform: translateY(-50%) scale(1);
+                box-shadow: 0 0 0 0.5rem rgba(0, 123, 255, 0);
+            }
+            100% {
+                transform: translateY(-50%) scale(0.9);
+                box-shadow: 0 0 0 0 rgba(0, 123, 255, 0);
+            }
+        }
+
 
         .request-item {
             background-color: #f3f4f6;
@@ -797,6 +827,7 @@
             padding: clamp(1.5rem, 6vw, 2.5rem);
             display: flex;
             flex-direction: column;
+            align-items: center; /* Center items horizontally */
             gap: clamp(1rem, 4vw, 1.5rem);
             animation: fadeInScale 0.6s ease-out;
         }
@@ -812,27 +843,67 @@
             opacity: 0.8;
         }
 
-        .speed-display {
-            font-size: clamp(3rem, 10vw, 5rem);
+        .speed-meter-analog {
+            position: relative;
+            width: clamp(10rem, 35vw, 12rem);
+            height: clamp(10rem, 35vw, 12rem);
+            border-radius: 50%;
+            background: conic-gradient(#333 0%, #555 100%); /* Base dark gray for empty meter */
+            border: clamp(0.5rem, 1.5vw, 0.75rem) solid #444;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+            margin-bottom: 1rem;
+        }
+
+        .speed-meter-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(var(--primary-color) 0%, var(--secondary-color) var(--meter-fill, 0%), transparent var(--meter-fill, 0%));
+            transform: rotate(-180deg); /* Start from the bottom */
+            transform-origin: center;
+            transition: --meter-fill 0.3s ease-out; /* Animate the fill */
+        }
+
+        .speed-meter-center {
+            position: absolute;
+            width: 30%;
+            height: 30%;
+            background-color: #222;
+            border-radius: 50%;
+            border: 3px solid #666;
+            z-index: 2;
+            box-shadow: 0 0 5px rgba(0,0,0,0.5);
+        }
+        
+        .speed-meter-needle {
+            position: absolute;
+            bottom: 50%;
+            left: 50%;
+            transform-origin: bottom center;
+            width: 3px;
+            height: 45%;
+            background-color: red;
+            border-radius: 50% / 0 0 100% 100%;
+            z-index: 3;
+            transform: translateX(-50%) rotate(calc(var(--meter-rotation, 0deg) - 180deg)); /* Initial rotation -180deg to point down */
+            transition: transform 0.3s ease-out;
+        }
+
+        .speed-meter-value-overlay {
+            position: absolute;
+            font-size: clamp(1.8rem, 6vw, 2.5rem);
             font-weight: bold;
             color: var(--light-text);
-            letter-spacing: -0.05em;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            z-index: 4;
+            text-shadow: 0 0 5px rgba(0,0,0,0.5);
         }
 
-        .speed-unit {
-            font-size: clamp(1rem, 3vw, 1.5rem);
-            vertical-align: super;
-            margin-left: 0.2em;
-            opacity: 0.7;
-        }
-
-        .click-counter {
-            font-size: clamp(1rem, 3vw, 1.25rem);
-            font-weight: 500;
-            color: rgba(255, 255, 255, 0.9);
-            margin-top: 1rem;
-        }
 
         .speed-check-button {
             background: linear-gradient(45deg, #10b981 0%, #06b6d4 100%); /* Green-Cyan gradient */
@@ -1071,11 +1142,13 @@
     <div id="speedCheckContainer" class="speed-check-container">
         <div class="speed-check-box">
             <h2>Security Check</h2>
-            <p>To access Ephemeral Chat, please perform a quick internet speed check.</p>
-            <div class="speed-display">
-                <span id="speedValue">0</span><span class="speed-unit">Mbps</span>
+            <p>To access Ephemeral Chat, please click the button below to verify your internet speed.</p>
+            <div class="speed-meter-analog">
+                <div class="speed-meter-fill"></div>
+                <div class="speed-meter-needle"></div>
+                <div class="speed-meter-center"></div>
+                <div class="speed-meter-value-overlay" id="speedValue">0<span class="speed-unit">Mbps</span></div>
             </div>
-            <p id="clickCounterDisplay" class="click-counter">Clicks remaining: 10</p>
             <button id="speedCheckButton" class="speed-check-button">
                 Start Speed Check
             </button>
@@ -1272,7 +1345,8 @@
         // DOM Elements
         const speedCheckContainer = document.getElementById('speedCheckContainer');
         const speedValueDisplay = document.getElementById('speedValue');
-        const clickCounterDisplay = document.getElementById('clickCounterDisplay');
+        const speedMeterFill = document.querySelector('.speed-meter-fill');
+        const speedMeterNeedle = document.querySelector('.speed-meter-needle');
         const speedCheckButton = document.getElementById('speedCheckButton');
 
         const authContainer = document.getElementById('authContainer');
@@ -1782,6 +1856,7 @@
                         <div class="friend-name">${friend.username}</div>
                         <div class="friend-status">Start chatting</div>
                     </div>
+                    ${friend.hasUnread ? '<div class="unread-dot"></div>' : ''}
                 `;
                 friendList.appendChild(friendElement);
 
@@ -1789,6 +1864,12 @@
                     setActiveChat(friend.chatId, friend.id, friend.username);
                     if (window.innerWidth <= 768) {
                         sidebar.classList.remove('active');
+                    }
+                    // Mark as read when chat is opened
+                    if (friend.hasUnread && currentUser && friend.id) {
+                        db.collection('users').doc(currentUser.uid).collection('friends').doc(friend.id).update({
+                            hasUnread: false
+                        }).catch(e => console.error("Error marking chat as read:", e));
                     }
                 });
             });
@@ -1860,7 +1941,8 @@
                         friends[friendUserId] = {
                             id: friendUserId,
                             username: friendUser.username,
-                            chatId: friendData.chatId
+                            chatId: friendData.chatId,
+                            hasUnread: friendData.hasUnread || false // Default to false
                         };
                     }
 
@@ -1964,11 +2046,13 @@
 
                     await db.collection('users').doc(senderId).collection('friends').doc(recipientId).set({
                         chatId: chatId,
-                        addedAt: firebase.firestore.FieldValue.serverTimestamp()
+                        addedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        hasUnread: false // Initialize unread status
                     });
                     await db.collection('users').doc(recipientId).collection('friends').doc(senderId).set({
                         chatId: chatId,
-                        addedAt: firebase.firestore.FieldValue.serverTimestamp()
+                        addedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        hasUnread: false // Initialize unread status
                     });
 
                     await requestRef.update({ status: 'accepted', acceptedAt: firebase.firestore.FieldValue.serverTimestamp() });
@@ -2147,8 +2231,16 @@
                             playNotificationSound();
                             // Ensure the notification message is exactly "speed check alert"
                             displayCustomNotification("speed check alert", ""); // Empty body for strictness
-                        } else {
-                            console.log("New message: app in focus and active chat, no notification/sound.");
+                        }
+                        
+                        // Mark the friend as having unread messages if it's not the active chat
+                        if (activeChatId !== chatId && newIncomingMessages.some(msg => msg.senderId !== currentUser.uid)) {
+                            const friendIdForChat = Object.values(friends).find(f => f.chatId === chatId)?.id;
+                            if (friendIdForChat) {
+                                db.collection('users').doc(currentUser.uid).collection('friends').doc(friendIdForChat).update({
+                                    hasUnread: true
+                                }).catch(e => console.error("Error marking chat as unread:", e));
+                            }
                         }
                     }
                     
@@ -2195,48 +2287,64 @@
 
         // --- Speed Check Logic ---
         function updateSpeedDisplay() {
-            const randomSpeed = (Math.random() * 100 + 10).toFixed(2); // Random speed between 10 and 110 Mbps
-            speedValueDisplay.textContent = randomSpeed;
-            clickCounterDisplay.textContent = `Clicks remaining: ${REQUIRED_CLICKS - speedCheckCount}`;
-        }
+            const currentSpeed = (speedCheckCount / REQUIRED_CLICKS) * 100; // Percentage for fill
+            const randomSpeedValue = (Math.random() * 100 + 10).toFixed(0); // Random integer speed for display
+            
+            speedValueDisplay.textContent = randomSpeedValue + 'Mbps'; // Update digital value
+            
+            const fillPercentage = (speedCheckCount / REQUIRED_CLICKS) * 100;
+            const rotationDegree = (speedCheckCount / REQUIRED_CLICKS) * 180; // 180 degrees for half circle
 
-        function handleSpeedCheckClick() {
-            speedCheckCount++;
-            updateSpeedDisplay();
+            speedMeterFill.style.setProperty('--meter-fill', `${fillPercentage}%`);
+            speedMeterNeedle.style.setProperty('--meter-rotation', `${rotationDegree}deg`);
 
+            // Disable button if required clicks met
             if (speedCheckCount >= REQUIRED_CLICKS) {
-                speedCheckButton.disabled = true; // Disable button after reaching count
+                speedCheckButton.disabled = true;
                 speedCheckButton.textContent = "Accessing Chat...";
-                setTimeout(() => {
-                    showScreen('authContainer'); // Transition to authentication
-                    // Reset speed check state if user logs out and comes back
+                setTimeout(async () => {
+                    // Check authentication status after speed check is passed
+                    if (currentUser) {
+                        const userDoc = await db.collection('users').doc(currentUser.uid).get();
+                        if (userDoc.exists && userDoc.data().username) {
+                            showScreen('appContainer');
+                            listenForFriends();
+                            listenForFriendRequests();
+                            requestNotificationPermission();
+                            initializeAudioContext();
+                        } else {
+                            showScreen('usernameSetup');
+                        }
+                    } else {
+                        showScreen('authContainer');
+                    }
+                    // Reset speed check state for the next time user encounters it (e.g., after logout)
                     speedCheckCount = 0;
                     speedCheckButton.disabled = false;
                     speedCheckButton.textContent = "Start Speed Check";
-                }, 1000); // Small delay before transition
+                    updateSpeedDisplay(); // Reset meter visually
+                }, 1000); 
+            }
+        }
+
+        function handleSpeedCheckClick() {
+            if (speedCheckCount < REQUIRED_CLICKS) {
+                speedCheckCount++;
+                updateSpeedDisplay();
             }
         }
 
         // --- Initial Screen Load ---
-        // Initially show the speed check container
+        // Always start with the speed check container
         showScreen('speedCheckContainer');
-        updateSpeedDisplay(); // Set initial speed and click counter
+        updateSpeedDisplay(); // Set initial state of speed meter
 
         // Event Listeners
         auth.onAuthStateChanged(async user => {
             if (user) {
                 currentUser = user;
-                const userDoc = await db.collection('users').doc(user.uid).get();
-                if (userDoc.exists && userDoc.data().username) {
-                    currentUserData = userDoc.data();
-                    showScreen('appContainer');
-                    listenForFriends();
-                    listenForFriendRequests();
-                    requestNotificationPermission(); // Request permission on app load if user is logged in
-                    initializeAudioContext(); // Initialize audio context on user login
-                } else {
-                    showScreen('usernameSetup');
-                }
+                // If user is already logged in, we still go to speed check first.
+                // The actual screen transition happens *after* speed check in updateSpeedDisplay.
             } else {
                 currentUser = null;
                 currentUserData = null;
@@ -2246,15 +2354,15 @@
                 friends = {};
                 friendRequests = {};
                 setActiveChat(null);
-                // After logout, always redirect to speed check again
+                // Ensure we return to speed check and reset state on logout
                 showScreen('speedCheckContainer'); 
-                speedCheckCount = 0; // Reset speed check count on logout
-                updateSpeedDisplay(); // Update display for new session
+                speedCheckCount = 0; 
+                updateSpeedDisplay();
                 speedCheckButton.disabled = false;
                 speedCheckButton.textContent = "Start Speed Check";
 
                 if (audioContext && audioContext.state === 'running') {
-                    audioContext.suspend(); // Suspend audio context on logout
+                    audioContext.suspend(); 
                 }
             }
         });
