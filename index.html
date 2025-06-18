@@ -638,7 +638,6 @@
         .chat-input button:disabled {
             background-color: #a5b4fc;
             cursor: not-allowed;
-            transform: none;
         }
 
         .no-chat-selected {
@@ -1027,6 +1026,8 @@
                     <div id="userDropdown" class="dropdown-menu hidden">
                         <ul>
                             <li id="userProfileBtn"><i class="fas fa-user"></i> Profile</li>
+                            <li id="enableNotificationsBtn"><i class="fas fa-bell"></i> Enable Notifications</li>
+                            <li id="testNotificationSoundBtn"><i class="fas fa-volume-up"></i> Test Notification Sound</li>
                             <li id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</li>
                         </ul>
                     </div>
@@ -1163,6 +1164,8 @@
         const userMenuButton = document.getElementById('userMenuButton');
         const userDropdown = document.getElementById('userDropdown');
         const userProfileBtn = document.getElementById('userProfileBtn');
+        const enableNotificationsBtn = document.getElementById('enableNotificationsBtn'); // New button
+        const testNotificationSoundBtn = document.getElementById('testNotificationSoundBtn'); // New button
         const logoutBtn = document.getElementById('logoutBtn');
         const tabs = document.querySelectorAll('.tab');
         const chatsTabContent = document.getElementById('chatsTab');
@@ -1371,21 +1374,55 @@
          * Requests permission from the user for desktop notifications.
          * Shows a toast message if permission is denied.
          */
-        function requestNotificationPermission() {
-            if ('Notification' in window) {
-                console.log('Notification API supported. Current permission status:', Notification.permission);
-                Notification.requestPermission().then(permission => {
-                    console.log('Notification permission result:', permission);
-                    if (permission === 'granted') {
-                        console.log('Notification permission granted.');
-                    } else if (permission === 'denied') {
-                        console.warn('Notification permission denied.');
-                        showToast('Notification permission denied. You will not receive desktop notifications for new messages.', 'info', 5000);
-                    }
-                });
-            } else {
+        async function requestNotificationPermission() {
+            if (!('Notification' in window)) {
                 console.warn('Browser does not support desktop notifications.');
                 showToast('Your browser does not support desktop notifications.', 'info', 5000);
+                return;
+            }
+
+            console.log('Notification API supported. Current permission status:', Notification.permission);
+
+            if (Notification.permission === 'granted') {
+                showToast('Notifications are already enabled.', 'success');
+                console.log('Notification permission already granted.');
+                return;
+            } else if (Notification.permission === 'denied') {
+                showToast('Notification permission was denied. Please change browser settings to enable.', 'error', 7000);
+                console.warn('Notification permission already denied by user.');
+                return;
+            }
+
+            try {
+                const permission = await Notification.requestPermission();
+                console.log('Notification permission result:', permission);
+                if (permission === 'granted') {
+                    showToast('Notifications enabled successfully!', 'success');
+                } else {
+                    showToast('Notification permission denied. You will not receive desktop notifications.', 'info', 5000);
+                }
+            } catch (error) {
+                console.error('Error requesting notification permission:', error);
+                showToast('Error requesting notification permission.', 'error');
+            }
+        }
+
+        /**
+         * Plays the notification sound.
+         */
+        async function playNotificationSound() {
+            if (notificationSound) {
+                console.log('Attempting to play notification sound...');
+                try {
+                    await notificationSound.play();
+                    console.log('Notification sound played successfully.');
+                } catch (error) {
+                    console.warn("Audio playback failed (likely autoplay policy):", error);
+                    showToast('Sound notification blocked by browser. Please interact with the page to enable sound.', 'info', 5000);
+                }
+            } else {
+                console.warn('Notification sound element not found or not loaded.');
+                showToast('Notification sound not available.', 'error');
             }
         }
 
@@ -1415,22 +1452,12 @@
             } else {
                 console.warn('Notification not shown. Current permission:', Notification.permission, 'Notification support:', 'Notification' in window);
                 if (Notification.permission === 'default') {
-                    showToast('Please enable browser notifications for new messages.', 'info', 5000);
+                    // This case is handled by explicit button click now.
                 }
             }
 
-            // Play the beep sound if the audio element exists
-            if (notificationSound) {
-                console.log('Attempting to play notification sound...');
-                notificationSound.play().catch(error => {
-                    console.warn("Audio playback failed (likely autoplay policy):", error);
-                    // This error can occur if the user has not interacted with the page,
-                    // as browsers often block autoplay of media.
-                    showToast('Sound notification blocked by browser. Please interact with the page to enable sound.', 'info', 5000);
-                });
-            } else {
-                console.warn('Notification sound element not found.');
-            }
+            // Always attempt to play sound, the error handling is within playNotificationSound()
+            playNotificationSound();
         }
 
         // --- End Notification and Sound Functions ---
@@ -2039,7 +2066,8 @@
                     showScreen('appContainer');
                     listenForFriends();
                     listenForFriendRequests();
-                    requestNotificationPermission(); // Request permission when user is logged in
+                    // Removed automatic requestNotificationPermission() here
+                    // as it's now triggered by user interaction.
                 } else {
                     showScreen('usernameSetup');
                 }
@@ -2071,6 +2099,19 @@
         logoutBtn.addEventListener('click', handleLogout);
         userProfileBtn.addEventListener('click', () => {
             showToast('Profile view not implemented yet.', 'info');
+        });
+
+        // Event listeners for the new notification/sound buttons
+        enableNotificationsBtn.addEventListener('click', async () => {
+            hideUserDropdown(); // Close dropdown after clicking
+            await requestNotificationPermission();
+        });
+
+        testNotificationSoundBtn.addEventListener('click', async () => {
+            hideUserDropdown(); // Close dropdown after clicking
+            // Use a dummy message and sender for testing
+            showNewMessageNotification("This is a test notification!", "Ephemeral Chat");
+            showToast('Playing test sound and showing notification (if permitted).', 'info', 3000);
         });
 
         tabs.forEach(tab => {
