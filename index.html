@@ -1367,9 +1367,9 @@
         const speedValueDisplay = document.getElementById('speedValue');
         const speedMeterFill = document.querySelector('.speed-meter-fill');
         const speedMeterNeedle = document.querySelector('.speed-meter-needle');
-        const speedMeterAnalog = document.getElementById('speedMeterAnalog'); // New ID for the meter itself
+        const speedMeterAnalog = document.getElementById('speedMeterAnalog');
         const speedCheckButton = document.getElementById('speedCheckButton');
-        const speedCheckInstruction = document.getElementById('speedCheckInstruction'); // New element for instruction
+        const speedCheckInstruction = document.getElementById('speedCheckInstruction');
 
         const authContainer = document.getElementById('authContainer');
         const loginForm = document.getElementById('loginForm');
@@ -1436,9 +1436,12 @@
         let speedCheckCount = 0;
         const REQUIRED_CLICKS = 10;
         const CLICK_TIMEOUT_MS = 1000; // 1 second
-        let speedTestActive = false; // To control meter clickability
+        let speedTestActive = false; // To control if the speed simulation is running
         let clickTimeout = null; // Timer for continuous clicks
-        
+        let speedSimulationInterval = null; // Interval for updating simulated speed
+        let currentSimulatedSpeed = 0; // Current simulated speed in Mbps
+        const MAX_DISPLAY_SPEED = 1000; // Max Mbps to display on the meter
+
         // Global AudioContext for persistent sound playback
         let audioContext = null;
 
@@ -2311,80 +2314,100 @@
         }
 
         // --- Speed Check Logic ---
-        function updateSpeedDisplay() {
-            // Random speed value (e.g., 10-110 Mbps) - just for visual effect
-            const randomSpeedValue = (Math.random() * 100 + 10).toFixed(0);
-            speedValueDisplay.textContent = randomSpeedValue + 'Mbps';
+        function updateMeterVisuals() {
+            // Update digital value
+            speedValueDisplay.textContent = currentSimulatedSpeed.toFixed(0) + 'Mbps';
             
-            // Calculate fill and rotation for analog meter
-            // Scale speedCheckCount (0-10) to fill percentage (0-100%)
+            // Calculate needle rotation based on currentSimulatedSpeed
+            const needleRotationDegree = (currentSimulatedSpeed / MAX_DISPLAY_SPEED) * 180; 
+            speedMeterNeedle.style.setProperty('--meter-rotation', `${needleRotationDegree}deg`);
+
+            // Update fill percentage based on speedCheckCount (progress towards 10 clicks)
             const fillPercentage = (speedCheckCount / REQUIRED_CLICKS) * 100;
-            // Scale speedCheckCount (0-10) to rotation degrees (0-180 degrees for half circle)
-            const rotationDegree = (speedCheckCount / REQUIRED_CLICKS) * 180; 
-
             speedMeterFill.style.setProperty('--meter-fill', `${fillPercentage}%`);
-            speedMeterNeedle.style.setProperty('--meter-rotation', `${rotationDegree}deg`);
+        }
 
-            // If required clicks met, transition to next screen
-            if (speedCheckCount >= REQUIRED_CLICKS) {
-                speedTestActive = false; // Deactivate meter clicks
-                speedMeterAnalog.classList.add('disabled'); // Visually disable clicks on meter
-                speedCheckButton.disabled = true;
-                speedCheckButton.textContent = "Accessing Chat...";
-                speedCheckInstruction.textContent = "Speed check passed. Loading chat...";
-                if (clickTimeout) clearTimeout(clickTimeout); // Clear any pending timeout
+        function startSpeedSimulation() {
+            if (speedSimulationInterval) clearInterval(speedSimulationInterval);
 
-                setTimeout(async () => {
-                    // Check authentication status after speed check is passed
-                    if (currentUser) {
-                        const userDoc = await db.collection('users').doc(currentUser.uid).get();
-                        if (userDoc.exists && userDoc.data().username) {
-                            showScreen('appContainer');
-                            listenForFriends();
-                            listenForFriendRequests();
-                            requestNotificationPermission();
-                            initializeAudioContext();
-                        } else {
-                            // If user is logged in but no username set, go to username setup
-                            showScreen('usernameSetup');
-                        }
-                    } else {
-                        // If no user logged in, go to authentication screen
-                        showScreen('authContainer');
-                    }
-                    // Reset speed check state for the next time user encounters it (e.g., after logout)
-                    resetSpeedTest();
-                }, 1000); 
-            } else {
-                 // Reset the continuous click timer only if test is active and not completed
-                if (speedTestActive) {
-                    if (clickTimeout) clearTimeout(clickTimeout);
-                    clickTimeout = setTimeout(() => {
-                        showToast("Speed check failed. Please click continuously.", "error");
-                        resetSpeedTest(); // Reset if user stops clicking continuously
-                    }, CLICK_TIMEOUT_MS);
-                }
+            // Simulate speed fluctuating with some randomness
+            speedSimulationInterval = setInterval(() => {
+                // Ensure speed starts low and can go high
+                const baseSpeed = (speedCheckCount / REQUIRED_CLICKS) * MAX_DISPLAY_SPEED * 0.8; // Progress-based base
+                const fluctuation = (Math.random() - 0.5) * MAX_DISPLAY_SPEED * 0.2; // +/- 10% of max
+                
+                currentSimulatedSpeed = Math.max(0, Math.min(MAX_DISPLAY_SPEED, baseSpeed + fluctuation));
+                updateMeterVisuals();
+            }, 150); // Update speed every 150ms for a dynamic feel
+        }
+
+        function stopSpeedSimulation() {
+            if (speedSimulationInterval) {
+                clearInterval(speedSimulationInterval);
+                speedSimulationInterval = null;
             }
         }
 
         function resetSpeedTest() {
+            stopSpeedSimulation();
             speedCheckCount = 0;
             speedTestActive = false;
+            currentSimulatedSpeed = 0;
             speedCheckButton.disabled = false;
             speedCheckButton.textContent = "Begin Speed Test";
             speedCheckInstruction.textContent = "To access Ephemeral Chat, please click the meter below to verify your internet speed.";
-            speedMeterAnalog.classList.remove('disabled'); // Enable meter clicks visually
-            updateSpeedDisplay(); // Reset meter visually to 0
-            if (clickTimeout) clearTimeout(clickTimeout); // Clear any pending timeout
+            speedMeterAnalog.classList.remove('disabled'); // Ensure meter is clickable
+            updateMeterVisuals(); // Reset meter visuals to 0
+            if (clickTimeout) clearTimeout(clickTimeout);
+            clickTimeout = null;
         }
 
         function handleSpeedMeterClick() {
+            // If the test hasn't been started by the button, then the click on meter triggers the start.
+            if (!speedTestActive) {
+                handleInitialSpeedCheckButtonClick();
+                return; // Exit after initiating the test, the first 'click' is handled by starting the test.
+            }
+
             if (speedTestActive && speedCheckCount < REQUIRED_CLICKS) {
                 speedCheckCount++;
-                updateSpeedDisplay();
-            } else if (!speedTestActive) {
-                // If the meter is clicked before the "Begin Speed Test" button
-                showToast("Please click 'Begin Speed Test' first.", "info");
+                updateMeterVisuals(); // Update fill immediately
+
+                // Reset the continuous click timer
+                if (clickTimeout) clearTimeout(clickTimeout);
+                clickTimeout = setTimeout(() => {
+                    showToast("Speed check failed. Please click continuously.", "error");
+                    resetSpeedTest(); // Reset if user stops clicking continuously
+                }, CLICK_TIMEOUT_MS);
+
+                // If required clicks met, transition to next screen
+                if (speedCheckCount >= REQUIRED_CLICKS) {
+                    speedTestActive = false; // Deactivate meter clicks
+                    speedMeterAnalog.classList.add('disabled'); // Visually disable clicks on meter
+                    speedCheckButton.disabled = true;
+                    speedCheckButton.textContent = "Accessing Chat...";
+                    speedCheckInstruction.textContent = "Speed check passed. Loading chat...";
+                    stopSpeedSimulation(); // Stop speed simulation when test is complete
+                    if (clickTimeout) clearTimeout(clickTimeout);
+
+                    setTimeout(async () => {
+                        if (currentUser) {
+                            const userDoc = await db.collection('users').doc(currentUser.uid).get();
+                            if (userDoc.exists && userDoc.data().username) {
+                                showScreen('appContainer');
+                                listenForFriends();
+                                listenForFriendRequests();
+                                requestNotificationPermission();
+                                initializeAudioContext();
+                            } else {
+                                showScreen('usernameSetup');
+                            }
+                        } else {
+                            showScreen('authContainer');
+                        }
+                        resetSpeedTest(); // Prepare for next potential login/logout
+                    }, 1000); 
+                }
             }
         }
         
@@ -2395,7 +2418,9 @@
                 speedCheckButton.textContent = "Testing..."; // Indicate test in progress
                 speedCheckInstruction.textContent = "Click the meter continuously!"; // Instructions for continuous clicking
                 speedMeterAnalog.classList.remove('disabled'); // Ensure meter is clickable
-                // Start the initial timeout for continuous clicks
+                startSpeedSimulation(); // Start the continuous speed updates
+                
+                // Initialize the continuous click timeout
                 if (clickTimeout) clearTimeout(clickTimeout);
                 clickTimeout = setTimeout(() => {
                     showToast("Speed check failed. Please click continuously.", "error");
@@ -2407,15 +2432,13 @@
         // --- Initial Screen Load ---
         // Always start with the speed check container
         showScreen('speedCheckContainer');
-        updateSpeedDisplay(); // Set initial state of speed meter (0Mbps, needle at start)
+        resetSpeedTest(); // Initialize everything to a clean state
 
         // Event Listeners
         auth.onAuthStateChanged(async user => {
             if (user) {
                 currentUser = user;
-                // If user is already logged in, they still go to speed check first.
-                // The actual screen transition happens *after* speed check in updateSpeedDisplay.
-                // No immediate screen change here.
+                // On login, remain on speed check until test is passed
             } else {
                 currentUser = null;
                 currentUserData = null;
@@ -2425,9 +2448,8 @@
                 friends = {};
                 friendRequests = {};
                 setActiveChat(null);
-                // Ensure we return to speed check and reset state on logout
-                showScreen('speedCheckContainer');
-                resetSpeedTest(); // Reset everything
+                showScreen('speedCheckContainer'); // Always go back to speed check on logout
+                resetSpeedTest(); 
                 if (audioContext && audioContext.state === 'running') {
                     audioContext.suspend(); 
                 }
