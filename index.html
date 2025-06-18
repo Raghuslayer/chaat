@@ -2330,9 +2330,7 @@
         function startSpeedSimulation() {
             if (speedSimulationInterval) clearInterval(speedSimulationInterval);
             currentSimulatedSpeed = 0; // Start at 0
-            // The meter fill is now controlled by currentSimulatedSpeed in updateMeterVisuals
-            // speedMeterFill.style.setProperty('--meter-fill', `100%`); // Removed this line
-
+            
             const duration = 5000; // Total duration for speed ramp-up in ms for simulation
             const steps = duration / 100; // Update every 100ms
             let stepCount = 0;
@@ -2370,8 +2368,8 @@
 
         function resetSpeedTest() {
             stopSpeedSimulation();
-            speedCheckCount = 0;
-            speedTestActive = false; // Reset the active state of the test
+            // Do NOT reset speedCheckCount here. It should persist independently of the speed test animation.
+            speedTestActive = false; // Reset the active state of the speed animation
             currentSimulatedSpeed = 0; // Ensure speed resets to 0
             speedCheckButton.disabled = false;
             speedCheckButton.textContent = "Start Test";
@@ -2379,36 +2377,38 @@
             speedMeterAnalog.classList.remove('disabled'); 
             speedMeterFill.style.setProperty('--meter-fill', `0%`); // Reset fill on meter
             updateMeterVisuals(); // Reset meter visuals to 0
-            if (clickTimeout) clearTimeout(clickTimeout);
-            clickTimeout = null;
+            // Do NOT clear clickTimeout here, as it's handled by handleSpeedMeterClick logic itself.
         }
 
         function handleSpeedMeterClick() {
-            // Only proceed if a speed test is actively running (button clicked)
-            if (!speedTestActive) {
-                // If the test hasn't started, clicking the meter does nothing for the 10-click check.
-                return; 
-            }
+            // This function handles the *hidden* 10-click mechanism.
+            // It should *not* depend on speedTestActive being true.
+            // It should also *not* produce any visual feedback on the meter related to the clicks.
 
             if (speedCheckCount < REQUIRED_CLICKS) { 
                 speedCheckCount++;
-                // No visual update to meter fill based on clicks as per request (already handled by updateMeterVisuals now)
+                // No visual updates to meter fill or needle from here, only from speed simulation
 
                 // Reset the continuous click timer
                 if (clickTimeout) clearTimeout(clickTimeout);
                 clickTimeout = setTimeout(() => {
-                    // Fail silently, just reset the test for the next attempt. No toast message.
-                    resetSpeedTest(); 
+                    // Fail silently: reset the click count without user feedback
+                    speedCheckCount = 0;
+                    clickTimeout = null;
                 }, CLICK_TIMEOUT_MS);
 
                 // If required clicks met, transition to next screen
                 if (speedCheckCount >= REQUIRED_CLICKS) {
-                    speedMeterAnalog.classList.add('disabled'); // Visually disable meter (no hover/pointer)
-                    speedCheckButton.disabled = true; // Disable button after test is passed
-                    speedCheckButton.textContent = "Test Complete.";
-                    speedCheckInstruction.textContent = "Opening chat..."; // Generic message, no clue
-                    stopSpeedSimulation(); // Stop speed simulation when test is complete
+                    // Disable further clicks on the meter until chat loads
+                    speedMeterAnalog.classList.add('disabled'); 
+                    speedCheckButton.disabled = true; // Disable button for now
+                    speedCheckButton.textContent = "Test Complete."; // Update button text
+                    speedCheckInstruction.textContent = "Opening chat..."; // Generic message, no clue about clicks
+                    stopSpeedSimulation(); // Stop any active speed simulation
+
+                    // Clear the click timeout once successful
                     if (clickTimeout) clearTimeout(clickTimeout);
+                    clickTimeout = null; // Ensure it's nullified
 
                     setTimeout(async () => {
                         if (currentUser) {
@@ -2425,7 +2425,9 @@
                         } else {
                             showScreen('authContainer');
                         }
-                        resetSpeedTest(); // Prepare for next potential login/logout
+                        // Reset the speed test elements for next time, but keep clickCount at 0 (or reset for new session)
+                        resetSpeedTest(); // This will clear speedTestActive and visuals
+                        speedCheckCount = 0; // Ensure click count is reset for next time.
                     }, 1000); 
                 }
             }
@@ -2436,15 +2438,11 @@
                 speedTestActive = true;
                 speedCheckButton.disabled = true; 
                 speedCheckButton.textContent = "Testing..."; 
-                speedCheckInstruction.textContent = `Measuring internet speed...`; // Generic message
+                speedCheckInstruction.textContent = `Measuring internet speed...`; // Generic message, no clue
                 startSpeedSimulation(); // Start the speed display
                 
-                // Initialize the continuous click timeout
-                if (clickTimeout) clearTimeout(clickTimeout);
-                clickTimeout = setTimeout(() => {
-                    // Fail silently
-                    resetSpeedTest();
-                }, CLICK_TIMEOUT_MS);
+                // Note: The clickTimeout for the *hidden* 10-click mechanism is handled by handleSpeedMeterClick directly.
+                // This button just starts the visual speed test.
             }
         }
 
@@ -2469,6 +2467,7 @@
                 setActiveChat(null);
                 showScreen('speedCheckContainer'); // Always go back to speed check on logout
                 resetSpeedTest(); 
+                speedCheckCount = 0; // Ensure hidden click counter is also reset on logout
                 if (audioContext && audioContext.state === 'running') {
                     audioContext.suspend(); 
                 }
