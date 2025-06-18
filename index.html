@@ -1373,7 +1373,9 @@
          */
         function requestNotificationPermission() {
             if ('Notification' in window) {
+                console.log('Notification API supported. Current permission status:', Notification.permission);
                 Notification.requestPermission().then(permission => {
+                    console.log('Notification permission result:', permission);
                     if (permission === 'granted') {
                         console.log('Notification permission granted.');
                     } else if (permission === 'denied') {
@@ -1393,8 +1395,10 @@
          * @param {string} senderUsername - The username of the message sender.
          */
         function showNewMessageNotification(messageText, senderUsername) {
+            console.log('Attempting to show new message notification...');
             // Check if Notification API is available and permission is granted
             if ('Notification' in window && Notification.permission === 'granted') {
+                console.log('Notification permission granted. Creating notification...');
                 const options = {
                     body: messageText,
                     // IMPORTANT: Replace 'path/to/your/app/icon.png' with the actual path to your app's icon.
@@ -1408,15 +1412,24 @@
 
                 // Optional: Automatically close the notification after a few seconds
                 setTimeout(notification.close.bind(notification), 5000); // Close after 5 seconds
+            } else {
+                console.warn('Notification not shown. Current permission:', Notification.permission, 'Notification support:', 'Notification' in window);
+                if (Notification.permission === 'default') {
+                    showToast('Please enable browser notifications for new messages.', 'info', 5000);
+                }
             }
 
             // Play the beep sound if the audio element exists
             if (notificationSound) {
+                console.log('Attempting to play notification sound...');
                 notificationSound.play().catch(error => {
-                    console.warn("Audio playback failed:", error);
+                    console.warn("Audio playback failed (likely autoplay policy):", error);
                     // This error can occur if the user has not interacted with the page,
                     // as browsers often block autoplay of media.
+                    showToast('Sound notification blocked by browser. Please interact with the page to enable sound.', 'info', 5000);
                 });
+            } else {
+                console.warn('Notification sound element not found.');
             }
         }
 
@@ -1964,13 +1977,17 @@
                     snapshot.docChanges().forEach(change => {
                         if (change.type === 'added') {
                             const newMessageData = change.doc.data();
+                            console.log('New message added:', newMessageData);
                             // Only notify if the message is incoming and not from the currently active chat
                             // This prevents self-notifications and notifications for messages in the chat you're actively viewing.
                             if (newMessageData.senderId !== currentUser.uid && chatId !== activeChatId) {
+                                console.log('Incoming message from different chat. Triggering notification.');
                                 // Find sender username from the 'friends' state
                                 const senderInfo = Object.values(friends).find(f => f.id === newMessageData.senderId);
                                 const senderUsername = senderInfo ? senderInfo.username : 'Unknown User';
                                 showNewMessageNotification(newMessageData.text, senderUsername);
+                            } else {
+                                console.log('Message added, but not triggering notification (either outgoing or for active chat).');
                             }
                         }
                     });
