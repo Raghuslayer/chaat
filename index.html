@@ -1418,7 +1418,7 @@
                     console.log('Notification sound played successfully.');
                 } catch (error) {
                     console.warn("Audio playback failed (likely autoplay policy):", error);
-                    showToast('Sound notification blocked by browser. Please interact with the page to enable sound.', 'info', 5000);
+                    // Removed the toast here to reduce redundant feedback
                 }
             } else {
                 console.warn('Notification sound element not found or not loaded.');
@@ -1451,9 +1451,6 @@
                 setTimeout(notification.close.bind(notification), 5000); // Close after 5 seconds
             } else {
                 console.warn('Notification not shown. Current permission:', Notification.permission, 'Notification support:', 'Notification' in window);
-                if (Notification.permission === 'default') {
-                    // This case is handled by explicit button click now.
-                }
             }
 
             // Always attempt to play sound, the error handling is within playNotificationSound()
