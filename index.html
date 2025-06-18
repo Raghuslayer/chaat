@@ -1200,9 +1200,6 @@
         let requestsListener = null;
         let messagesListener = null;
         const EPHEMERAL_DURATION_MS = 24 * 60 * 60 * 1000;
-        
-        // Global AudioContext and oscillator for persistent sound playback
-        let audioContext = null;
 
         // Helper Functions
         function showToast(message, type = 'info', duration = 3000) {
@@ -1228,90 +1225,6 @@
                 });
             }, duration);
         }
-
-        // --- Notification and Sound Functions ---
-
-        // Function to request notification permission
-        function requestNotificationPermission() {
-            if (!("Notification" in window)) {
-                console.warn("This browser does not support desktop notification");
-                return;
-            }
-
-            if (Notification.permission === "default") {
-                Notification.requestPermission().then(permission => {
-                    if (permission === "granted") {
-                        console.log("Notification permission granted.");
-                        showToast("Notifications enabled!", "success");
-                    } else {
-                        console.warn("Notification permission denied.");
-                        showToast("Notifications blocked. Please enable them in browser settings.", "info");
-                    }
-                }).catch(error => {
-                    console.error("Error requesting notification permission:", error);
-                    showToast("Error requesting notification permission.", "error");
-                });
-            } else if (Notification.permission === "granted") {
-                console.log("Notification permission already granted.");
-            } else if (Notification.permission === "denied") {
-                console.warn("Notification permission previously denied. Please change browser settings.");
-                showToast("Notifications are blocked. Please enable them in browser settings.", "error");
-            }
-        }
-
-        // Function to initialize the AudioContext on user interaction
-        function initializeAudioContext() {
-            if (!audioContext) {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            // Attempt to resume if suspended (common due to autoplay policies)
-            if (audioContext.state === 'suspended') {
-                audioContext.resume().catch(e => console.error("Error resuming audio context:", e));
-            }
-        }
-
-        // Function to play a subtle notification sound
-        function playNotificationSound() {
-            if (!audioContext || audioContext.state === 'closed') {
-                initializeAudioContext(); // Re-initialize if closed
-            }
-            if (audioContext && audioContext.state === 'running') {
-                // Create a new oscillator and gain node for each sound to ensure it plays
-                const tempOscillator = audioContext.createOscillator();
-                const tempGainNode = audioContext.createGain();
-
-                tempOscillator.type = 'sine'; // Sine wave for a soft tone
-                tempOscillator.frequency.setValueAtTime(440, audioContext.currentTime); // A4 note
-                tempGainNode.gain.setValueAtTime(0.3, audioContext.currentTime); // Set volume
-                
-                tempOscillator.connect(tempGainNode);
-                tempGainNode.connect(audioContext.destination);
-
-                tempOscillator.start(audioContext.currentTime);
-                tempGainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.5); // Fade out
-                tempOscillator.stop(audioContext.currentTime + 0.5); // Stop after 0.5 seconds
-
-                // Clean up the temporary nodes after the sound has played
-                tempOscillator.onended = () => {
-                    tempOscillator.disconnect();
-                    tempGainNode.disconnect();
-                };
-            }
-        }
-
-        // Function to display a custom notification
-        function displayCustomNotification(title, body) {
-            if (Notification.permission === "granted") {
-                new Notification(title, {
-                    body: body, // Empty body as requested
-                    icon: 'https://placehold.co/48x48/4f46e5/ffffff?text=EC', // Placeholder icon
-                    silent: true // Keep it silent, as we'll play our own sound
-                });
-            }
-        }
-
-        // --- End Notification and Sound Functions ---
-
 
         function showScreen(screenId) {
             document.querySelectorAll('#authContainer, #usernameSetup, #appContainer').forEach(screen => {
@@ -1459,7 +1372,6 @@
 
             try {
                 await auth.signInWithEmailAndPassword(email, password);
-                initializeAudioContext(); // Initialize AudioContext on user interaction
             } catch (error) {
                 loginError.textContent = error.message;
                 loginError.classList.remove('hidden');
@@ -1490,7 +1402,6 @@
 
             try {
                 await auth.createUserWithEmailAndPassword(email, password);
-                initializeAudioContext(); // Initialize AudioContext on user interaction
             } catch (error) {
                 registerError.textContent = error.message;
                 registerError.classList.remove('hidden');
@@ -1554,8 +1465,6 @@
                 currentUserData = { username: username, email: currentUser.email };
                 showScreen('appContainer');
                 showToast('Username set successfully!', 'success');
-                requestNotificationPermission(); // Request permission after successful setup
-                initializeAudioContext(); // Also initialize audio context on user interaction
             } catch (error) {
                 usernameError.textContent = "Error setting username: " + error.message;
                 usernameError.classList.remove('hidden');
@@ -1566,9 +1475,6 @@
         async function handleLogout() {
             try {
                 await auth.signOut();
-                if (audioContext && audioContext.state === 'running') {
-                    audioContext.suspend(); // Suspend audio context on logout
-                }
             } catch (error) {
                 showToast('Logout failed: ' + error.message, 'error');
             }
@@ -1977,46 +1883,12 @@
             chatLoader.classList.remove('hidden');
             chatMessages.innerHTML = '';
 
-            // Ensure lastSnapshot is null before the first listener attachment
-            messagesListener = null;
-
             cleanUpExpiredMessages(chatId).then(() => {
                 const messagesRef = db.collection('chats').doc(chatId).collection('messages').orderBy('timestamp');
 
                 messagesListener = messagesRef.onSnapshot(snapshot => {
                     chatLoader.classList.add('hidden');
                     const messages = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
-                    // Compare current messages with previous snapshot to find new incoming messages
-                    let newIncomingMessages = [];
-                    // Only check for new messages if a previous snapshot exists (i.e., not the initial load)
-                    if (messagesListener && messagesListener.lastSnapshot) { 
-                        const previousMessageIds = new Set(messagesListener.lastSnapshot.docs.map(doc => doc.id));
-                        newIncomingMessages = messages.filter(msg => 
-                            msg.senderId !== currentUser.uid && // Message is not from current user
-                            !previousMessageIds.has(msg.id)    // Message was not in the previous snapshot
-                        );
-                    }
-                    
-                    // If there are new incoming messages AND the current chat is not focused or the window is not focused
-                    if (newIncomingMessages.length > 0) {
-                        const isAppInFocus = document.hasFocus();
-                        const isActiveChat = (activeChatId === chatId);
-
-                        if (!isAppInFocus || !isActiveChat) {
-                            console.log("New message: playing sound and showing notification.");
-                            playNotificationSound();
-                            // Ensure the notification message is exactly "speed check alert"
-                            displayCustomNotification("speed check alert", ""); // Empty body for strictness
-                        } else {
-                            console.log("New message: app in focus and active chat, no notification/sound.");
-                        }
-                    }
-                    
-                    // Store the current snapshot for the next comparison
-                    // Assign the snapshot object directly, not a mapped array, to retain metadata
-                    messagesListener.lastSnapshot = snapshot; 
-
                     renderMessages(messages);
                 }, error => {
                     console.error("Error listening for messages:", error);
@@ -2064,8 +1936,6 @@
                     showScreen('appContainer');
                     listenForFriends();
                     listenForFriendRequests();
-                    requestNotificationPermission(); // Request permission on app load if user is logged in
-                    initializeAudioContext(); // Initialize audio context on user login
                 } else {
                     showScreen('usernameSetup');
                 }
@@ -2079,9 +1949,6 @@
                 friendRequests = {};
                 setActiveChat(null);
                 showScreen('authContainer');
-                if (audioContext && audioContext.state === 'running') {
-                    audioContext.suspend(); // Suspend audio context on logout
-                }
             }
         });
 
