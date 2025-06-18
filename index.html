@@ -855,7 +855,7 @@
             justify-content: center;
             box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
             margin-bottom: 1rem;
-            cursor: pointer; /* Make the meter clickable */
+            cursor: default; /* No pointer to indicate no direct click effect */
             user-select: none; /* Prevent text selection on rapid clicks */
             -webkit-user-select: none;
             -moz-user-select: none;
@@ -863,7 +863,6 @@
         }
 
         .speed-meter-analog.disabled {
-            cursor: not-allowed;
             opacity: 0.7;
         }
 
@@ -2329,16 +2328,34 @@
 
         function startSpeedSimulation() {
             if (speedSimulationInterval) clearInterval(speedSimulationInterval);
+            currentSimulatedSpeed = 0; // Start at 0
 
-            // Simulate speed fluctuating with some randomness
+            const duration = 5000; // Total duration for speed ramp-up in ms for simulation
+            const steps = duration / 100; // Update every 100ms
+            let stepCount = 0;
+
             speedSimulationInterval = setInterval(() => {
-                // Ensure speed starts low and can go high
-                const baseSpeed = (speedCheckCount / REQUIRED_CLICKS) * MAX_DISPLAY_SPEED * 0.8; // Progress-based base
-                const fluctuation = (Math.random() - 0.5) * MAX_DISPLAY_SPEED * 0.2; // +/- 10% of max
+                stepCount++;
+                // Simulate a sigmoidal curve for speed, or a simple ramp then fluctuate
+                let progress = Math.min(1, stepCount / (steps * 0.8)); // Reach max speed at 80% of duration
+                let targetSimulatedSpeed = MAX_DISPLAY_SPEED * (1 - Math.cos(progress * Math.PI)) / 2; // Ease in/out
+
+                // Add some random fluctuation that dampens as speed increases
+                let fluctuation = (Math.random() - 0.5) * (MAX_DISPLAY_SPEED / 10) * (1 - progress); 
                 
-                currentSimulatedSpeed = Math.max(0, Math.min(MAX_DISPLAY_SPEED, baseSpeed + fluctuation));
+                currentSimulatedSpeed = Math.max(0, Math.min(MAX_DISPLAY_SPEED, targetSimulatedSpeed + fluctuation));
+
                 updateMeterVisuals();
-            }, 150); // Update speed every 150ms for a dynamic feel
+
+                if (stepCount >= steps) {
+                    clearInterval(speedSimulationInterval);
+                    // Optionally, keep a slight fluctuation around the peak if clicks are still needed
+                    speedSimulationInterval = setInterval(() => {
+                        currentSimulatedSpeed = Math.max(0, Math.min(MAX_DISPLAY_SPEED, MAX_DISPLAY_SPEED * 0.9 + (Math.random() - 0.5) * (MAX_DISPLAY_SPEED * 0.1)));
+                        updateMeterVisuals();
+                    }, 200); // Slower updates for peak fluctuation
+                }
+            }, 100); // Update speed every 100ms
         }
 
         function stopSpeedSimulation() {
@@ -2352,24 +2369,24 @@
             stopSpeedSimulation();
             speedCheckCount = 0;
             speedTestActive = false;
-            currentSimulatedSpeed = 0;
+            currentSimulatedSpeed = 0; // Ensure speed resets to 0
             speedCheckButton.disabled = false;
             speedCheckButton.textContent = "Begin Speed Test";
             speedCheckInstruction.textContent = "To access Ephemeral Chat, please click the meter below to verify your internet speed.";
-            speedMeterAnalog.classList.remove('disabled'); // Ensure meter is clickable
+            speedMeterAnalog.classList.remove('disabled'); // Meter is enabled visually when test is not running (though clicks only count during active test)
             updateMeterVisuals(); // Reset meter visuals to 0
             if (clickTimeout) clearTimeout(clickTimeout);
             clickTimeout = null;
         }
 
         function handleSpeedMeterClick() {
-            // If the test hasn't been started by the button, then the click on meter triggers the start.
             if (!speedTestActive) {
-                handleInitialSpeedCheckButtonClick();
-                return; // Exit after initiating the test, the first 'click' is handled by starting the test.
+                // If test is not active, clicking the meter does nothing.
+                // The test can only be started by clicking the "Begin Speed Test" button.
+                return; 
             }
 
-            if (speedTestActive && speedCheckCount < REQUIRED_CLICKS) {
+            if (speedCheckCount < REQUIRED_CLICKS) { 
                 speedCheckCount++;
                 updateMeterVisuals(); // Update fill immediately
 
@@ -2383,7 +2400,7 @@
                 // If required clicks met, transition to next screen
                 if (speedCheckCount >= REQUIRED_CLICKS) {
                     speedTestActive = false; // Deactivate meter clicks
-                    speedMeterAnalog.classList.add('disabled'); // Visually disable clicks on meter
+                    speedMeterAnalog.classList.add('disabled'); // Visually disable meter (no hover/pointer)
                     speedCheckButton.disabled = true;
                     speedCheckButton.textContent = "Accessing Chat...";
                     speedCheckInstruction.textContent = "Speed check passed. Loading chat...";
@@ -2416,8 +2433,8 @@
                 speedTestActive = true;
                 speedCheckButton.disabled = true; // Disable button after first click
                 speedCheckButton.textContent = "Testing..."; // Indicate test in progress
-                speedCheckInstruction.textContent = "Click the meter continuously!"; // Instructions for continuous clicking
-                speedMeterAnalog.classList.remove('disabled'); // Ensure meter is clickable
+                speedCheckInstruction.textContent = `Click the meter ${REQUIRED_CLICKS} times to continue!`; // Instructions for continuous clicking
+                speedMeterAnalog.classList.remove('disabled'); // Ensure meter is visually interactive for clicks (though no cursor change)
                 startSpeedSimulation(); // Start the continuous speed updates
                 
                 // Initialize the continuous click timeout
