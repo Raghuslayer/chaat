@@ -13,8 +13,8 @@
         :root {
             --primary-color: #4f46e5;
             --primary-hover: #4338ca;
-            --secondary-color: #10b981;  
-            --light-bg: #f3f4f6; 
+            --secondary-color: #10b981;
+            --light-bg: #f3f4f6;
             --dark-text: #111827;
             --light-text: #f9fafb;
             --gray-text: #6b7280;
@@ -633,8 +633,15 @@
             color: var(--gray-text);
         }
 
+        /* Crucial fix for desktop scrolling and message overlap */
+        #activeChat {
+            display: flex; /* Makes it a flex container */
+            flex-direction: column; /* Stacks header, messages, and input vertically */
+            height: 100%; /* Ensures it fills its parent's height */
+        }
+
         .chat-messages {
-            flex: 1; /* Allow messages to take up available space */
+            flex: 1; /* Allows messages to take up available space and pushes input to bottom */
             overflow-y: auto; /* Enable vertical scrolling */
             padding: clamp(0.5rem, 2vw, 1rem);
             display: flex;
@@ -699,13 +706,20 @@
             gap: clamp(0.25rem, 1vw, 0.5rem);
             align-items: center;
             flex-shrink: 0; /* Prevent input area from shrinking */
-            position: sticky; /* Sticky to keep at bottom */
-            bottom: 0;
-            left: 0;
-            right: 0;
-            width: 100%;
-            z-index: 5; /* Ensure it's above messages when scrolling */
+            width: 100%; /* Ensure it spans full width */
         }
+        
+        /* Mobile specific fixed positioning for chat input */
+        @media (max-width: 768px) {
+            .chat-input {
+                position: fixed; /* Fixed to viewport on mobile */
+                bottom: 0;
+                left: 0;
+                right: 0;
+                z-index: 10;
+            }
+        }
+
 
         .chat-input input {
             flex: 1;
@@ -1180,32 +1194,17 @@
             }
 
             /* Specific styling for active chat on mobile to manage height and scrolling */
+            /* Removed height calc as flex:1 on chat-messages should handle it */
             #activeChat {
-                display: flex;
-                flex-direction: column;
-                height: 100%; /* Fill remaining height */
+                height: 100%; /* Ensure it fills parent height on mobile too */
             }
 
             .chat-messages {
-                flex: 1; /* Allow messages to scroll */
-                /* Calculate height dynamically based on header and input height */
-                height: calc(100vh - clamp(3rem, 10vw, 4rem) - clamp(3.5rem, 12vw, 4.5rem)); 
-                overflow-y: auto;
-                padding: clamp(0.5rem, 2vw, 1rem);
+                /* Removed height calc here. flex: 1 should handle it with fixed input */
+                padding-bottom: calc(clamp(0.5rem, 2vw, 1rem) + clamp(2rem, 10vw, 2.5rem) + clamp(0.5rem, 2vw, 1rem)); /* Account for chat-input height */
                 -webkit-overflow-scrolling: touch;
             }
 
-            /* Fix chat input to bottom on mobile */
-            .chat-input {
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                z-index: 10;
-                padding: clamp(0.5rem, 2vw, 1rem);
-                border-top: 1px solid #e5e7eb;
-                background-color: white;
-            }
         }
 
         /* Extra small screens / older phones */
@@ -1237,9 +1236,8 @@
             }
 
             .chat-messages {
-                padding: clamp(0.25rem, 1.5vw, 0.5rem);
-                /* Recalculate height for very small screens */
-                height: calc(100vh - clamp(2.5rem, 8vw, 3.5rem) - clamp(3rem, 10vw, 4rem));
+                /* Adjusted padding-bottom for very small screens */
+                padding-bottom: calc(clamp(0.25rem, 1.5vw, 0.5rem) + clamp(1.75rem, 8vw, 2.25rem) + clamp(0.5rem, 2vw, 1rem));
             }
 
             .message {
@@ -1551,7 +1549,7 @@
                 const notification = new Notification(title, {
                     body: body,
                     // Generic chat icon as base64 SVG to avoid external requests
-                    icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA0OCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQ4IiBoZWlnaHQ9IjQ4IiByeD0iOCIgZmlsbD0iIzRmNDZlNSIvPgo8cGF0aCBkPSJNMjQgMTJjNi42MjcgMCAxMiA1LjM3MyAxMiAxMnMtNS4zNzMgMTItMTIgMTItMTItNS4zNzMtMTItMTIgNS4zNzMtMTIgMTItMTJ6bTAgMmMtNS41MjMgMC0xMCA0LjQ3Ny0xMCAxMHM0LjQ3NyAxMCAxMCAxMCAxMC00LjQ3NyAxMC0xMC00LjQ3Ny0xMC0xMC0xMHoibTI0IDhjMCA2LjYyNy01LjM3MyAxMi0xMiAxMnMtMTItNS4zNzMtMTItMTIgNS4zNzMtMTIgMTItMTIgMTIgNS4zNzMgMTIgMTJ6bS00LjUxNiAwYy0uNzgxLTQuMzY5LTIuMzgyLTguMzYtNC41MTYtMTJhMTEuOTczIDExLjk3MyAwIDAgMC03LjE1MSAyLjQ5Yy01LjE2OCAzLjcyNi03LjUzMyA4Ljk2OS03LjEzMyAxNC43MkwyNi4wMTIgMjZsLS4wMTIgLjAxMkMyNS43OTcgMjUuNTQ1IDI1LjkwNiAyNS42NTQgMjYgMjZjLS41MzEuOTMtLjU5MSAxLjQ5LS4yMjQgMS42NzUgMS44MS42MTUgMy4wMzYgMS40NDIgNC4wMjQgMi4xNzUuMTk3Ljg5LjU5IDEuNzQ2IDEuMTU4IDIuMzEzLjMyLjMyNy41NjkuNTY1LjcwNi42MzYuODUxLS4yOTQgMS40MjEtLjY5MiAxLjg5OC0xLjA3LjY0MS0uNTA3IDEuMzI2LS45NzEgMS45MzgtMS4zNzkuNDg0LS4zMjEuOTQzLS41MjggMS4yOTgtLjYxNy40NzUtLjEzLjgyLS4wNjkgMS4xNTYtLjAwOS4zMzUuMDYxLjY1NS4xNTkuOTUxLjI4Mi42MzYuMjU0IDEuMjc0LjU1NCAxLjkwNy44NjEuNzA0LjM4MSAxLjQwNS43OTMgMi4wNiAxLjI3Mi41OTguNDM5IDEuMTUuODQ4IDEuNjU4IDEuMTgzLjc2Mi41MDkgMS4zNzIuODkyIDEuODE1Ljk0NS4xNi4wMjEuMzA1LS4wOTMuMzgxLS4yMTguOTc2LTEuNTggMS45OTQtMy4yNjYgMi44MzUtNS4wNjQuNjI1LTEuMzM4IDEuMDU1LTIuNzc1IDEuMjU2LTQuMzA5bC4wMTEtLjA2NEMzNy40ODQgMjcuNzM1IDM2LjU4NSAyNC45NzMgMzUuNDg0IDI0em0tNi44OTggNC44MjNjLjQ3Ni4wMjEuOTQ0LjA5MSAxLjQwMi4yMDEuOTUxLjIxNyAxLjg5NC40OTcgMi44MDIuNzk5LjY5OC4yNDEgMS4zNzMuNDUyIDIuMDEuNjE0LjA3My4yMjUuMjM0LjQ1LjUwNi41ODMuMjcuMTMyLjU1Ny4xNTYuODI3LjExLjI3LS4wNDYuNDgyLS4xNjYuNjE5LS4yNDguNTcxLS40OTYgMS4xMy0uOTY2IDEuNzEtMS40OC41MzUtLjQ4MSAxLjA1Mi0uOTkgMS41MTQtMS41MTcuNjgyLS41OTUgMS4zMjgtMS4wOTggMS44NDItMS40MTIuNTYyLS4zNDUgMS4xLS41MzYgMS41MDktLjQ1Ny40MTkuMDc4LjcxNS40MDIuOTUyLjczNi4xNzYuMjQ5LjMxOC42NjYuNDQ3IDEuMTUzLjExLjMyMi4yMzYuNjMzLjM2Ny45NjQuMjc1Ljc1LjQ3OCAxLjU0Ni42MSAyLjM2Nmg1LjcwMWMtLjI3NC0uNjEzLS42MjEtMS4xODQtMS4wMzMtMS42ODEtLjQ5OS0uNTgxLTEuMDU3LTEuMDUxLTEuNzA1LTEuNDE1LS41ODUtLjMyNC0xLjE3MS0uNjI4LTEuNjYtLjcxNS0uNDktLjA4Ny0uOTMyLS4wNDEtMS4zNTUtLjAyLS40MjMuMDIxLS43OTYuMTIzLTEuMDk3LjI3LS42OTguMzMzLTEuMzU0Ljc1My0xLjk2NSAxLjE5Mi0uNjExLjQzOS0xLjE4LjkwNi0xLjY5MSAxLjQwMy0uOTg4Ljk3OC0xLjkwMiAxLjg5OS0yLjQxIDIuMzc5LS41MDcuNDgtLjc5OS44ODMtLjk1NSAxLjE4MS0uMTU2LjI5OS0uMjE1LjU1OS0uMjQxLjc4My0uMTA5LS4wMTgtLjIxLS4wMzYtLjMxMy0uMDU1LS44ODctLjE4OS0xLjY4Ny0uNDIyLTIuMjEzLS41NjEtLjc5OS0uMjEyLTEuNTc1LS4zNTItMi4zNjMtLjQxOC0uOTMyLS4wNzgtMS44Ni0uMDkzLTIuNzUyLS4wNjktLjg5Mi4wMjMtMS43NjkuMTM4LTIuNjExLjM0NC0uODY2LjIwNi0xLjcwOS40OTMtMi40NzcuODQ3LS40NTguMjE1LS44OTcuNDI5LTEuMzE0LjYyOS0xLjE3MS4yNzktMi4zNjUuNTE1LTMuNDkyLjgxMS0uNjEyLjE1OS0xLjI1OS4yOTItMS45Mi4zMzgtLjQ1LjAyNi0uODkyLS4wNzctMS4zMDgtLjMwNS0uNzgtLjQzMi0xLjQ0OC0xLjM2NS0xLjkxMi0yLjYzLS4xNzItLjQ0MS0uMjkxLS44OTItLjMxLTEuMzUzLS4wMTktLjQ2LS4wMDUtLjkxOC4wNTQtMS4zNzMuMDYyLS40NzYuMTc0LS45MjguMzA4LTEuMjk5LjIyLS41OTQuNDktMS4xNjQuNzkzLTEuNzEtMi4yOTYgMS4zOTctNC40MTUgMy40NjMtNi4wOTIgNS42MDQtLjQ0NC41NjEtLjU2MiAxLjM1Ni0uMzU0IDIuMDQ5Ljc5MSAyLjgxMiAyLjQ0OCA1LjY3IDQuNTcgNy42ODkgMi4zMTkgMi4xNzkgNS4xNiAzLjcxNyA4LjM5MiAzLjkxMy4zMDIuMDI1LjU0MS0uMDcyLjcxLS4yNzguNjE1LS43MzMgMS41MDgtMS44MDcgMi40NTItMi40MDguNjQtLjM5OCAxLjI2LS42OTYgMS44NDItLjg4LjY4LS4yMTEgMS4zMjgtLjMzMSAxLjg5OS0uMzc5LjU3NC0uMDQ3IDEuMTI4LS4wNzMgMS42NjYtLjA3MyAxLjk3OS4wMDIgMy41MjkuMDk2IDQuNjI3LjI5NSAxLjY1NS4yOTkgMy4yNi43OTUgNC43MyAxLjUxMi41NzcuMjcyIDEuMTM2LjUyNSAxLjY1NC43NTMuNjQuMjkxIDEuMjQ2LjQ1MiAxLjc1LjQ1Mi41MDQuMDAxLjk0LS4xMzIgMS4zMDktLjM4LjM1OC0uMjQ4LjYzMy0uNTg4Ljg1NC0uOTc1LjIyMS0uMzg3LjM4Mi0uODQzLjQ4Ny0xLjI2Mi41MjMtMS45ODcgMS43NDgtMy45NDYgMy42MjMtNS4wNjEuNzIyLS40MzEgMS40MDktLjczMiAyLjAxNi0uOTc0LjU0NS0uMjMyIDEuMDU1LS4zMjYgMS41MzMtLjI1NS41MDQuMDczLjg4OC4zOTMgMS4xNjYuNzY3LjI1My4zMzQuNDQxLjY5Mi41NjggMS4wMTkuMTc3LjQ2MS4zMjMuOTMzLjQ0IDEuNDAzLjMyNiAxLjM5NS42MDcgMi43NzguNzY1IDQuMTQ4LjE1MyAxLjM1LS4xNjIgMi42NjItLjU3MSAzLjgxOS0uNDA5IDEuMjEtMS40NzMgMi40NTYtMi41NjMgMy42NzYtMy4zNjd6TTIzLjcwNyAyOC42NjljLS43MzYtLjA3MS0xLjczNC0uNDQ4LTIuMjgzLS44NzItLjY3LS40OTYtMS4wMTctMS4xOTQtMS4wMzMtMS45NTEtLjAxOS0uODM4LjMzNy0xLjYzNi45MzYtMi4zNDYuNjY1LS43NzQgMS41NjItMS4yNDUgMi41NDctMS40OTcuODk1LS4yMjQgMS43ODctLjI0IDIuNjY2LS4wNTUuODYuMTgyIDEuNjg3LjUyMiAyLjQ1My45OTEuNzg2LjQ3NSAxLjUwMSAxLjAxNiAyLjA5NCAxLjY4Ny42OTIuNzcyIDEuMTU0IDEuNjgyIDEuMzggMi42MjEuMjY0IDEuMTI0LjA5MyAyLjIxMy0uNDgxIDMuMTQ1LS42MTUuOTkzLTEuNjU5IDEuNzM3LTIuODMxIDIuMTM5LS44NzMuMzA2LTEuNzUyLjQwOC0yLjY3NS4yNjctLjk1Ni0uMTQ4LTEuODg4LS40Ny0yLjc0Mi0uOTYyeiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+Cg==', 
+                    icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA0OCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQ4IiBoZWlnaHQ9IjQ4IiByeD0iOCIgZmlsbD0iIzRmNDZlNSIvPgo8cGF0aCBkPSJNMjQgMTJjNi42MjcgMCAxMiA1LjM3MyAxMiAxMnMtNS4zNzMgMTItMTIgMTItMTItNS4zNzMtMTItMTIgNS4zNzMtMTIgMTItMTJ6bTAgMmMtNS41MjMgMC0xMCA0LjQ3Ny0xMCAxMHM0LjQ3NyAxMCAxMCAxMCAxMC00LjQ3NyAxMC0xMC00LjQ3Ny0xMC0xMC0xMHoibTI0IDhjMCA2LjYyNy01LjM3MyAxMi0xMiAxMnMtMTItNS4zNzMtMTItMTIgNS4zNzMtMTIgMTIgMTIgMTIgNS4zNzMgMTIgMTJ6bS00LjUxNiAwYy0uNzgxLTQuMzY5LTIuMzgyLTguMzYtNC41MTYtMTJhMTEuOTczIDExLjk3MyAwIDAg0C03LjE1MSAyLjQ5Yy01LjE2OCAzLjcyNi03LjUzMyA4Ljk2OS03LjEzMyAxNC43MkwyNi4wMTIgMjZsLS4wMTIgLjEwMUMyNS43OTcgMjUuNTQ1IDI1LjkwNiAyNS42NTQgMjYgMjZjLS41MzEuOTMtLjU5MSAxLjQ5LS4yMjQgMS42NzUgMS44MS42MTUgMy4wMzYgMS40NDIgNC4wMjQgMi4xNzUuMTk3Ljg5LjU5IDEuNzQ2IDEuMTU4IDIuMzEzLjMyLjMyNy41NjkuNTY1LjcwNi42MzYuODUxLS4yOTQgMS40MjEtLjY5MiAxLjg5OC0xLjA3LjY0MS0uNTA3IDEuMzI2LS45NzEgMS45MzgtMS4zNzkuNDg0LS4zMjEuOTQzLS41MjggMS4yOTgtLjYxNy40NzUtLjEzLjgyLS4wNjkgMS4xNTYtLjAwOS4zMzUuMDYxLjY1NS4xNTkuOTUxLjI4Mi42MzYuMjU0IDEuMjc0LjU1NCAxLjkwNy44NjEuNzA0LjM4MSAxLjQwNS43OTMgMi4wNiAxLjI3Mi41OTguNDM5IDEuMTUuODQ4IDEuNjU4IDEuMTgzLjc2Mi41MDkgMS4zNzIuODkyIDEuODE1Ljk0NS4xNi4wMjEuMzA1LS4wOTMuMzgxLS4yMTguOTc2LTEuNTggMS45OTQtMy4yNjYgMi44MzUtNS4wNjQuNjI1LTEuMzM4IDEuMDU1LTIuNzc1IDEuMjU2LTQuMzA5bC4wMTEtLjA2NEMzNy40ODQgMjcuNzM1IDM2LjU4NSAyNC45NzMgMzUuNDg0IDI0em0tNi44OTggNC44MjNjLjQ3Ni4wMjEuOTQ0LjA5MSAxLjQwMi4yMDEuOTUxLjIxNyAxLjg5NC40OTcgMi44MDIuNzk5LjY5OC4yNDEgMS4zNzMuNDUyIDIuMDEuNjE0LjA3My4yMjUuMjM0LjQ1LjUwNi41ODMuMjcuMTMyLjU1Ny4xNTYuODI3LjExLjI3LS4wNDYuNDgyLS4xNjYuNjE5LS4yNDguNTcxLS40OTYgMS4xMy0uOTY2IDEuNzEtMS40OC41MzUtLjQ4MSAxLjA1Mi0uOTkgMS41MTQtMS41MTcuNjgyLS41OTUgMS4zMjgtMS4wOTggMS44NDItMS40MTIuNTYyLS4zNDUtMS4xLS41MzYgMS41MDktLjQ1Ny40MTkuMDc4LjcxNS40MDIuOTUyLjczNi4xNzYuMjQ5LjMxOC42NjYuNDQ3IDEuMTUzLjExLjMyMi4yMzYuNjMzLjM2Ny45NjQuMjc1Ljc1LjQ3OCAxLjU0Ni42MSAyLjM2Nmg1LjcwMWMtLjI3NC0uNjEzLS42MjEtMS4xODQtMS4wMzMtMS42ODEtLjQ5OS0uNTgxLTEuMDU3LTEuMDUxLTEuNzA1LTEuNDE1LS41ODUtLjMyNC0xLjE3MS0uNjI4LTEuNjYtLjcxNS0uNDktLjA4Ny0uOTMyLS4wNDEtMS4zNTUtLjAyLS40MjMuMDIxLS43OTYuMTIzLTEuMDk3LjI3LS42OTguMzMzLTEuMzU0Ljc1My0xLjk2NSAxLjE5Mi0uNjExLjQzOS0xLjE4LjkwNi0xLjY5MSAxLjQwMy0uOTg4Ljk3OC0xLjkwMiAxLjg5OS0yLjQxIDIuMzc5LS41MDcuNDgtLjc5OS44ODMtLjk1NSAxLjE4MS0uMTU2LjI5OS0uMjE1LjU1OS0uMjQxLjc4My0uMTA5LS4wMTgtLjIxLS4wMzYtLjMxMy0uMDU1LS44ODctLjE4OS0xLjY4Ny0uNDIyLTIuMjEzLS41NjEtLjc5OS0uMjEyLTEuNTc1LS4zNTItMi4zNjMtLjQxOC0uOTMyLS4wNzgtMS44Ni0uMDkzLTIuNzUyLS4wNjktLjg5Mi4wMjMtMS43NjkuMTM4LTIuNjExLjM0NC0uODY2LjIwNi0xLjcwOS40OTMtMi40NzcuODQ3LS40NTguMjE1LS44OTcuNDI5LTEuMzE0LjYyOS0xLjk0MS42OTUtMi4yOTYgMS4zOTctNC40MTUgMy40NjMtNi4wOTIgNS42MDQtLjQ0NC41NjEtLjU2MiAxLjM1Ni0uMzU0IDIuMDQ5Ljc5MSAyLjgxMiAyLjQ0OCA1LjY3IDQuNTcgNy42ODkgMi4zMTkgMi4xNzkgNS4xNiAzLjcxNyA4LjM5MiAzLjkxMy4zMDIuMDI1LjU0MS0uMDcyLjcxLS.yNzguNjE1LS43MzMgMS41MDgtMS44MDcgMi40NTItMi40MDguNjQtLjM5OCAx.MjYtLjY5NiAxLjg0Mi0uODguNjgtLjIxMSAxLjMyOC0uMzMxIDEuODk5LS4zNzkuNTc0LS4wNDcgMS4xMjgtLjA3MyAx.NjY2LS4wNzMgMS45NzkuMDIgMy41MjkuMDk2IDQuNjI3LjI5NSAxLjY1NS4yOTkgMy4yNi43OTUgNC43MyAx.NTEyLjU3Ny4yNzIgMS4xMzYuNTI1IDEuNjU0LjczNi42NC4yOTEgMS4yNDYuNDUyIDEuNzUuNDUyLjUwNC4wMDEuOTQtLjEzMiAx.MzA5LS4zOC4zNTgtLjI0OC42MzMtLjU4OC44NTQtLjk3NS4yMjEtLjM4Ny4zODItLjg0My40ODctMS4yNjIuNTIzLTEuOTg3IDEuNzQ4LTMuOTQ2IDMuNjIzLTUuMDYxLjc2Mi0uNDMzIDEuNDcxLS42NjcgMi4wOTUtLjc5OS41OTctLjEyNiAxLjE0NS0uMTIxIDEuNjU1LS4wNTIuNTkuMDgyLjk4Ny41MzMgMS4yOTcuODU1LjI4LjI4Mi40OTguNjI0LjY0OS45MDQuMTc4LjMyNS4zMjkuNjY4LjQ0NyAxLjA0NS4zNjIgMS41ODQuNjY4IDMuMTY3Ljc5NyA0Ljc0OS4xNTcgMS45NzktLjE3MyAzLjkwNy0uNjU3IDUuNDk5LS40NTggMS40OTgtMS42OTcgMi44OTMtMy4yMTEgMy44Mzd6TTIzLjcwNyAyOC42NjljLS43MzYtLjA3MS0xLjczNC0uNDQ4LTIuMjgzLS44NzItLjY3LS40OTYtMS4wMTctMS4xOTQtMS4wMzMtMS45NTEtLjAxOS0uODM4LjMzNy0xLjYzNi45MzYtMi4zNDYuNjY1LS43NzQgMS41NjItMS4yNDUgMi41NDctMS40OTcuODk1LS4yMjQgMS43ODctLjI0IDIuNjY2LS4wNTUuODYuMTgyIDEuNjg3LjUyMiAyLjQ1My45OTEuNzg2LjQ3NSAxLjUwMSAxLjAxNiAyLjA5NCAxLjY4Ny42OTIuNzcyIDEuMTU0IDEuNjgyIDEuMzggMi42MjEuMjY0IDEuMTI0LjA5MyAyLjIxMy0uNDgxIDMuMTQ1LS42MTUuOTkzLTEuNjU5IDEuNzM3LTIuODMxIDIuMTM5LS44NzMuMzA2LTEuNzUyLjQwOC0yLjY3NS4yNjctLjk1Ni0uMTQ4LTEuODg4LS40Ny0yLjc0Mi0uOTYyeiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+Cg==', 
                     silent: true, // Use custom sound instead
                     tag: 'ephemeral-chat-notification', // Generic tag to stack/update notifications
                     requireInteraction: false // Allow notification to auto-close
@@ -2971,4 +2969,3 @@
     </script>
 </body>
 </html>
-
