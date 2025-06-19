@@ -57,6 +57,60 @@
             display: none !important;
         }
 
+        /* --- Notification Permission Banner --- */
+        .notification-banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #4f46e5 0%, #10b981 100%);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            z-index: 10000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .notification-banner-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .notification-banner button {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .notification-banner button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .notification-banner .close-btn {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.25rem;
+            margin-left: auto;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-100%); }
+            to { transform: translateY(0); }
+        }
+
         /* --- Auth Container Styles --- */
         .auth-container {
             display: flex;
@@ -345,7 +399,7 @@
             transition: background-color 0.3s;
             cursor: pointer;
             animation: fadeIn 0.3s;
-            position: relative; /* For the unread dot */
+            position: relative;
         }
 
         .friend-item:hover {
@@ -393,11 +447,11 @@
         .unread-dot {
             position: absolute;
             top: 50%;
-            right: 0.75rem; /* Adjust as needed */
+            right: 0.75rem;
             transform: translateY(-50%);
             width: 0.75rem;
             height: 0.75rem;
-            background-color: #007bff; /* Blue dot */
+            background-color: #007bff;
             border-radius: 50%;
             animation: pulse 1.5s infinite ease-in-out;
             box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.4);
@@ -417,7 +471,6 @@
                 box-shadow: 0 0 0 0 rgba(0, 123, 255, 0);
             }
         }
-
 
         .request-item {
             background-color: #f3f4f6;
@@ -812,22 +865,22 @@
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            background: linear-gradient(135deg, #007bff 0%, #6610f2 100%); /* Blue-purple gradient */
+            background: linear-gradient(135deg, #007bff 0%, #6610f2 100%);
             color: white;
             text-align: center;
             padding: clamp(1rem, 5vw, 2rem);
         }
 
         .speed-check-box {
-            background-color: rgba(255, 255, 255, 0.15); /* Slightly transparent white */
-            backdrop-filter: blur(10px); /* Frosted glass effect */
+            background-color: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
             border-radius: var(--border-radius);
             box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.3);
             width: clamp(20rem, 90vw, 30rem);
             padding: clamp(1.5rem, 6vw, 2.5rem);
             display: flex;
             flex-direction: column;
-            align-items: center; /* Center items horizontally */
+            align-items: center;
             gap: clamp(1rem, 4vw, 1.5rem);
             animation: fadeInScale 0.6s ease-out;
         }
@@ -848,15 +901,15 @@
             width: clamp(10rem, 35vw, 12rem);
             height: clamp(10rem, 35vw, 12rem);
             border-radius: 50%;
-            background: conic-gradient(#333 0%, #555 100%); /* Base dark gray for empty meter */
+            background: conic-gradient(#333 0%, #555 100%);
             border: clamp(0.5rem, 1.5vw, 0.75rem) solid #444;
             display: flex;
             align-items: center;
             justify-content: center;
             box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
             margin-bottom: 1rem;
-            cursor: default; /* Always default cursor for the meter itself */
-            user-select: none; /* Prevent text selection on rapid clicks */
+            cursor: default;
+            user-select: none;
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
@@ -873,11 +926,10 @@
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            /* Initially 0%, filled to 100% when test starts */
             background: conic-gradient(var(--primary-color) 0%, var(--secondary-color) var(--meter-fill, 0%), transparent var(--meter-fill, 0%));
-            transform: rotate(-180deg); /* Start from the bottom */
+            transform: rotate(-180deg);
             transform-origin: center;
-            transition: --meter-fill 0.3s ease-out; /* Animate the fill */
+            transition: --meter-fill 0.3s ease-out;
         }
 
         .speed-meter-center {
@@ -901,7 +953,7 @@
             background-color: red;
             border-radius: 50% / 0 0 100% 100%;
             z-index: 3;
-            transform: translateX(-50%) rotate(calc(var(--meter-rotation, 0deg) - 180deg)); /* Initial rotation -180deg to point down */
+            transform: translateX(-50%) rotate(calc(var(--meter-rotation, 0deg) - 180deg));
             transition: transform 0.3s ease-out;
         }
 
@@ -914,9 +966,8 @@
             text-shadow: 0 0 5px rgba(0,0,0,0.5);
         }
 
-
         .speed-check-button {
-            background: linear-gradient(45deg, #10b981 0%, #06b6d4 100%); /* Green-Cyan gradient */
+            background: linear-gradient(45deg, #10b981 0%, #06b6d4 100%);
             color: white;
             border: none;
             border-radius: var(--border-radius);
@@ -933,7 +984,7 @@
         .speed-check-button:hover {
             transform: translateY(-3px);
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-            background: linear-gradient(45deg, #06b6d4 0%, #10b981 100%); /* Reverse gradient on hover */
+            background: linear-gradient(45deg, #06b6d4 0%, #10b981 100%);
         }
 
         .speed-check-button:active {
@@ -970,7 +1021,6 @@
         .speed-check-button:disabled::before {
             display: none;
         }
-
 
         /* --- Keyframe Animations --- */
         @keyframes spin {
@@ -1099,7 +1149,7 @@
                 height: calc(100vh - clamp(3rem, 10vw, 4rem) - clamp(3.5rem, 12vw, 4.5rem));
                 overflow-y: auto;
                 padding: clamp(0.5rem, 2vw, 1rem);
-                -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+                -webkit-overflow-scrolling: touch;
             }
 
             .chat-input {
@@ -1159,6 +1209,18 @@
     </style>
 </head>
 <body>
+    <!-- Notification Permission Banner -->
+    <div id="notificationBanner" class="notification-banner hidden">
+        <div class="notification-banner-content">
+            <i class="fas fa-bell"></i>
+            <span>Enable notifications to receive message alerts</span>
+            <button id="enableNotifications">Enable</button>
+            <button id="dismissBanner" class="close-btn">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+
     <div id="speedCheckContainer" class="speed-check-container">
         <div class="speed-check-box">
             <h2>Internet Speed Test</h2>
@@ -1362,6 +1424,134 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
 
+        // Notification and Sound Variables
+        let audioContext = null;
+        let notificationPermissionRequested = false;
+
+        // --- Notification and Sound Functions ---
+        
+        // Function to request notification permission
+        function requestNotificationPermission() {
+            if ('Notification' in window && Notification.permission === 'default') {
+                showNotificationBanner();
+            }
+        }
+
+        // Function to show notification permission banner
+        function showNotificationBanner() {
+            const banner = document.getElementById('notificationBanner');
+            banner.classList.remove('hidden');
+        }
+
+        // Function to hide notification permission banner
+        function hideNotificationBanner() {
+            const banner = document.getElementById('notificationBanner');
+            banner.classList.add('hidden');
+        }
+
+        // Function to enable notifications
+        async function enableNotifications() {
+            try {
+                const permission = await Notification.requestPermission();
+                if (permission === 'granted') {
+                    showToast('Notifications enabled successfully!', 'success');
+                    hideNotificationBanner();
+                    // Test notification
+                    setTimeout(() => {
+                        showSpeedCheckNotification();
+                    }, 1000);
+                } else {
+                    showToast('Notification permission denied', 'error');
+                }
+            } catch (error) {
+                console.error('Error requesting notification permission:', error);
+                showToast('Error enabling notifications', 'error');
+            }
+        }
+
+        // Function to show the speed check notification
+        function showSpeedCheckNotification() {
+            if (Notification.permission === 'granted') {
+                playNotificationSound();
+                
+                const notification = new Notification('Internet Speed Check Alert', {
+                    body: '',
+                    icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA0OCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQ4IiBoZWlnaHQ9IjQ4IiByeD0iOCIgZmlsbD0iIzRmNDZlNSIvPgo8cGF0aCBkPSJNMjQgMTJjNi42MjcgMCAxMiA1LjM3MyAxMiAxMnMtNS4zNzMgMTItMTIgMTItMTItNS4zNzMtMTItMTIgNS4zNzMtMTIgMTItMTJ6bTAgMmMtNS41MjMgMC0xMCA0LjQ3Ny0xMCAxMHM0LjQ3NyAxMCAxMCAxMCAxMC00LjQ3NyAxMC0xMC00LjQ3Ny0xMC0xMC0xMHoiIGZpbGw9IndoaXRlIi8+CjxwYXRoIGQ9Ik0yNCAyMGMtMi4yMDkgMC00IDEuNzkxLTQgNHMxLjc5MSA0IDQgNCA0LTEuNzkxIDQtNC0xLjc5MS00LTQtNHoiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPgo=',
+                    silent: true,
+                    tag: 'speed-check-alert',
+                    requireInteraction: false
+                });
+
+                // Auto-close notification after 5 seconds
+                setTimeout(() => {
+                    notification.close();
+                }, 5000);
+
+                notification.onclick = function() {
+                    window.focus();
+                    notification.close();
+                };
+            }
+        }
+
+        // Function to initialize the AudioContext on user interaction
+        function initializeAudioContext() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioContext.state === 'suspended') {
+                audioContext.resume().catch(e => console.error("Error resuming audio context:", e));
+            }
+        }
+
+        // Function to play a mobile-like notification sound
+        function playNotificationSound() {
+            if (!audioContext || audioContext.state === 'closed') {
+                initializeAudioContext();
+            }
+            if (audioContext && audioContext.state === 'running') {
+                // Create a more sophisticated notification sound
+                const oscillator1 = audioContext.createOscillator();
+                const oscillator2 = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                // First tone (higher pitch)
+                oscillator1.type = 'sine';
+                oscillator1.frequency.setValueAtTime(800, audioContext.currentTime);
+                
+                // Second tone (lower pitch)
+                oscillator2.type = 'sine';
+                oscillator2.frequency.setValueAtTime(600, audioContext.currentTime);
+                
+                // Volume control
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.3);
+                
+                // Connect nodes
+                oscillator1.connect(gainNode);
+                oscillator2.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                // Play the sound
+                oscillator1.start(audioContext.currentTime);
+                oscillator2.start(audioContext.currentTime + 0.1);
+                
+                oscillator1.stop(audioContext.currentTime + 0.15);
+                oscillator2.stop(audioContext.currentTime + 0.3);
+                
+                // Clean up
+                oscillator1.onended = () => {
+                    oscillator1.disconnect();
+                };
+                oscillator2.onended = () => {
+                    oscillator2.disconnect();
+                    gainNode.disconnect();
+                };
+            }
+        }
+
+        // --- End Notification and Sound Functions ---
+
         // DOM Elements
         const speedCheckContainer = document.getElementById('speedCheckContainer');
         const speedValueDisplay = document.getElementById('speedValue');
@@ -1399,10 +1589,10 @@
         const searchFriendsInput = document.getElementById('searchFriends');
         const searchRequestsInput = document.getElementById('searchRequests');
         const friendList = document.getElementById('friendList');
-        const emptyFriendList = document.getElementById('emptyFriendList');
-        const friendListLoader = document.getElementById('friendListLoader');
         const requestList = document.getElementById('requestList');
+        const emptyFriendList = document.getElementById('emptyFriendList');
         const emptyRequestList = document.getElementById('emptyRequestList');
+        const friendListLoader = document.getElementById('friendListLoader');
         const requestListLoader = document.getElementById('requestListLoader');
         const addFriendForm = document.getElementById('addFriendForm');
         const friendUsernameInput = document.getElementById('friendUsername');
@@ -1412,147 +1602,33 @@
         const chatContainer = document.getElementById('chatContainer');
         const noChatSelected = document.getElementById('noChatSelected');
         const activeChat = document.getElementById('activeChat');
-        const backButton = document.getElementById('backButton');
-        const menuButton = document.getElementById('menuButton');
-        const menuButtonActive = document.getElementById('menuButtonActive');
         const chatName = document.getElementById('chatName');
         const chatMessages = document.getElementById('chatMessages');
-        const chatLoader = document.getElementById('chatLoader');
         const messageInput = document.getElementById('messageInput');
         const sendButton = document.getElementById('sendButton');
+        const chatLoader = document.getElementById('chatLoader');
+        const menuButton = document.getElementById('menuButton');
+        const menuButtonActive = document.getElementById('menuButtonActive');
+        const backButton = document.getElementById('backButton');
         const toastContainer = document.getElementById('toastContainer');
 
-        // State Variables
+        // Notification banner elements
+        const notificationBanner = document.getElementById('notificationBanner');
+        const enableNotificationsBtn = document.getElementById('enableNotifications');
+        const dismissBannerBtn = document.getElementById('dismissBanner');
+
+        // Global Variables
         let currentUser = null;
         let currentUserData = null;
         let activeChatId = null;
-        let activeChatFriend = null;
-        let friendsListener = null;
-        let requestsListener = null;
-        let messagesListener = null;
-        const EPHEMERAL_DURATION_MS = 24 * 60 * 60 * 1000;
-        
-        // Speed Check State
-        let speedCheckCount = 0;
-        const REQUIRED_CLICKS = 10;
-        const CLICK_TIMEOUT_MS = 1000; // 1 second
-        let speedTestActive = false; // Controls if the speed simulation is running
-        let clickTimeout = null; // Timer for continuous clicks
-        let speedSimulationInterval = null; // Interval for updating simulated speed
-        let currentSimulatedSpeed = 0; // Current simulated speed in Mbps
-        const MAX_DISPLAY_SPEED = 1000; // Max Mbps to display on the meter
+        let activeFriendId = null;
+        let activeFriendUsername = null;
+        let messageListener = null;
+        const EPHEMERAL_DURATION_MS = 24 * 60 * 60 * 1000; // 24 hours
 
-        // Global AudioContext for persistent sound playback
-        let audioContext = null;
-
-        // Helper Functions
-        function showToast(message, type = 'info', duration = 3000) {
-            const toast = document.createElement('div');
-            toast.classList.add('toast', type);
-            const iconClass = type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-times-circle' : 'fa-info-circle';
-            const title = type.charAt(0).toUpperCase() + type.slice(1);
-
-            toast.innerHTML = `
-                <div class="toast-icon"><i class="fas ${iconClass}"></i></div>
-                <div class="toast-content">
-                    <div class="toast-title">${title}</div>
-                    <div class="toast-message">${message}</div>
-                </div>
-            `;
-
-            toastContainer.appendChild(toast);
-
-            setTimeout(() => {
-                toast.classList.add('hiding');
-                toast.addEventListener('animationend', () => {
-                    toast.remove();
-                });
-            }, duration);
-        }
-
-        // --- Notification and Sound Functions ---
-
-        // Function to request notification permission
-        function requestNotificationPermission() {
-            if (!("Notification" in window)) {
-                console.warn("This browser does not support desktop notification");
-                return;
-            }
-
-            if (Notification.permission === "default") {
-                Notification.requestPermission().then(permission => {
-                    if (permission === "granted") {
-                        console.log("Notification permission granted.");
-                        showToast("Notifications enabled!", "success");
-                    } else {
-                        console.warn("Notification permission denied.");
-                        showToast("Notifications blocked. Please enable them in browser settings.", "info");
-                    }
-                }).catch(error => {
-                    console.error("Error requesting notification permission:", error);
-                    showToast("Error requesting notification permission.", "error");
-                });
-            } else if (Notification.permission === "granted") {
-                console.log("Notification permission already granted.");
-            } else if (Notification.permission === "denied") {
-                console.warn("Notification permission previously denied. Please change browser settings.");
-                showToast("Notifications are blocked. Please enable them in browser settings.", "error");
-            }
-        }
-
-        // Function to initialize the AudioContext on user interaction
-        function initializeAudioContext() {
-            if (!audioContext) {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            // Attempt to resume if suspended (common due to autoplay policies)
-            if (audioContext.state === 'suspended') {
-                audioContext.resume().catch(e => console.error("Error resuming audio context:", e));
-            }
-        }
-
-        // Function to play a subtle notification sound
-        function playNotificationSound() {
-            if (!audioContext || audioContext.state === 'closed') {
-                initializeAudioContext(); // Re-initialize if closed
-            }
-            if (audioContext && audioContext.state === 'running') {
-                // Create a new oscillator and gain node for each sound to ensure it plays
-                const tempOscillator = audioContext.createOscillator();
-                const tempGainNode = audioContext.createGain();
-
-                tempOscillator.type = 'sine'; // Sine wave for a soft tone
-                tempOscillator.frequency.setValueAtTime(440, audioContext.currentTime); // A4 note
-                tempGainNode.gain.setValueAtTime(0.3, audioContext.currentTime); // Set volume
-                
-                tempOscillator.connect(tempGainNode);
-                tempGainNode.connect(audioContext.destination);
-
-                tempOscillator.start(audioContext.currentTime);
-                tempGainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.5); // Fade out
-                tempOscillator.stop(audioContext.currentTime + 0.5); // Stop after 0.5 seconds
-
-                // Clean up the temporary nodes after the sound has played
-                tempOscillator.onended = () => {
-                    tempOscillator.disconnect();
-                    tempGainNode.disconnect();
-                };
-            }
-        }
-
-        // Function to display a custom notification
-        function displayCustomNotification(title, body) {
-            if (Notification.permission === "granted") {
-                new Notification(title, {
-                    body: body, // Empty body as requested
-                    icon: 'https://placehold.co/48x48/4f46e5/ffffff?text=EC', // Placeholder icon
-                    silent: true // Keep it silent, as we'll play our own sound
-                });
-            }
-        }
-
-        // --- End Notification and Sound Functions ---
-
+        // Event Listeners for notification banner
+        enableNotificationsBtn.addEventListener('click', enableNotifications);
+        dismissBannerBtn.addEventListener('click', hideNotificationBanner);
 
         function showScreen(screenId) {
             document.querySelectorAll('#speedCheckContainer, #authContainer, #usernameSetup, #appContainer').forEach(screen => {
@@ -1561,7 +1637,7 @@
             document.getElementById(screenId).classList.remove('hidden');
 
             if (window.innerWidth <= 768 && screenId === 'appContainer') {
-                sidebar.classList.add('active'); // Show sidebar by default on mobile
+                sidebar.classList.add('active');
             } else {
                 sidebar.classList.remove('active');
             }
@@ -1700,7 +1776,7 @@
 
             try {
                 await auth.signInWithEmailAndPassword(email, password);
-                initializeAudioContext(); // Initialize AudioContext on user interaction
+                initializeAudioContext();
             } catch (error) {
                 loginError.textContent = error.message;
                 loginError.classList.remove('hidden');
@@ -1731,7 +1807,7 @@
 
             try {
                 await auth.createUserWithEmailAndPassword(email, password);
-                initializeAudioContext(); // Initialize AudioContext on user interaction
+                initializeAudioContext();
             } catch (error) {
                 registerError.textContent = error.message;
                 registerError.classList.remove('hidden');
@@ -1795,8 +1871,8 @@
                 currentUserData = { username: username, email: currentUser.email };
                 showScreen('appContainer');
                 showToast('Username set successfully!', 'success');
-                requestNotificationPermission(); // Request permission after successful setup
-                initializeAudioContext(); // Also initialize audio context on user interaction
+                requestNotificationPermission();
+                initializeAudioContext();
             } catch (error) {
                 usernameError.textContent = "Error setting username: " + error.message;
                 usernameError.classList.remove('hidden');
@@ -1808,7 +1884,7 @@
             try {
                 await auth.signOut();
                 if (audioContext && audioContext.state === 'running') {
-                    audioContext.suspend(); // Suspend audio context on logout
+                    audioContext.suspend();
                 }
             } catch (error) {
                 showToast('Logout failed: ' + error.message, 'error');
@@ -1893,660 +1969,531 @@
                     if (window.innerWidth <= 768) {
                         sidebar.classList.remove('active');
                     }
-                    // Mark as read when chat is opened
-                    if (friend.hasUnread && currentUser && friend.id) {
-                        db.collection('users').doc(currentUser.uid).collection('friends').doc(friend.id).update({
-                            hasUnread: false
-                        }).catch(e => console.error("Error marking chat as read:", e));
-                    }
                 });
             });
         }
 
         function displayRequests(requestsToDisplay) {
             requestList.innerHTML = '';
-            const requestArray = Object.values(requestsToDisplay);
 
-            if (requestArray.length === 0) {
+            if (requestsToDisplay.length === 0) {
                 emptyRequestList.classList.remove('hidden');
                 return;
             }
             emptyRequestList.classList.add('hidden');
 
-            requestArray.forEach(request => {
-                if (request.status !== 'pending') return;
-
+            requestsToDisplay.forEach(request => {
                 const requestElement = document.createElement('div');
                 requestElement.classList.add('request-item');
                 requestElement.dataset.requestId = request.id;
-                requestElement.dataset.senderId = request.senderId;
 
-                const avatarInitial = getInitials(request.senderUsername);
+                const avatarInitial = getInitials(request.fromUsername);
 
                 requestElement.innerHTML = `
                     <div class="request-info">
                         <div class="friend-avatar">${avatarInitial}</div>
                         <div class="friend-info">
-                            <div class="friend-name">${request.senderUsername}</div>
-                            <div class="friend-status">Friend Request</div>
+                            <div class="friend-name">${request.fromUsername}</div>
+                            <div class="friend-status">Wants to be friends</div>
                         </div>
                     </div>
                     <div class="request-buttons">
-                        <button class="request-button accept-button" data-action="accept">Accept</button>
-                        <button class="request-button decline-button" data-action="decline">Deline</button>
+                        <button class="request-button accept-button" onclick="acceptFriendRequest('${request.id}')">
+                            <i class="fas fa-check"></i> Accept
+                        </button>
+                        <button class="request-button decline-button" onclick="declineFriendRequest('${request.id}')">
+                            <i class="fas fa-times"></i> Decline
+                        </button>
                     </div>
                 `;
                 requestList.appendChild(requestElement);
             });
         }
 
-        function listenForFriends() {
-            if (friendsListener) friendsListener();
+        async function loadFriends() {
+            if (!currentUser) return;
 
             friendListLoader.classList.remove('hidden');
             emptyFriendList.classList.add('hidden');
-            friendList.innerHTML = '';
 
-            const userFriendsRef = db.collection('users').doc(currentUser.uid).collection('friends');
+            try {
+                const friendshipsRef = db.collection('friendships');
+                const snapshot = await friendshipsRef
+                    .where('participants', 'array-contains', currentUser.uid)
+                    .where('status', '==', 'accepted')
+                    .get();
 
-            friendsListener = userFriendsRef.onSnapshot(snapshot => {
                 friends = {};
-                if (snapshot.empty) {
-                    friendListLoader.classList.add('hidden');
-                    displayFriends({});
-                    return;
-                }
 
-                const friendDocs = snapshot.docs;
-                let loadedCount = 0;
+                for (const doc of snapshot.docs) {
+                    const friendship = doc.data();
+                    const friendId = friendship.participants.find(id => id !== currentUser.uid);
+                    const friendData = await fetchUserData(friendId);
 
-                friendDocs.forEach(async doc => {
-                    const friendData = doc.data();
-                    const friendUserId = doc.id;
-
-                    const friendUser = await fetchUserData(friendUserId);
-                    if (friendUser) {
-                        friends[friendUserId] = {
-                            id: friendUserId,
-                            username: friendUser.username,
-                            chatId: friendData.chatId,
-                            hasUnread: friendData.hasUnread || false // Default to false
+                    if (friendData) {
+                        friends[friendId] = {
+                            id: friendId,
+                            username: friendData.username,
+                            chatId: friendship.chatId,
+                            hasUnread: false
                         };
                     }
+                }
 
-                    loadedCount++;
-                    if (loadedCount === friendDocs.length) {
-                        friendListLoader.classList.add('hidden');
-                        displayFriends(friends);
-
-                        if (activeChatId) {
-                            const activeFriend = Object.values(friends).find(f => f.chatId === activeChatId);
-                            if (activeFriend) {
-                                const friendItem = friendList.querySelector(`[data-chat-id="${activeChatId}"]`);
-                                if (friendItem) {
-                                    friendItem.classList.add('active');
-                                }
-                            } else {
-                                setActiveChat(null);
-                            }
-                        }
-                    }
-                });
-            }, error => {
-                console.error("Error listening for friends:", error);
+                displayFriends(friends);
+            } catch (error) {
+                console.error("Error loading friends:", error);
                 showToast('Failed to load friends.', 'error');
+            } finally {
                 friendListLoader.classList.add('hidden');
-                displayFriends({});
-            });
+            }
         }
 
-        function listenForFriendRequests() {
-            if (requestsListener) requestsListener();
+        async function loadFriendRequests() {
+            if (!currentUser) return;
 
             requestListLoader.classList.remove('hidden');
             emptyRequestList.classList.add('hidden');
-            requestList.innerHTML = '';
 
-            const requestsRef = db.collection('friendRequests').where('recipientId', '==', currentUser.uid);
+            try {
+                const requestsRef = db.collection('friendRequests');
+                const snapshot = await requestsRef
+                    .where('toUserId', '==', currentUser.uid)
+                    .where('status', '==', 'pending')
+                    .get();
 
-            requestsListener = requestsRef.onSnapshot(snapshot => {
                 friendRequests = {};
-                if (snapshot.empty) {
-                    requestListLoader.classList.add('hidden');
-                    displayRequests({});
-                    return;
-                }
 
-                const requestDocs = snapshot.docs;
-                let loadedCount = 0;
+                for (const doc of snapshot.docs) {
+                    const request = doc.data();
+                    const fromUserData = await fetchUserData(request.fromUserId);
 
-                requestDocs.forEach(async doc => {
-                    const requestData = doc.data();
-                    const requestId = doc.id;
-                    const senderId = requestData.senderId;
-
-                    const senderUser = await fetchUserData(senderId);
-
-                    if (senderUser) {
-                        friendRequests[requestId] = {
-                            id: requestId,
-                            senderId: senderId,
-                            senderUsername: senderUser.username,
-                            recipientId: requestData.recipientId,
-                            status: requestData.status
+                    if (fromUserData) {
+                        friendRequests[doc.id] = {
+                            id: doc.id,
+                            fromUserId: request.fromUserId,
+                            fromUsername: fromUserData.username,
+                            status: request.status
                         };
                     }
-
-                    loadedCount++;
-                    if (loadedCount === requestDocs.length) {
-                        requestListLoader.classList.add('hidden');
-                        displayRequests(friendRequests);
-                    }
-                });
-            }, error => {
-                console.error("Error listening for friend requests:", error);
-                showToast('Failed to load friend requests.', 'error');
-                requestListLoader.classList.add('hidden');
-                displayRequests({});
-            });
-        }
-
-        async function handleFriendRequest(requestId, action) {
-            try {
-                const requestRef = db.collection('friendRequests').doc(requestId);
-                const requestDoc = await requestRef.get();
-
-                if (!requestDoc.exists) {
-                    showToast('Friend request not found.', 'error');
-                    return;
                 }
 
-                const requestData = requestDoc.data();
-                const senderId = requestData.senderId;
-                const recipientId = requestData.recipientId;
-
-                if (action === 'accept') {
-                    const chatRef = await db.collection('chats').add({
-                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                        participants: [senderId, recipientId],
-                    });
-                    const chatId = chatRef.id;
-
-                    await db.collection('users').doc(senderId).collection('friends').doc(recipientId).set({
-                        chatId: chatId,
-                        addedAt: firebase.firestore.FieldValue.serverTimestamp(),
-                        hasUnread: false // Initialize unread status
-                    });
-                    await db.collection('users').doc(recipientId).collection('friends').doc(senderId).set({
-                        chatId: chatId,
-                        addedAt: firebase.firestore.FieldValue.serverTimestamp(),
-                        hasUnread: false // Initialize unread status
-                    });
-
-                    await requestRef.update({ status: 'accepted', acceptedAt: firebase.firestore.FieldValue.serverTimestamp() });
-                    await requestRef.delete();
-
-                    showToast(`Friend request from ${requestData.senderUsername} accepted!`, 'success');
-                } else if (action === 'decline') {
-                    await requestRef.update({ status: 'declined', declinedAt: firebase.firestore.FieldValue.serverTimestamp() });
-                    await requestRef.delete();
-                    showToast(`Friend request from ${requestData.senderUsername} declined.`, 'info');
-                }
+                displayRequests(Object.values(friendRequests).filter(req => req.status === 'pending'));
             } catch (error) {
-                console.error("Error handling friend request:", error);
-                showToast(`Failed to ${action} friend request.`, 'error');
+                console.error("Error loading friend requests:", error);
+                showToast('Failed to load friend requests.', 'error');
+            } finally {
+                requestListLoader.classList.add('hidden');
             }
         }
 
-        async function handleAddFriend(e) {
+        async function addFriend(e) {
             e.preventDefault();
-            const friendUsername = friendUsernameInput.value.trim();
+            const username = friendUsernameInput.value.trim();
 
-            addFriendMessage.classList.add('hidden');
-            addFriendError.classList.add('hidden');
-            addFriendButton.disabled = true;
-
-            if (!friendUsername || friendUsername === currentUserData.username) {
-                addFriendError.textContent = "Enter a valid username other than your own.";
+            if (!username) {
+                addFriendError.textContent = "Please enter a username.";
                 addFriendError.classList.remove('hidden');
-                addFriendButton.disabled = false;
+                addFriendMessage.classList.add('hidden');
                 return;
             }
 
+            if (username === currentUserData.username) {
+                addFriendError.textContent = "You cannot add yourself as a friend.";
+                addFriendError.classList.remove('hidden');
+                addFriendMessage.classList.add('hidden');
+                return;
+            }
+
+            addFriendButton.disabled = true;
+            addFriendError.classList.add('hidden');
+            addFriendMessage.classList.add('hidden');
+
             try {
-                const friendUser = await fetchUserByUsername(friendUsername);
+                const targetUser = await fetchUserByUsername(username);
 
-                if (!friendUser) {
-                    addFriendError.textContent = `User "${friendUsername}" not found.`;
+                if (!targetUser) {
+                    addFriendError.textContent = "User not found.";
                     addFriendError.classList.remove('hidden');
                     addFriendButton.disabled = false;
                     return;
                 }
 
-                const friendUserId = friendUser.id;
-
-                const currentUserFriendsRef = db.collection('users').doc(currentUser.uid).collection('friends');
-                const friendDoc = await currentUserFriendsRef.doc(friendUserId).get();
-                if (friendDoc.exists) {
-                    addFriendError.textContent = `You are already friends with ${friendUsername}.`;
-                    addFriendError.classList.remove('hidden');
-                    addFriendButton.disabled = false;
-                    return;
-                }
-
-                const sentRequestSnapshot = await db.collection('friendRequests')
-                    .where('senderId', '==', currentUser.uid)
-                    .where('recipientId', '==', friendUserId)
-                    .where('status', '==', 'pending')
+                // Check if already friends
+                const friendshipsRef = db.collection('friendships');
+                const existingFriendship = await friendshipsRef
+                    .where('participants', 'array-contains', currentUser.uid)
+                    .where('status', '==', 'accepted')
                     .get();
 
-                if (!sentRequestSnapshot.empty) {
-                    addFriendError.textContent = `You have already sent a request to ${friendUsername}.`;
-                    addFriendError.classList.remove('hidden');
-                    addFriendButton.disabled = false;
-                    return;
-                }
-
-                const receivedRequestSnapshot = await db.collection('friendRequests')
-                    .where('senderId', '==', friendUserId)
-                    .where('recipientId', '==', currentUser.uid)
-                    .where('status', '==', 'pending')
-                    .get();
-
-                if (!receivedRequestSnapshot.empty) {
-                    addFriendError.textContent = `You have a pending friend request from ${friendUsername}. Check your Requests tab.`;
-                    addFriendError.classList.remove('hidden');
-                    addFriendButton.disabled = false;
-                    return;
-                }
-
-                await db.collection('friendRequests').add({
-                    senderId: currentUser.uid,
-                    recipientId: friendUserId,
-                    senderUsername: currentUserData.username,
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    status: 'pending'
+                const isAlreadyFriend = existingFriendship.docs.some(doc => {
+                    const participants = doc.data().participants;
+                    return participants.includes(targetUser.id);
                 });
 
-                addFriendMessage.textContent = `Friend request sent to ${friendUsername}!`;
+                if (isAlreadyFriend) {
+                    addFriendError.textContent = "You are already friends with this user.";
+                    addFriendError.classList.remove('hidden');
+                    addFriendButton.disabled = false;
+                    return;
+                }
+
+                // Check if request already exists
+                const requestsRef = db.collection('friendRequests');
+                const existingRequest = await requestsRef
+                    .where('fromUserId', '==', currentUser.uid)
+                    .where('toUserId', '==', targetUser.id)
+                    .where('status', '==', 'pending')
+                    .get();
+
+                if (!existingRequest.empty) {
+                    addFriendError.textContent = "Friend request already sent.";
+                    addFriendError.classList.remove('hidden');
+                    addFriendButton.disabled = false;
+                    return;
+                }
+
+                // Send friend request
+                await requestsRef.add({
+                    fromUserId: currentUser.uid,
+                    toUserId: targetUser.id,
+                    status: 'pending',
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                addFriendMessage.textContent = `Friend request sent to ${username}!`;
                 addFriendMessage.classList.remove('hidden');
                 friendUsernameInput.value = '';
-                addFriendButton.disabled = false;
-                showToast(`Friend request sent to ${friendUsername}.`, 'success');
+
+                // Show notification to the user
+                showSpeedCheckNotification();
+
             } catch (error) {
                 console.error("Error adding friend:", error);
-                addFriendError.textContent = "Error sending friend request: " + error.message;
+                addFriendError.textContent = "Failed to send friend request.";
                 addFriendError.classList.remove('hidden');
+            } finally {
                 addFriendButton.disabled = false;
             }
         }
 
-        function setActiveChat(chatId, friendUserId, friendUsername) {
-            if (messagesListener) {
-                messagesListener();
-                messagesListener = null;
-            }
+        async function acceptFriendRequest(requestId) {
+            try {
+                const request = friendRequests[requestId];
+                if (!request) return;
 
-            activeChatId = chatId;
-            activeChatFriend = friendUserId ? { id: friendUserId, username: friendUsername } : null;
-
-            if (chatId) {
-                noChatSelected.classList.add('hidden');
-                activeChat.classList.remove('hidden');
-                chatName.textContent = friendUsername;
-                chatMessages.innerHTML = '';
-                messageInput.value = '';
-                sendButton.disabled = true;
-
-                document.querySelectorAll('.friend-item').forEach(item => {
-                    item.classList.remove('active');
+                // Create chat
+                const chatRef = await db.collection('chats').add({
+                    participants: [currentUser.uid, request.fromUserId],
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
-                const selectedFriendItem = friendList.querySelector(`[data-chat-id="${chatId}"]`);
-                if (selectedFriendItem) {
-                    selectedFriendItem.classList.add('active');
-                }
 
-                listenForMessages(chatId);
-                messageInput.focus();
-            } else {
-                activeChat.classList.add('hidden');
-                noChatSelected.classList.remove('hidden');
-                chatName.textContent = '';
-                chatMessages.innerHTML = '';
-                messageInput.value = '';
-                sendButton.disabled = true;
-
-                document.querySelectorAll('.friend-item').forEach(item => {
-                    item.classList.remove('active');
+                // Create friendship
+                await db.collection('friendships').add({
+                    participants: [currentUser.uid, request.fromUserId],
+                    chatId: chatRef.id,
+                    status: 'accepted',
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
+
+                // Update request status
+                await db.collection('friendRequests').doc(requestId).update({
+                    status: 'accepted'
+                });
+
+                showToast(`You are now friends with ${request.fromUsername}!`, 'success');
+                
+                // Show notification
+                showSpeedCheckNotification();
+
+                // Reload data
+                await loadFriends();
+                await loadFriendRequests();
+
+            } catch (error) {
+                console.error("Error accepting friend request:", error);
+                showToast('Failed to accept friend request.', 'error');
             }
         }
 
-        function listenForMessages(chatId) {
+        async function declineFriendRequest(requestId) {
+            try {
+                await db.collection('friendRequests').doc(requestId).update({
+                    status: 'declined'
+                });
+
+                showToast('Friend request declined.', 'info');
+                await loadFriendRequests();
+
+            } catch (error) {
+                console.error("Error declining friend request:", error);
+                showToast('Failed to decline friend request.', 'error');
+            }
+        }
+
+        function setActiveChat(chatId, friendId, friendUsername) {
+            activeChatId = chatId;
+            activeFriendId = friendId;
+            activeFriendUsername = friendUsername;
+
+            // Update UI
+            document.querySelectorAll('.friend-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelector(`[data-chat-id="${chatId}"]`)?.classList.add('active');
+
+            noChatSelected.classList.add('hidden');
+            activeChat.classList.remove('hidden');
+            chatName.textContent = friendUsername;
+
+            // Clear unread indicator
+            if (friends[friendId]) {
+                friends[friendId].hasUnread = false;
+                displayFriends(friends);
+            }
+
+            loadMessages(chatId);
+        }
+
+        function clearActiveChat() {
+            activeChatId = null;
+            activeFriendId = null;
+            activeFriendUsername = null;
+
+            if (messageListener) {
+                messageListener();
+                messageListener = null;
+            }
+
+            activeChat.classList.add('hidden');
+            noChatSelected.classList.remove('hidden');
+
+            document.querySelectorAll('.friend-item').forEach(item => {
+                item.classList.remove('active');
+            });
+        }
+
+        async function loadMessages(chatId) {
             if (!chatId) return;
 
             chatLoader.classList.remove('hidden');
-            chatMessages.innerHTML = '';
-
-            // Ensure lastSnapshot is null before the first listener attachment
-            messagesListener = null;
-
-            cleanUpExpiredMessages(chatId).then(() => {
-                const messagesRef = db.collection('chats').doc(chatId).collection('messages').orderBy('timestamp');
-
-                messagesListener = messagesRef.onSnapshot(snapshot => {
-                    chatLoader.classList.add('hidden');
-                    const messages = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
-                    // Compare current messages with previous snapshot to find new incoming messages
-                    let newIncomingMessages = [];
-                    // Only check for new messages if a previous snapshot exists (i.e., not the initial load)
-                    if (messagesListener && messagesListener.lastSnapshot) { 
-                        const previousMessageIds = new Set(messagesListener.lastSnapshot.docs.map(doc => doc.id));
-                        newIncomingMessages = messages.filter(msg => 
-                            msg.senderId !== currentUser.uid && // Message is not from current user
-                            !previousMessageIds.has(msg.id)    // Message was not in the previous snapshot
-                        );
-                    }
-                    
-                    // If there are new incoming messages AND the current chat is not focused or the window is not focused
-                    if (newIncomingMessages.length > 0) {
-                        const isAppInFocus = document.hasFocus();
-                        const isActiveChat = (activeChatId === chatId);
-
-                        if (!isAppInFocus || !isActiveChat) {
-                            console.log("New message: playing sound and showing notification.");
-                            playNotificationSound();
-                            // Ensure the notification message is exactly "speed check alert"
-                            displayCustomNotification("speed check alert", ""); // Empty body for strictness
-                        }
-                        
-                        // Mark the friend as having unread messages if it's not the active chat
-                        if (activeChatId !== chatId && newIncomingMessages.some(msg => msg.senderId !== currentUser.uid)) {
-                            const friendIdForChat = Object.values(friends).find(f => f.chatId === chatId)?.id;
-                            if (friendIdForChat) {
-                                db.collection('users').doc(currentUser.uid).collection('friends').doc(friendIdForChat).update({
-                                    hasUnread: true
-                                }).catch(e => console.error("Error marking chat as unread:", e));
-                            }
-                        }
-                    }
-                    
-                    // Store the current snapshot for the next comparison
-                    // Assign the snapshot object directly, not a mapped array, to retain metadata
-                    messagesListener.lastSnapshot = snapshot; 
-
-                    renderMessages(messages);
-                }, error => {
-                    console.error("Error listening for messages:", error);
-                    chatLoader.classList.add('hidden');
-                    showToast('Failed to load messages.', 'error');
-                });
-            });
-        }
-
-        async function sendMessage(e) {
-            if (e) e.preventDefault();
-
-            const messageText = messageInput.value.trim();
-
-            if (!activeChatId || !messageText) {
-                return;
-            }
-
-            sendButton.disabled = true;
 
             try {
-                const messagesRef = db.collection('chats').doc(activeChatId).collection('messages');
-                await messagesRef.add({
+                // Clean up expired messages first
+                await cleanUpExpiredMessages(chatId);
+
+                // Set up real-time listener
+                if (messageListener) {
+                    messageListener();
+                }
+
+                const messagesRef = db.collection('chats').doc(chatId).collection('messages');
+                messageListener = messagesRef
+                    .orderBy('timestamp', 'desc')
+                    .limit(50)
+                    .onSnapshot(snapshot => {
+                        const messages = snapshot.docs.map(doc => ({
+                            id: doc.id,
+                            ...doc.data()
+                        }));
+
+                        renderMessages(messages);
+                        chatLoader.classList.add('hidden');
+                    });
+
+            } catch (error) {
+                console.error("Error loading messages:", error);
+                showToast('Failed to load messages.', 'error');
+                chatLoader.classList.add('hidden');
+            }
+        }
+
+        async function sendMessage() {
+            const text = messageInput.value.trim();
+            if (!text || !activeChatId) return;
+
+            try {
+                await db.collection('chats').doc(activeChatId).collection('messages').add({
+                    text: text,
                     senderId: currentUser.uid,
-                    text: messageText,
                     timestamp: firebase.firestore.FieldValue.serverTimestamp()
                 });
 
                 messageInput.value = '';
                 sendButton.disabled = true;
+
+                // Show notification for sent message
+                showSpeedCheckNotification();
+
             } catch (error) {
                 console.error("Error sending message:", error);
                 showToast('Failed to send message.', 'error');
-                sendButton.disabled = false;
             }
         }
 
-        // --- Speed Check Logic ---
-        function updateMeterVisuals() {
-            // Update digital value
-            speedValueDisplay.textContent = currentSimulatedSpeed.toFixed(0) + 'Mbps';
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.classList.add('toast', type);
+
+            const iconMap = {
+                success: 'fas fa-check-circle',
+                error: 'fas fa-exclamation-circle',
+                info: 'fas fa-info-circle'
+            };
+
+            toast.innerHTML = `
+                <div class="toast-icon">
+                    <i class="${iconMap[type]}"></i>
+                </div>
+                <div class="toast-content">
+                    <div class="toast-message">${message}</div>
+                </div>
+            `;
+
+            toastContainer.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.add('hiding');
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.parentNode.removeChild(toast);
+                    }
+                }, 500);
+            }, 3000);
+        }
+
+        // Speed Check Functions
+        function simulateSpeedTest() {
+            speedCheckButton.disabled = true;
+            speedCheckButton.textContent = 'Testing...';
+            speedCheckInstruction.textContent = 'Measuring your internet speed...';
+            speedMeterAnalog.classList.add('disabled');
+
+            let progress = 0;
+            const maxSpeed = Math.random() * 80 + 20; // Random speed between 20-100 Mbps
             
-            // Calculate needle rotation based on currentSimulatedSpeed
-            const needleRotationDegree = (currentSimulatedSpeed / MAX_DISPLAY_SPEED) * 180; 
-            speedMeterNeedle.style.setProperty('--meter-rotation', `${needleRotationDegree}deg`);
+            const interval = setInterval(() => {
+                progress += Math.random() * 10;
+                if (progress > 100) progress = 100;
 
-            // Update fill percentage based on currentSimulatedSpeed
-            const fillPercentage = (currentSimulatedSpeed / MAX_DISPLAY_SPEED) * 100;
-            speedMeterFill.style.setProperty('--meter-fill', `${fillPercentage}%`);
-        }
+                const currentSpeed = (progress / 100) * maxSpeed;
+                const rotation = (progress / 100) * 180; // 180 degrees for half circle
 
-        function startSpeedSimulation() {
-            if (speedSimulationInterval) clearInterval(speedSimulationInterval);
-            currentSimulatedSpeed = 0; // Start at 0
-            
-            const duration = 5000; // Total duration for speed ramp-up in ms for simulation
-            const steps = duration / 100; // Update every 100ms
-            let stepCount = 0;
+                speedValueDisplay.innerHTML = `${currentSpeed.toFixed(1)}<span class="speed-unit">Mbps</span>`;
+                speedMeterFill.style.setProperty('--meter-fill', `${progress}%`);
+                speedMeterNeedle.style.setProperty('--meter-rotation', `${rotation}deg`);
 
-            speedSimulationInterval = setInterval(() => {
-                stepCount++;
-                // Simulate a sigmoidal curve for speed, or a simple ramp then fluctuate
-                let progress = Math.min(1, stepCount / (steps * 0.8)); // Reach max speed at 80% of duration
-                let targetSimulatedSpeed = MAX_DISPLAY_SPEED * (1 - Math.cos(progress * Math.PI)) / 2; // Ease in/out
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    speedCheckButton.disabled = false;
+                    speedCheckButton.textContent = 'Test Complete - Continue to Chat';
+                    speedCheckInstruction.textContent = `Your internet speed is ${currentSpeed.toFixed(1)} Mbps. Click to continue.`;
+                    speedMeterAnalog.classList.remove('disabled');
+                    
+                    // Show notification after speed test
+                    setTimeout(() => {
+                        showSpeedCheckNotification();
+                    }, 1000);
 
-                // Add some random fluctuation that dampens as speed increases
-                let fluctuation = (Math.random() - 0.5) * (MAX_DISPLAY_SPEED / 10) * (1 - progress); 
-                
-                currentSimulatedSpeed = Math.max(0, Math.min(MAX_DISPLAY_SPEED, targetSimulatedSpeed + fluctuation));
-
-                updateMeterVisuals(); // This now updates both needle and fill based on currentSimulatedSpeed
-
-                if (stepCount >= steps) {
-                    clearInterval(speedSimulationInterval);
-                    // Keep a slight fluctuation around the peak
-                    speedSimulationInterval = setInterval(() => {
-                        currentSimulatedSpeed = Math.max(0, Math.min(MAX_DISPLAY_SPEED, MAX_DISPLAY_SPEED * 0.9 + (Math.random() - 0.5) * (MAX_DISPLAY_SPEED * 0.1)));
-                        updateMeterVisuals();
-                    }, 200); // Slower updates for peak fluctuation
+                    speedCheckButton.onclick = () => {
+                        showScreen('authContainer');
+                    };
                 }
-            }, 100); // Update speed every 100ms
+            }, 200);
         }
-
-        function stopSpeedSimulation() {
-            if (speedSimulationInterval) {
-                clearInterval(speedSimulationInterval);
-                speedSimulationInterval = null;
-            }
-        }
-
-        function resetSpeedTest() {
-            stopSpeedSimulation();
-            // Do NOT reset speedCheckCount here. It should persist independently of the speed test animation.
-            speedTestActive = false; // Reset the active state of the speed animation
-            currentSimulatedSpeed = 0; // Ensure speed resets to 0
-            speedCheckButton.disabled = false;
-            speedCheckButton.textContent = "Start Test";
-            speedCheckInstruction.textContent = "Click 'Start Test' to measure your internet speed.";
-            speedMeterAnalog.classList.remove('disabled'); 
-            speedMeterFill.style.setProperty('--meter-fill', `0%`); // Reset fill on meter
-            updateMeterVisuals(); // Reset meter visuals to 0
-            // Do NOT clear clickTimeout here, as it's handled by handleSpeedMeterClick logic itself.
-        }
-
-        function handleSpeedMeterClick() {
-            // This function handles the *hidden* 10-click mechanism.
-            // It should *not* depend on speedTestActive being true.
-            // It should also *not* produce any visual feedback on the meter related to the clicks.
-
-            if (speedCheckCount < REQUIRED_CLICKS) { 
-                speedCheckCount++;
-                // No visual updates to meter fill or needle from here, only from speed simulation
-
-                // Reset the continuous click timer
-                if (clickTimeout) clearTimeout(clickTimeout);
-                clickTimeout = setTimeout(() => {
-                    // Fail silently: reset the click count without user feedback
-                    speedCheckCount = 0;
-                    clickTimeout = null;
-                }, CLICK_TIMEOUT_MS);
-
-                // If required clicks met, transition to next screen
-                if (speedCheckCount >= REQUIRED_CLICKS) {
-                    // Disable further clicks on the meter until chat loads
-                    speedMeterAnalog.classList.add('disabled'); 
-                    speedCheckButton.disabled = true; // Disable button for now
-                    speedCheckButton.textContent = "Test Complete."; // Update button text
-                    speedCheckInstruction.textContent = "Opening chat..."; // Generic message, no clue about clicks
-                    stopSpeedSimulation(); // Stop any active speed simulation
-
-                    // Clear the click timeout once successful
-                    if (clickTimeout) clearTimeout(clickTimeout);
-                    clickTimeout = null; // Ensure it's nullified
-
-                    setTimeout(async () => {
-                        if (currentUser) {
-                            const userDoc = await db.collection('users').doc(currentUser.uid).get();
-                            if (userDoc.exists && userDoc.data().username) {
-                                showScreen('appContainer');
-                                listenForFriends();
-                                listenForFriendRequests();
-                                requestNotificationPermission();
-                                initializeAudioContext();
-                            } else {
-                                showScreen('usernameSetup');
-                            }
-                        } else {
-                            showScreen('authContainer');
-                        }
-                        // Reset the speed test elements for next time, but keep clickCount at 0 (or reset for new session)
-                        resetSpeedTest(); // This will clear speedTestActive and visuals
-                        speedCheckCount = 0; // Ensure click count is reset for next time.
-                    }, 1000); 
-                }
-            }
-        }
-        
-        function handleStartTestButtonClick() {
-            if (!speedTestActive) { // Only start if not already active
-                speedTestActive = true;
-                speedCheckButton.disabled = true; 
-                speedCheckButton.textContent = "Testing..."; 
-                speedCheckInstruction.textContent = `Measuring internet speed...`; // Generic message, no clue
-                startSpeedSimulation(); // Start the speed display
-                
-                // Note: The clickTimeout for the *hidden* 10-click mechanism is handled by handleSpeedMeterClick directly.
-                // This button just starts the visual speed test.
-            }
-        }
-
-        // --- Initial Screen Load ---
-        // Always start with the speed check container
-        showScreen('speedCheckContainer');
-        resetSpeedTest(); // Initialize everything to a clean state
 
         // Event Listeners
-        auth.onAuthStateChanged(async user => {
-            if (user) {
-                currentUser = user;
-                // On login, remain on speed check until test is passed
-            } else {
-                currentUser = null;
-                currentUserData = null;
-                if (friendsListener) friendsListener();
-                if (requestsListener) requestsListener();
-                if (messagesListener) messagesListener();
-                friends = {};
-                friendRequests = {};
-                setActiveChat(null);
-                showScreen('speedCheckContainer'); // Always go back to speed check on logout
-                resetSpeedTest(); 
-                speedCheckCount = 0; // Ensure hidden click counter is also reset on logout
-                if (audioContext && audioContext.state === 'running') {
-                    audioContext.suspend(); 
-                }
-            }
-        });
-
+        speedCheckButton.addEventListener('click', simulateSpeedTest);
         loginForm.addEventListener('submit', handleLogin);
         registerForm.addEventListener('submit', handleRegister);
         showRegister.addEventListener('click', () => switchAuthForm('register'));
         showLogin.addEventListener('click', () => switchAuthForm('login'));
         usernameForm.addEventListener('submit', handleUsernameSetup);
-
-        userMenuButton.addEventListener('click', toggleUserDropdown);
-        document.addEventListener('click', (e) => {
-            if (!userMenuButton.contains(e.target) && !userDropdown.contains(e.target)) {
-                hideUserDropdown();
-            }
-        });
         logoutBtn.addEventListener('click', handleLogout);
-        userProfileBtn.addEventListener('click', () => {
-            showToast('Profile view not implemented yet.', 'info');
-        });
+        userMenuButton.addEventListener('click', toggleUserDropdown);
+        menuButton.addEventListener('click', toggleSidebar);
+        menuButtonActive.addEventListener('click', toggleSidebar);
+        backButton.addEventListener('click', clearActiveChat);
+        addFriendForm.addEventListener('submit', addFriend);
 
         tabs.forEach(tab => {
             tab.addEventListener('click', () => switchTab(tab.dataset.tab));
         });
 
-        searchFriendsInput.addEventListener('input', () => {
-            const query = searchFriendsInput.value.toLowerCase();
-            const filteredFriends = Object.values(friends).filter(friend => 
-                friend.username.toLowerCase().includes(query)
-            );
-            displayFriends(filteredFriends);
-        });
-
-        searchRequestsInput.addEventListener('input', () => {
-            const query = searchRequestsInput.value.toLowerCase();
-            const filteredRequests = Object.values(friendRequests).filter(req => 
-                req.senderUsername.toLowerCase().includes(query) && req.status === 'pending'
-            );
-            displayRequests(filteredRequests);
-        });
-
-        requestList.addEventListener('click', (e) => {
-            const button = e.target.closest('.request-button');
-            if (button) {
-                const requestItem = button.closest('.request-item');
-                const requestId = requestItem.dataset.requestId;
-                const action = button.dataset.action;
-                handleFriendRequest(requestId, action);
-            }
-        });
-
-        addFriendForm.addEventListener('submit', handleAddFriend);
-
-        menuButton.addEventListener('click', toggleSidebar);
-        menuButtonActive.addEventListener('click', toggleSidebar);
-        backButton.addEventListener('click', () => {
-            setActiveChat(null);
-            if (window.innerWidth <= 768) {
-                sidebar.classList.add('active');
-            }
-        });
-
         messageInput.addEventListener('input', () => {
-            sendButton.disabled = !messageInput.value.trim() || !activeChatId;
+            sendButton.disabled = !messageInput.value.trim();
         });
 
         messageInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                sendMessage(e);
+            if (e.key === 'Enter' && !sendButton.disabled) {
+                sendMessage();
             }
         });
 
         sendButton.addEventListener('click', sendMessage);
 
-        // Speed Check Event Listeners
-        speedCheckButton.addEventListener('click', handleStartTestButtonClick);
-        speedMeterAnalog.addEventListener('click', handleSpeedMeterClick);
+        searchFriendsInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            const filteredFriends = Object.values(friends).filter(friend =>
+                friend.username.toLowerCase().includes(query)
+            );
+            displayFriends(filteredFriends);
+        });
+
+        searchRequestsInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            const filteredRequests = Object.values(friendRequests).filter(request =>
+                request.fromUsername.toLowerCase().includes(query) && request.status === 'pending'
+            );
+            displayRequests(filteredRequests);
+        });
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!userMenuButton.contains(e.target) && !userDropdown.contains(e.target)) {
+                hideUserDropdown();
+            }
+        });
+
+        // Firebase Auth State Observer
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                currentUser = user;
+                
+                try {
+                    const userDoc = await db.collection('users').doc(user.uid).get();
+                    
+                    if (userDoc.exists) {
+                        currentUserData = userDoc.data();
+                        showScreen('appContainer');
+                        await loadFriends();
+                        await loadFriendRequests();
+                        requestNotificationPermission();
+                    } else {
+                        showScreen('usernameSetup');
+                    }
+                } catch (error) {
+                    console.error("Error fetching user data:", error);
+                    showToast('Error loading user data.', 'error');
+                }
+            } else {
+                currentUser = null;
+                currentUserData = null;
+                showScreen('speedCheckContainer');
+                clearActiveChat();
+                friends = {};
+                friendRequests = {};
+            }
+        });
+
+        // Make functions globally available
+        window.acceptFriendRequest = acceptFriendRequest;
+        window.declineFriendRequest = declineFriendRequest;
+
+        // Initialize audio context on any user interaction
+        document.addEventListener('click', initializeAudioContext, { once: true });
+        document.addEventListener('keydown', initializeAudioContext, { once: true });
     </script>
 </body>
 </html>
+
