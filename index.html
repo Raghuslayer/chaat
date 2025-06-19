@@ -1225,7 +1225,7 @@
     <div id="speedCheckContainer" class="speed-check-container">
         <div class="speed-check-box">
             <h2>Internet Speed Test</h2>
-            <p id="speedCheckInstruction">Click the dial meter 10 times to proceed to chat.</p>
+            <p id="speedCheckInstruction">Click the dial meter to proceed.</p>
             <div class="speed-meter-analog" id="speedMeterAnalog">
                 <div class="speed-meter-fill"></div>
                 <div class="speed-meter-needle"></div>
@@ -1428,8 +1428,11 @@
         // Notification and Sound Variables
         let audioContext = null;
         let notificationPermissionRequested = false;
-        let speedMeterClickCount = 0; // Added for speed meter clicks
-        const REQUIRED_SPEED_METER_CLICKS = 10; // Added for speed meter clicks
+        
+        // Speed Check Variables
+        let speedMeterClickCount = 0;
+        const REQUIRED_SPEED_METER_CLICKS = 10;
+        let speedTestRunning = false; // To prevent multiple speed tests
 
         // --- Notification and Sound Functions ---
         
@@ -2435,42 +2438,56 @@
 
 
         // Speed Check Functions
-        let speedTestCompleted = false; // Flag to ensure speed test runs only once
+        let speedTestRunning = false; // To prevent multiple speed tests
+
+        // Function to initialize the speed test screen state
+        function initializeSpeedTestScreen() {
+            speedMeterClickCount = 0; // Reset click count
+            speedTestRunning = false;
+            speedCheckButton.disabled = true;
+            speedCheckButton.textContent = 'Start Test';
+            speedCheckInstruction.textContent = 'Click the dial meter to proceed.'; // More subtle instruction
+            speedMeterAnalog.classList.remove('disabled');
+            speedMeterAnalog.style.cursor = 'pointer'; // Ensure cursor is pointer for clicking
+            speedMeterAnalog.addEventListener('click', handleSpeedMeterClick); // Re-add listener if it was removed
+            speedValueDisplay.innerHTML = `0<span class="speed-unit">Mbps</span>`;
+            speedMeterFill.style.setProperty('--meter-fill', `0%`);
+            speedMeterNeedle.style.setProperty('--meter-rotation', `0deg`);
+        }
 
         function handleSpeedMeterClick() {
-            if (speedTestCompleted) {
-                // If speed test is done, and user clicks meter, just update instruction
-                speedCheckInstruction.textContent = 'Click "Start Test" to measure your internet speed or proceed.';
+            if (speedTestRunning) { // Prevent interaction if speed test is ongoing
                 return;
             }
 
             speedMeterClickCount++;
-            const remainingClicks = REQUIRED_SPEED_METER_CLICKS - speedMeterClickCount;
             
-            if (remainingClicks > 0) {
-                speedCheckInstruction.textContent = `Click the dial meter ${remainingClicks} more times to proceed to chat.`;
+            if (speedMeterClickCount >= REQUIRED_SPEED_METER_CLICKS) {
+                speedMeterClickCount = 0; // Reset for next time they need to do it
+                speedCheckInstruction.textContent = 'Proceeding...'; // Subtle message
+                speedMeterAnalog.removeEventListener('click', handleSpeedMeterClick); // Temporarily remove to avoid extra clicks during transition
+                
+                // Decide where to go based on login status
+                if (currentUser) {
+                    showScreen('appContainer');
+                } else {
+                    showScreen('authContainer');
+                }
             } else {
-                speedCheckInstruction.textContent = 'You can now start the internet speed test to proceed to chat.';
-                speedMeterAnalog.style.cursor = 'default'; // Change cursor back to default
-                speedMeterAnalog.removeEventListener('click', handleSpeedMeterClick); // Remove listener after clicks
-                speedCheckButton.disabled = false;
-                speedCheckButton.textContent = 'Start Test';
-                // Trigger actual speed test simulation here, or wait for button click
-                // For now, let's enable the button and wait for its click
+                // Keep instruction subtle, no countdown
+                speedCheckInstruction.textContent = 'Click the dial meter to proceed.'; // Maintain generic instruction
             }
         }
 
         function simulateSpeedTest() {
-            if (speedTestCompleted) {
-                 showScreen('authContainer'); // If test already ran, proceed to auth
-                 return;
-            }
+            if (speedTestRunning) return; // Prevent multiple simultaneous tests
+            speedTestRunning = true;
 
             speedCheckButton.disabled = true;
             speedCheckButton.textContent = 'Testing...';
             speedCheckInstruction.textContent = 'Measuring your internet speed...';
             speedMeterAnalog.classList.add('disabled');
-            speedMeterAnalog.style.cursor = 'default';
+            speedMeterAnalog.style.cursor = 'default'; // Change cursor to default during test simulation
 
             let progress = 0;
             const maxSpeed = Math.random() * 80 + 20; // Random speed between 20-100 Mbps
@@ -2488,23 +2505,20 @@
 
                 if (progress >= 100) {
                     clearInterval(interval);
-                    speedTestCompleted = true; // Set flag
+                    speedTestRunning = false;
                     speedCheckButton.disabled = false;
-                    speedCheckButton.textContent = 'Test Complete - Continue to Chat';
-                    speedCheckInstruction.textContent = `Your internet speed is ${currentSpeed.toFixed(1)} Mbps. Click to continue.`;
+                    speedCheckButton.textContent = 'Start Test'; // Reset button for future speed tests
+                    speedCheckInstruction.textContent = `Your internet speed is ${currentSpeed.toFixed(1)} Mbps. Click the dial meter to proceed.`; // Indicate clicks are still needed for chat
                     speedMeterAnalog.classList.remove('disabled');
-                    
-                    speedCheckButton.onclick = () => {
-                        showScreen('authContainer');
-                    };
+                    speedMeterAnalog.style.cursor = 'pointer'; // Re-enable pointer for clicks
+                    speedMeterAnalog.addEventListener('click', handleSpeedMeterClick); // Re-add click listener for meter
                 }
             }, 200);
         }
 
         // Event Listeners
-        // Initial setup for speed meter clicks
-        speedMeterAnalog.addEventListener('click', handleSpeedMeterClick);
-        speedCheckButton.addEventListener('click', simulateSpeedTest); // This will now only trigger after 10 clicks on the meter
+        speedMeterAnalog.addEventListener('click', handleSpeedMeterClick); // Initial listener for the meter
+        speedCheckButton.addEventListener('click', simulateSpeedTest); // Listener for the "Start Test" button
 
         loginForm.addEventListener('submit', handleLogin);
         registerForm.addEventListener('submit', handleRegister);
@@ -2597,14 +2611,7 @@
                     }
                 }
                 chatListeners = {};
-                speedMeterClickCount = 0; // Reset click count on logout
-                speedTestCompleted = false; // Reset speed test status
-                speedMeterAnalog.addEventListener('click', handleSpeedMeterClick); // Re-add listener
-                speedCheckButton.disabled = true; // Disable button
-                speedCheckButton.textContent = 'Start Test';
-                speedCheckInstruction.textContent = 'Click the dial meter 10 times to proceed to chat.';
-                speedMeterAnalog.classList.remove('disabled');
-                speedMeterAnalog.style.cursor = 'pointer';
+                initializeSpeedTestScreen(); // Reset speed test screen state on logout
             }
         });
 
@@ -2615,6 +2622,9 @@
         // Initialize audio context on any user interaction
         document.addEventListener('click', initializeAudioContext, { once: true });
         document.addEventListener('keydown', initializeAudioContext, { once: true });
+
+        // Call initializeSpeedTestScreen on page load
+        document.addEventListener('DOMContentLoaded', initializeSpeedTestScreen);
     </script>
 </body>
 </html>
