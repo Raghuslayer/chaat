@@ -547,6 +547,14 @@
 
         .friend-info {
             flex: 1;
+            display: flex; /* Make friend-info a flex container */
+            align-items: center; /* Align items vertically */
+            justify-content: space-between; /* Space out name/status and indicator */
+        }
+        .friend-info .name-and-status {
+            display: flex;
+            flex-direction: column;
+            flex: 1; /* Allow it to take available space */
         }
 
         .friend-name {
@@ -559,6 +567,23 @@
             font-size: clamp(0.75rem, 2vw, 0.85rem);
             color: var(--gray-text);
             margin-top: 0.2rem;
+        }
+
+        /* Online Status Indicator */
+        .online-indicator {
+            width: 0.6rem;
+            height: 0.6rem;
+            border-radius: 50%;
+            margin-left: auto; /* Push to right */
+            flex-shrink: 0;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .online-indicator.online {
+            background-color: var(--success-color); /* Green */
+            box-shadow: 0 0 5px var(--success-color);
+        }
+        .online-indicator.offline {
+            background-color: var(--gray-text); /* Gray */
         }
 
         .unread-dot {
@@ -1397,14 +1422,15 @@
                 padding: clamp(1rem, 4vw, 2rem);
             }
 
+            /* Increased minimum size for better touch target */
             .chat-input button {
-                width: clamp(2.2rem, 8vw, 2.7rem);
-                height: clamp(2.2rem, 8vw, 2.7rem);
+                width: clamp(2.5rem, 8vw, 3rem); 
+                height: clamp(2.5rem, 8vw, 3rem);
             }
-
+            /* Increased minimum size for better touch target */
             .friend-avatar {
-                width: clamp(2.2rem, 8vw, 2.7rem);
-                height: clamp(2.2rem, 8vw, 2.7rem);
+                width: clamp(2.5rem, 8vw, 3rem);
+                height: clamp(2.5rem, 8vw, 3rem);
             }
 
             .chat-container {
@@ -1416,51 +1442,53 @@
                 height: 100%;
             }
 
+            /* Adjust chat-messages padding to account for fixed chat-input height on mobile */
             .chat-messages {
-                padding-bottom: calc(clamp(0.8rem, 2vw, 1.2rem) + clamp(2.5rem, 10vw, 3rem) + clamp(0.8rem, 2vw, 1.2rem)); /* Account for fixed chat-input height */
+                padding-bottom: calc(clamp(0.8rem, 2vw, 1.2rem) + clamp(2.5rem, 10vw, 3rem) + clamp(0.8rem, 2vw, 1.2rem)); 
             }
         }
 
         @media (max-width: 480px) {
             :root {
-                --base-font-size: clamp(0.75rem, 3.5vw, 0.9rem);
+                --base-font-size: clamp(0.8rem, 3.5vw, 0.9rem); /* Slightly increased minimum font size */
                 --sidebar-width: 100%;
             }
 
             .auth-box {
-                width: clamp(14rem, 98vw, 18rem);
-                padding: clamp(0.8rem, 3.5vw, 1.5rem);
+                width: clamp(16rem, 98vw, 20rem); /* Slightly wider on very small screens */
+                padding: clamp(1rem, 4vw, 2rem); /* Increased minimum padding */
             }
 
             .auth-logo h1 {
-                font-size: clamp(1.8rem, 7vw, 2.2rem);
+                font-size: clamp(2rem, 7vw, 2.4rem); /* Increased minimum font size */
             }
 
             .form-group input {
-                padding: clamp(0.5rem, 2.5vw, 0.7rem);
+                padding: clamp(0.6rem, 2.5vw, 0.8rem); /* Increased minimum padding */
             }
 
             .auth-button {
-                padding: clamp(0.6rem, 2.5vw, 0.9rem) 1rem;
-                font-size: clamp(0.85rem, 3vw, 1rem);
+                padding: clamp(0.7rem, 2.5vw, 1rem) 1rem; /* Increased minimum padding */
+                font-size: clamp(0.9rem, 3vw, 1.1rem); /* Increased minimum font size */
             }
 
             .chat-input input {
-                padding: clamp(0.5rem, 2.5vw, 0.8rem) clamp(0.7rem, 3vw, 1rem);
+                padding: clamp(0.6rem, 2.5vw, 0.9rem) clamp(0.7rem, 3vw, 1rem); /* Increased minimum padding */
             }
 
+            /* Adjust chat-messages padding to prevent content from going under fixed input */
             .chat-messages {
-                padding-bottom: calc(clamp(0.6rem, 2vw, 0.9rem) + clamp(2.2rem, 8vw, 2.7rem) + clamp(0.6rem, 2vw, 0.9rem));
+                padding-bottom: calc(clamp(0.8rem, 2vw, 1.2rem) + clamp(2.5rem, 8vw, 3rem) + clamp(0.8rem, 2vw, 1.2rem)); /* Based on increased button size */
             }
 
             .message {
-                max-width: 95%;
-                padding: clamp(0.5rem, 2.5vw, 0.8rem) clamp(0.7rem, 3vw, 1rem);
+                max-width: 90%; /* Allow messages to be a bit wider */
+                padding: clamp(0.6rem, 2.5vw, 0.9rem) clamp(0.7rem, 3vw, 1rem); /* Increased minimum padding */
             }
 
             .toast {
-                max-width: clamp(10rem, 90vw, 16rem);
-                min-width: clamp(8rem, 80vw, 12rem);
+                max-width: clamp(12rem, 90vw, 18rem); /* Slightly larger minimum width for toasts */
+                min-width: clamp(10rem, 80vw, 14rem);
                 bottom: clamp(0.75rem, 3vw, 1rem);
                 right: clamp(0.75rem, 3vw, 1rem);
             }
@@ -1703,6 +1731,18 @@
         let speedTestOngoing = false; // To prevent multiple speed tests from running simultaneously
         let speedTestCompleted = false; // Flag to indicate if a speed test has completed
 
+        // Global variable to store the interval ID for lastSeen updates
+        let userActivityInterval = null; 
+
+        // Stores unsubscribe functions for real-time listeners for chat messages (for notifications)
+        let chatListeners = {}; 
+
+        // Stores unsubscribe functions for real-time listeners for friend user data (for online status)
+        let friendStatusListeners = {}; 
+
+        const EPHEMERAL_DURATION_MS = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+        const ONLINE_THRESHOLD_MS = 5 * 60 * 1000; // 5 minutes for online status
+
         // --- Notification and Sound Functions ---
         
         /**
@@ -1716,7 +1756,7 @@
         }
 
         /**
-         * Displays the notification permission banner.
+         * Displays the notification banner.
          */
         function showNotificationBanner() {
             const banner = document.getElementById('notificationBanner');
@@ -1764,7 +1804,7 @@
                 const notification = new Notification(title, {
                     body: body,
                     // Generic chat icon as base64 SVG to avoid external requests
-                    icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA0OCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQ4IiBoZWlnaHQ9IjQ4IiByeD0iOCIgZmlsbD0iIzRmNDZlNSIvPgo8cGF0aCBkPSJNMjQgMTJjNi42MjcgMCAxMiA1LjM3MyAxMiAxMnMtNS4zNzMgMTItMTIgMTItMTItNS4zNzMtMTItMTIgNS4zNzMtMTIgMTItMTJ6bTAgMmMtNS41MjMgMC0xMCA0LjQ3Ny0xMCAxMHM0LjQ3NyAxMCAxMCAxMCAxMC00LjQ3NyAxMC0xMC00LjQ3Ny0xMC0xMC0xMHoibTI0IDhjMCA2LjYyNy01LjM3MyAxMi0xMiAxMnMtMTItNS4zNzMtMTItMTIgNS4zNzMtMTIgMTIgMTIgMTIgNS4zNzMgMTIgMTJ6bS00LjUxNiAwYy0uNzgxLTQuMzY5LTIuMzgyLTguMzYtNC41MTYtMTJhMTEuOTczIDExLjk3MyAwIDAg0C03LjE1MSAyLjQ5Yy01LjE2OCAzLjcyNi03LjUzMyA4Ljk2OS03LjEzMyAxNC43MkwyNi4wMTIgMjZsLS4wMTIgLjEwMUMyNS43OTcgMjUuNTQ1IDI1LjkwNiAyNS42NTQgMjYgMjZjLS41MzEuOTMtLjU5MSAxLjQ5LS4yMjQgMS42NzUgMS44MS42MTUuMDM2IDEuNDQyIDQuMDI0IDIuMTc1LjE5Ny44OS41OSAxLjc0NiAxLjE1OCAyLjMxMy4zMi4zMjcuNTY5LjU2NS43MDYuNjM2Ljg1MS0uMjk0IDEuNDIxLS42OTIgMS44OTgtMS4wNy42NDEtLjUwNyAxLjMyNi0uOTcxIDEuOTM4LTEuMzc5LjQ4NC0uMzIxLjk0My0uNTI4IDEuMjk4LS42MTcuNDc1LS4xMy44Mi0uMDY5IDEuMTU2LS4wMDkuMzM1LjA2MS42NTUuMTU5Ljk1MS4yODJjLjYzNi4yNTQgMS4yNzQuNTU0IDEuOTA3Ljg2MS43MDQuMzgxIDEuNDA1Ljc5MyAyLjA2IDEuMjcyLjU5OC40MzkgMS4xNS44NDggMS42NTggMS4xODMuNzYyLjUwOSAxLjM3Mi44OTIgMS44MTUuOTQ1LjE2LjAyMS4zMDUtLjA5My4zODEtLjIxOC45NzYtMS41OCAxLjk5NC0zLjI2NiAyLjgzNS01LjA2NC42MjUtMS4zMzggMS4wNTUtMi43NzUgMS4yNTYtNC4zMDlsLjAxMS0uMDY0QzM3LjQ4NCAyNy43MzUgMzYuNTg1IDI0Ljk3MyAzNS40ODQgMjR6bS02Ljg5OCA0LjgyM2MuNDc2LjAyMS45NDQuMDkxIDEuNDAyLjIwMS45NTEuMjE3IDEuODk0LjQ5NyAyLjgwMi43OTkuNjk4LjI0MSAxLjM3My40NTIgMi4wMS42MTRjLjA3My4yMjUuMjM0LjQ1LjUwNi41ODMuMjcuMTMyLjU1Ny4xNTYuODI3LjExLjI3LS4wNDYuNDgyLS4xNjYuNjE5LS4yNDguNTcxLS40OTYgMS4xMy0uOTY2IDEuNzEtMS40OC41MzUtLjQ4MSAxLjA1Mi0uOTkgMS41MTQtMS41MTcuNjgyLS41OTUgMS4zMjgtMS4wOTggMS44NDItMS40MTIuNTYyLS4zNDUtMS4xLS41MzYgMS41MDktLjQ1Ny40MTkuMDc4LjcxNS40MDIuOTUyLjczNi4xNzYuMjQ5LjMxOC42NjYuNDQ3IDEuMTUzLjExLjMyMi4yMzYuNjMzLjM2Ny45NjQuMjc1Ljc1LjQ3OCAxLjU0Ni42MSAyLjM2Nmg1LjcwMWMtLjI3NC0uNjEzLS42MjEtMS4xODQtMS4wMzMtMS42ODEtLjQ5OS0uNTgxLTEuMDU3LTEuMDUxLTEuNzA1LTEuNDE1LS41ODUtLjMyNC0xLjE3MS0uNjI4LTEuNjYtLjcxNS0uNDktLjA4Ny0uOTMyLS4wNDEtMS4zNTUtLjAyLS40MjMuMDIxLS43OTYuMTIzLTEuMDk3LjI3LS42OTguMzMzLTEuMzU0Ljc1My0xLjk2NSAxLjE5Mi0uNjExLjQzOS0xLjE4LjkwNi0xLjY5MSAxLjQwMy0uOTg4Ljk3OC0xLjkwMiAxLjg5OS0yLjQxIDIuMzc5LS41MDcuNDgtLjc5OS44ODMtLjk1NSAxLjE4MS0uMTU2LjI5OS0uMjE1LjU1OS0uMjQxLjc4My0uMTA5LS4wMTgtLjIxLS4wMzYtLjMxMy0uMDU1LS44ODctLjE4OS0xLjY4Ny0uNDIyLTIuMjEzLS41NjEtLjc5OS0uMjEyLTEuNTc1LS4zNTItMi4zNjMtLjQxOC0uOTMyLS4wNzgtMS44Ni0uMDkzLTIuNzUyLS4wNjktLjg5Mi4wMjMtMS43NjkuMTM4LTIuNjExLjM0NC0uODY2LjIwNi0xLjcwOS40OTMtMi40NzcuODQ3LS40NTguMjE1LS44OTcuNDI5LTEuMzE0LjYyOS0xLjk0MS42OTUtMi4yOTYgMS4zOTctNC40MTUgMy40NjMtNi4wOTIgNS42MDQtLjQ0NC41NjEtLjU2MiAxLjM1Ni0uMzU0IDIuMDQ5Ljc5MSAyLjgxMiAyLjQ0OCA1LjY3IDQuNTcgNy42ODkgMi4zMTkgMi4xNzkgNS4xNiAzLjcxNyA4LjM5MiAzLjkxMy4zMDIuMDI1LjU0MS0uMDcyLjcxLS4yNzguNjE1LS43MzMgMS41MDgtMS44MDcgMi40NTItMi40MDguNjQtLjM5OCAxLjI2LS42OTYgMS44NDItLjguNjgtLjIxMSAxLjMyOC0uMzMxIDEuODk5LS4zNzkuNTc0LS4wNDcgMS4xMjgtLjA3MyAx.NjY2LS4wNzMgMS45NzkuMDIgMy41MjkuMDk2IDQuNjI3LjI5NSAxLjY1NS4yOTkgMy4yNi43OTUgNC43MyAx.NTEyLjU3Ny4yNzIgMS4xMzYuNTI1IDEuNjU0LjczNi42NC4yOTEgMS4yNDYuNDUyIDEuNzUuNDUyLjUwNC4wMDEuOTQtLjEzMiAx.MzA5LS4zOC4zNTgtLjI0OC42MzMtLjU4OC44NTQtLjk3NS4yMjEtLjM4Ny4zODItLjg0My40ODctMS4yNjIuNTIzLTEuOTg3IDEuNzQ4LTMuOTQ2IDMuNjIzLTUuMDYxLjc2Mi0uNDMzIDEuNDcxLS42NjcgMi4wOTUtLjc5OS41OTctLjEyNiAxLjE0NS0uMTIxIDEuNjU1LS4wNTIuNTkuMDgyLjk4Ny41MzMgMS4yOTcuODU1LjI4LjI4Mi40OTguNjI0LjY0OS45MDQuMTc4LjMyNS4zMjkuNjY4LjQ0NyAxLjA0NS4zNjIgMS41ODQuNjY4IDMuMTY3Ljc5NyA0Ljc0OS4xNTcgMS45NzktLjE3MyAzLjkwNy0uNjU3IDUuNDk5LS40NTggMS40OTgtMS42OTcgMi44OTMtMy4yMTEgMy44Mzd6TTIzLjcwNyAyOC42NjljLS43MzYtLjA3MS0xLjczNC0uNDQ4LTIuMjgzLS44NzItLjY3LS40OTYtMS4wMTctMS4xOTQtMS4wMzMtMS45NTEtLjAxOS0uODM4LjMzNy0xLjYzNi45MzYtMi4zNDYuNjY1LS43NzQgMS41NjItMS4yNDUgMi41NDctMS40OTcuODk1LS4yMjQgMS43ODctLjI0IDIuNjY2LS4wNTUuODYuMTgyIDEuNjg3LjUyMiAyLjQ1My45OTEuNzg2LjQ3NSAxLjUwMSAxLjAxNiAyLjA5NCAxLjY4Ny42OTIuNzcyIDEuMTU0IDEuNjgyIDEuMzggMi42MjEuMjY0IDEuMTI0LjA5MyAyLjIxMy0uNDgxIDMuMTQ1LS42MTUuOTkzLTEuNjU5IDEuNzM3LTIuODMxIDIuMTM5LS44NzMuMzA2LTEuNzUyLjQwOC0yLjY3NS4yNjctLjk1Ni0uMTQ4LTEuODg4LS40Ny0yLjc0Mi0uOTYyeiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+Cg==', 
+                    icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA0OCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQ4IiBoZWlnaHQ9IjQ4IiByeD0iOCIgZmlsbD0iIzRmNDZlNSIvPgo8cGF0aCBkPSJNMjQgMTJjNi42MjcgMCAxMiA1LjM3MyAxMiAxMnMtNS4zNzMgMTItMTIgMTItMTItNS4zNzMtMTItMTIgNS4zNzMtMTIgMTItMTJ6bTAgMmMtNS41MjMgMC0xMCA0LjQ3Ny0xMCAxMHM0LjQ3NyAxMCAxMCAxMCAxMC00LjQ3NyAxMC0xMC00LjQ3Ny0xMC0xMC0xMHooMjQgMTJjNi42MjcgMCAxMiA1LjM3MyAxMiAxMnMtNS4zNzMgMTItMTIgMTItMTItNS4zNzMtMTItMTIgNSuMzczLTEyIDEyLTEyek0zOC4yNyAyNS43Yy0uNzgxLTQuMzY5LTIuMzgyLTguMzYtNC41MTYtMTJhMTEuOTczIDExLjk3MyAwIDAgMC03LjE1MSAyLjQ5Yy01LjE2OCAzLjcyNi03LjUzMyA4Ljk2OS03LjEzMyAxNC43MkwyNi4wMTIgMjZsLS4wMTIgLjEwMUMyNS43OTcgMjUuNTQ1IDI1LjkwNiAyNS42NTQgMjYgMjZjLS41MzEuOTMtLjU5MSAxLjQ5LS4yMjQgMS42NzUgMS44MS42MTUuMDM2IDEuNDQyIDQuMDI0IDIuMTc1LjE5Ny44OS41OSAxLjc0NiAxLjE1OCAyLjMxMy4zMi4zMjcuNTY5LjU2NS43MDYuNjM2Ljg1MS0uMjk0IDEuNDIxLS42OTIgMS44OTgtMS4wNy42NDEtLjUwNyAxLjMyNi0uOTcxIDEuOTM4LTEuMzc5LjQ4NC0uMzIxLjk0My0uNTI4IDEuMjk4LS42MTcuNDc1LS4xMy44Mi0uMDY5IDEuMTU2LS4wMDkuMzM1LjA2MS42NTUuMTU5Ljk1MS4yODJjLjYzNi4yNTQgMS4yNzQuNTU0IDEuOTA3Ljg2MS43MDQuMzgxIDEuNDA1Ljc5MyAyLjA2IDEuMjcyLjU5OC40MzkgMS4xNS44NDggMS.2NyMi43NTItLjA2OS0uODkyLjAyMy0xLjc2OS4xMzgtMi42MTEuMzQ0LS44NjYuMjA2LTEuNzAuNDkzLTIuNDc3Ljg0Ny0uNDU4LjIxNS0uODk3LjQyOS0xLjMxNC42MjktMS45NDEuNjk1LTIuMjk2IDEuMzk3LTQuNDE1IDMuNDYzLTYuMDkyIDUuNjA0LS40NDQuNTYxLS41NjIgMS4zNTYtLjM1NCAyLjA0OS43OTEgMi44MTIgMi40NDggNS42NyA0LjU3IDcuNjg5IDIuMzE5IDIuMTc5IDUuMTYgMy43MTcgOC4zOTIgMy45MTMuMzAyLjAyNS41NDEtLjA3Mi43MS0uMjc4LjYxNS0uNzMzIDEuNTA4LTEuODA3IDIuNDUyLTIuNDA4LjY0LS4zOTggMS4yNi0uNjk2IDEuODQyLS44LjY4LS4yMTEgMS4zMjgtLjMzMSAxLjg5OS0uMzc5LjU3NC0uMDQ3IDEuMTI4LS4wNzMgMS42NjYtLjA3MyAx.OTc5LjAyIDMuNTI5LjA5NiA0LjYyNy4yOTUgMS42NTUuMjk5IDMuMjYuNzk1IDQuNzMgMS4NTEyLjU3Ny4yNzIgMS4xMzYuNTI1IDEuNjU0LjczNi42NC4yOTEgMS4yNDYuNDUyIDEuNzUuNDUyLjUwNC4wMDEuOTQtLjEzMiAx.MzA5LS4zOC4zNTgtLjI0OC42MzMtLjU4OC44NTQtLjk3NS4yMjEtLjM4Ny4zODItLjg0My40ODctMS4yNjIuNTIzLTEuOTg3IDEuNzQ4LTMuOTQ2IDMuNjIzLTUuMDYxLjc2Mi0uNDMzIDEuNDcxLS42NjcgMi4wOTUtLjc5OS41OTctLjEyNiAxLjE0NS0uMTIxIDEuNjU1LS4wNTIuNTkuMDgyLjk4Ny41MzMgMS4yOTcuODU1LjI4LjI4Mi40OTguNjI0LjY0OS45MDQuMTc4LjMyNS4zMjkuNjY4LjQ0NyAxLjA0NS4zNjIgMS41ODQuNjY4IDMuMTY3Ljc5NyA0Ljc0OS4xNTcgMS45NzktLjE3MyAzLjkwNy0uNjU3IDUuNDk5LS40NTggMS40OTgtMS42OTcgMi44OTMtMy4yMTEgMy44Mzd6TTIzLjcwNyAyOC42NjljLS43MzYtLjA3MS0xLjczNC0uNDQ4LTIuMjgzLS44NzItLjY3LS40OTYtMS4wMTctMS4xOTQtMS4wMzMtMS45NTEtLjAxOS0uODM4LjMzNy0xLjYzNi45MzYtMi4zNDYuNjY1LS43NzQgMS41NjItMS4yNDUgMi41NDctMS40OTcuODk1LS4yMjQgMS43ODctLjI0IDIuNjY2LS4wNTUuODYuMTgyIDEuNjg3LjUyMiAyLjQ1My45OTEuNzg2LjQ3NSAxLjUwMSAxLjAxNiAyLjA5NCAxLjY4Ny42OTIuNzcyIDEuMTU0IDEuNjgyIDEuMzggMi42MjEuMjY0IDEuMTI0LjA5MyAyLjIxMy0uNDgxIDMuMTQ1LS42MTUuOTkzLTEuNjU5IDEuNzM3LTIuODMxIDIuMTM5LS44NzMuMzA2LTEuNzUyLjQwOC0yLjY3NS4yNjctLjk1Ni0uMTQ4LTEuODg4LS40Ny0yLjc0Mi0uOTYyeiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+Cg==', 
                     silent: true, // Use custom sound instead
                     tag: 'ephemeral-chat-notification', // Generic tag to stack/update notifications
                     requireInteraction: false // Allow notification to auto-close
@@ -1918,9 +1958,73 @@
         let activeFriendId = null; // ID of the friend in the currently selected chat
         let activeFriendUsername = null; // Username of the friend in the currently selected chat
         let messageListener = null; // Firestore unsubscribe function for active chat messages
-        // Object to hold unsubscribe functions for all chat overview listeners (for unread status/notifications)
-        let chatListeners = {}; 
-        const EPHEMERAL_DURATION_MS = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+        
+        // Global objects to store friends and requests data
+        let friends = {}; // Stores accepted friends data { [friendId]: { id, username, chatId, hasUnread, lastSeen, statusListenerUnsub } }
+        let friendRequests = {}; // Stores pending friend requests { [requestId]: { id, fromUserId, fromUsername, status } }
+
+        /**
+         * Updates the current user's `lastSeen` timestamp in Firestore.
+         * This function is called periodically to maintain online status.
+         */
+        async function updateLastSeen() {
+            if (currentUser && currentUserData && currentUser.uid) {
+                try {
+                    await db.collection('users').doc(currentUser.uid).update({
+                        lastSeen: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                } catch (error) {
+                    console.error("Error updating lastSeen:", error);
+                }
+            }
+        }
+
+        /**
+         * Handles user logout.
+         * Unsubscribes all Firestore listeners and clears intervals to prevent memory leaks.
+         */
+        async function handleLogout() {
+            try {
+                // Clear the lastSeen update interval
+                if (userActivityInterval) {
+                    clearInterval(userActivityInterval);
+                    userActivityInterval = null;
+                }
+
+                // Unsubscribe from active chat messages listener
+                if (messageListener) {
+                    messageListener(); 
+                    messageListener = null; // Clear the listener reference
+                }
+
+                // Unsubscribe from all chat overview listeners
+                for (const chatId in chatListeners) {
+                    if (chatListeners[chatId]) {
+                        chatListeners[chatId]();
+                    }
+                }
+                chatListeners = {}; // Clear the listeners object
+
+                // Unsubscribe from all friend status listeners
+                for (const friendId in friendStatusListeners) {
+                    if (friendStatusListeners[friendId]) {
+                        friendStatusListeners[friendId]();
+                    }
+                }
+                friendStatusListeners = {}; // Clear the listeners object
+
+                // Sign out from Firebase Auth
+                await auth.signOut();
+                // Suspend audio context if running
+                if (audioContext && audioContext.state === 'running') {
+                    audioContext.suspend();
+                }
+                showToast('Logged out successfully.', 'info');
+            } catch (error) {
+                console.error("Logout failed:", error);
+                showToast('Logout failed: ' + error.message, 'error');
+            }
+        }
 
         // --- UI Utility Functions ---
 
@@ -1984,34 +2088,44 @@
 
         /**
          * Formats a Firebase Timestamp object into a human-readable string.
-         * Also indicates if a message has expired based on EPHEMERAL_DURATION_MS.
+         * For messages, also indicates if a message has expired based on EPHEMERAL_DURATION_MS.
+         * For lastSeen, provides relative time.
          * @param {firebase.firestore.Timestamp} timestamp - The Firebase timestamp.
-         * @returns {string} Formatted time string or empty if expired.
+         * @param {boolean} forMessage - True if formatting for a chat message, false for lastSeen.
+         * @returns {string} Formatted time string or empty if expired (for message).
          */
-        function formatTimestamp(timestamp) {
+        function formatTimestamp(timestamp, forMessage = true) {
             if (!timestamp) return '';
             const date = timestamp.toDate();
             const now = new Date();
             const diffMs = now.getTime() - date.getTime();
 
-            // If message is older than ephemeral duration, return empty string (it's "gone")
-            if (diffMs > EPHEMERAL_DURATION_MS) {
-                return '';
+            if (forMessage && diffMs > EPHEMERAL_DURATION_MS) {
+                return ''; // Message expired
             }
 
-            const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+            const diffSeconds = Math.floor(diffMs / 1000);
+            const diffMinutes = Math.floor(diffSeconds / 60);
+            const diffHours = Math.floor(diffMinutes / 60);
+            const diffDays = Math.floor(diffHours / 24);
 
-            if (diffHours < 1) {
-                const diffMinutes = Math.floor(diffMs / (1000 * 60));
-                return diffMinutes <= 1 ? 'just now' : `${diffMinutes}m ago`;
+            if (diffMinutes < 1) {
+                return 'just now';
+            } else if (diffMinutes < 60) {
+                return `${diffMinutes}m ago`;
             } else if (diffHours < 24) {
                 return `${diffHours}h ago`;
+            } else if (diffDays < 7) {
+                return `${diffDays}d ago`;
             } else {
-                // For messages less than 24 hours old but more than 1 hour
-                const options = { month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+                const options = { month: 'short', day: 'numeric' };
+                if (date.getFullYear() !== now.getFullYear()) {
+                    options.year = 'numeric';
+                }
                 return date.toLocaleDateString(undefined, options);
             }
         }
+
 
         /**
          * Filters a list of messages to remove those older than the ephemeral duration.
@@ -2089,7 +2203,7 @@
                 const messageElement = document.createElement('div');
                 messageElement.classList.add('message', msg.senderId === currentUser.uid ? 'outgoing' : 'incoming');
                 messageElement.id = msg.id; // Assign message ID for easier reference (e.g., by notification listener)
-                const formattedTime = formatTimestamp(msg.timestamp);
+                const formattedTime = formatTimestamp(msg.timestamp, true); // Use true for message formatting
 
                 messageElement.innerHTML = `
                     <div class="message-content">${msg.text}</div>
@@ -2228,15 +2342,21 @@
                 await usersRef.doc(currentUser.uid).set({
                     username: username,
                     email: currentUser.email,
-                    // Optionally store creation timestamp or last login
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    lastSeen: firebase.firestore.FieldValue.serverTimestamp() // Initial lastSeen
                 }, { merge: true }); // Use merge to avoid overwriting existing data if any
 
                 currentUserData = { username: username, email: currentUser.email }; // Update global current user data
+                
+                // Start periodically updating lastSeen for the current user
+                userActivityInterval = setInterval(updateLastSeen, 60 * 1000); // Every 60 seconds
+                updateLastSeen(); // Initial update immediately
+
                 showScreen('appContainer'); // Transition to main app
                 showToast('Username set successfully! Welcome to Ephemeral Chat.', 'success');
                 requestNotificationPermission(); // Prompt for notifications after user is in app
                 setupChatListeners(); // Setup real-time chat listeners
+                setupFriendStatusListeners(); // Setup real-time listeners for friends' online status
                 initializeAudioContext(); // Ensure audio context is ready
             } catch (error) {
                 console.error("Error setting username:", error);
@@ -2246,37 +2366,6 @@
             }
         }
 
-        /**
-         * Handles user logout.
-         * Unsubscribes all Firestore listeners to prevent memory leaks.
-         */
-        async function handleLogout() {
-            try {
-                // Unsubscribe from active chat messages listener
-                if (messageListener) {
-                    messageListener(); 
-                    messageListener = null; // Clear the listener reference
-                }
-                // Unsubscribe from all chat overview listeners
-                for (const chatId in chatListeners) {
-                    if (chatListeners[chatId]) {
-                        chatListeners[chatId]();
-                    }
-                }
-                chatListeners = {}; // Clear the listeners object
-
-                // Sign out from Firebase Auth
-                await auth.signOut();
-                // Suspend audio context if running
-                if (audioContext && audioContext.state === 'running') {
-                    audioContext.suspend();
-                }
-                showToast('Logged out successfully.', 'info');
-            } catch (error) {
-                console.error("Logout failed:", error);
-                showToast('Logout failed: ' + error.message, 'error');
-            }
-        }
 
         // --- Chat Management Functions ---
 
@@ -2308,10 +2397,6 @@
                 displayFriends(Object.values(friends));
             }
         }
-
-        // Global objects to store friends and requests data
-        let friends = {}; // Stores accepted friends data { [friendId]: { id, username, chatId, hasUnread } }
-        let friendRequests = {}; // Stores pending friend requests { [requestId]: { id, fromUserId, fromUsername, status } }
 
         /**
          * Fetches a user's data from Firestore by their user ID.
@@ -2380,11 +2465,36 @@
 
                 const avatarInitial = getInitials(friend.username);
 
+                // Determine online status
+                const now = Date.now();
+                const lastSeenTime = friend.lastSeen ? friend.lastSeen.toDate().getTime() : 0;
+                const isOnline = (now - lastSeenTime) < ONLINE_THRESHOLD_MS; 
+
+                let statusText = '';
+                let statusClass = '';
+                if (isOnline) {
+                    statusText = 'Online';
+                    statusClass = 'online';
+                } else {
+                    statusText = 'Offline'; 
+                    statusClass = 'offline';
+                    // If last seen is available and not online, format it.
+                    if (friend.lastSeen) {
+                        const formattedLastSeen = formatTimestamp(friend.lastSeen, false); // Use false for non-message formatting
+                        if (formattedLastSeen !== '') {
+                            statusText = `Last seen ${formattedLastSeen}`;
+                        }
+                    }
+                }
+
                 friendElement.innerHTML = `
                     <div class="friend-avatar">${avatarInitial}</div>
                     <div class="friend-info">
-                        <div class="friend-name">${friend.username}</div>
-                        <div class="friend-status">Start chatting</div>
+                        <div class="name-and-status">
+                            <div class="friend-name">${friend.username}</div>
+                            <div class="friend-status">${statusText}</div>
+                        </div>
+                        <div class="online-indicator ${statusClass}"></div>
                     </div>
                     ${friend.hasUnread ? '<div class="unread-dot"></div>' : ''}
                 `;
@@ -2462,12 +2572,22 @@
                     .where('status', '==', 'accepted')
                     .get();
 
+                // Clear previous friends and their status listeners before re-populating
+                for (const friendId in friendStatusListeners) {
+                    if (friendStatusListeners[friendId]) {
+                        friendStatusListeners[friendId](); // Unsubscribe
+                    }
+                }
+                friendStatusListeners = {}; // Reset the object
+
                 friends = {}; // Reset friends object
 
                 for (const doc of snapshot.docs) {
                     const friendship = doc.data();
                     // Determine the friend's ID (the other participant)
                     const friendId = friendship.participants.find(id => id !== currentUser.uid);
+                    
+                    // Fetch initial friend data (including lastSeen if available)
                     const friendData = await fetchUserData(friendId);
 
                     if (friendData) {
@@ -2475,7 +2595,8 @@
                             id: friendId,
                             username: friendData.username,
                             chatId: friendship.chatId,
-                            hasUnread: false // Default to false, will be updated by listeners
+                            hasUnread: false, // Default to false, will be updated by notifications listener
+                            lastSeen: friendData.lastSeen || null // Initialize lastSeen from fetched data or null
                         };
                     }
                 }
@@ -2675,6 +2796,7 @@
                 await loadFriends();
                 await loadFriendRequests();
                 setupChatListeners(); // Re-setup listeners to include the new chat
+                setupFriendStatusListeners(); // Re-setup listeners to include the new friend's online status
 
             } catch (error) {
                 console.error("Error accepting friend request:", error);
@@ -2935,6 +3057,42 @@
             }
         }
 
+        /**
+         * Sets up real-time listeners for each friend's user document to track their online status.
+         */
+        async function setupFriendStatusListeners() {
+            if (!currentUser) return;
+
+            // Clear existing listeners
+            for (const friendId in friendStatusListeners) {
+                if (friendStatusListeners[friendId]) {
+                    friendStatusListeners[friendId](); // Unsubscribe
+                }
+            }
+            friendStatusListeners = {}; // Reset the object
+
+            // Iterate through current friends and set up listeners
+            for (const friendId in friends) {
+                const listener = db.collection('users').doc(friendId)
+                    .onSnapshot(docSnapshot => {
+                        if (docSnapshot.exists) {
+                            const friendUserData = docSnapshot.data();
+                            if (friends[friendId]) {
+                                // Update lastSeen for the friend
+                                friends[friendId].lastSeen = friendUserData.lastSeen;
+                                // Re-render the friend list to update status
+                                displayFriends(friends);
+                            }
+                        } else {
+                            console.warn(`Friend user document for ID ${friendId} not found.`);
+                        }
+                    }, error => {
+                        console.error(`Error listening to friend ${friendId} status:`, error);
+                    });
+                friendStatusListeners[friendId] = listener; // Store unsubscribe function
+            }
+        }
+
 
         // --- Speed Check Functions ---
 
@@ -3132,10 +3290,20 @@
             }
         });
 
+        // Event listeners for the notification banner buttons
+        enableNotificationsBtn.addEventListener('click', enableNotifications);
+        dismissBannerBtn.addEventListener('click', hideNotificationBanner); // Corrected this line
+
         // --- Firebase Authentication State Observer ---
         // This runs whenever the user's authentication state changes (login, logout, initial load)
         auth.onAuthStateChanged(async (user) => {
             currentUser = user; // Update the global currentUser object
+
+            // Clear any existing activity interval to prevent multiple intervals
+            if (userActivityInterval) {
+                clearInterval(userActivityInterval);
+                userActivityInterval = null;
+            }
 
             // Always show speedCheckContainer first when auth state changes or on initial load
             showScreen('speedCheckContainer');
@@ -3147,12 +3315,19 @@
                     const userDoc = await db.collection('users').doc(user.uid).get();
                     if (userDoc.exists) {
                         currentUserData = userDoc.data();
+                        
+                        // Start periodically updating lastSeen for the current user
+                        userActivityInterval = setInterval(updateLastSeen, 60 * 1000); // Every 60 seconds
+                        updateLastSeen(); // Initial update immediately
+
                         // Pre-load necessary data in the background. The actual UI will be shown
                         // only after the network check is completed (via handleSpeedMeterClick).
                         await loadFriends(); 
                         await loadFriendRequests();
                         requestNotificationPermission(); // Prompt for notifications
-                        setupChatListeners(); // Setup real-time listeners for all chats
+                        setupChatListeners(); // Setup real-time listeners for all chats (for new messages)
+                        setupFriendStatusListeners(); // Setup real-time listeners for friends' online status
+
                     } else {
                         // User is authenticated but hasn't set up a username yet.
                         currentUserData = null; 
@@ -3167,6 +3342,20 @@
                 // User is not logged in. Ensure currentUserData is null.
                 currentUserData = null;
                 // Speed check screen is already set up by initializeSpeedTestScreen.
+            }
+        });
+
+        // Add a listener for browser window/tab closing or navigation (best effort)
+        window.addEventListener('beforeunload', async () => {
+            if (currentUser && currentUserData) {
+                try {
+                    // One final attempt to update lastSeen, though not guaranteed on browser close
+                    await db.collection('users').doc(currentUser.uid).update({
+                        lastSeen: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                } catch (error) {
+                    console.warn("Could not update lastSeen on beforeunload:", error);
+                }
             }
         });
 
