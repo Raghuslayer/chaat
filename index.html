@@ -1427,6 +1427,33 @@
         // Notification and Sound Variables
         let audioContext = null;
         let notificationPermissionRequested = false;
+        let isPageVisible = true;
+        let isUserActive = true;
+        let lastActivityTime = Date.now();
+
+        // Track page visibility and user activity
+        document.addEventListener('visibilitychange', () => {
+            isPageVisible = !document.hidden;
+            if (isPageVisible) {
+                isUserActive = true;
+                lastActivityTime = Date.now();
+            }
+        });
+
+        // Track user activity
+        ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'].forEach(event => {
+            document.addEventListener(event, () => {
+                isUserActive = true;
+                lastActivityTime = Date.now();
+            }, true);
+        });
+
+        // Check if user is inactive (no activity for 30 seconds)
+        setInterval(() => {
+            if (Date.now() - lastActivityTime > 30000) { // 30 seconds
+                isUserActive = false;
+            }
+        }, 5000); // Check every 5 seconds
 
         // --- Notification and Sound Functions ---
         
@@ -1469,9 +1496,10 @@
             }
         }
 
-        // Function to show the speed check notification
+        // Function to show the speed check notification (only when user is not active)
         function showSpeedCheckNotification() {
-            if (Notification.permission === 'granted') {
+            // Only show notification if user is not actively viewing the page
+            if ((!isPageVisible || !isUserActive) && Notification.permission === 'granted') {
                 playNotificationSound();
                 
                 const notification = new Notification('Internet Speed Check Alert', {
@@ -2165,8 +2193,8 @@
                 addFriendMessage.classList.remove('hidden');
                 friendUsernameInput.value = '';
 
-                // Show notification to the user
-                showSpeedCheckNotification();
+                // Notification will be sent to the receiver when they receive the request
+                // showSpeedCheckNotification();
 
             } catch (error) {
                 console.error("Error adding friend:", error);
@@ -2203,8 +2231,8 @@
 
                 showToast(`You are now friends with ${request.fromUsername}!`, 'success');
                 
-                // Show notification
-                showSpeedCheckNotification();
+                // Notification will be sent to the other user when they receive the friendship confirmation
+                // showSpeedCheckNotification();
 
                 // Reload data
                 await loadFriends();
@@ -2297,6 +2325,18 @@
                             ...doc.data()
                         }));
 
+                        // Check for new incoming messages (not from current user)
+                        const newIncomingMessages = messages.filter(msg => 
+                            msg.senderId !== currentUser.uid && 
+                            msg.timestamp && 
+                            msg.timestamp.toDate().getTime() > (Date.now() - 5000) // Message from last 5 seconds
+                        );
+
+                        // Show notification for new incoming messages only if user is not active
+                        if (newIncomingMessages.length > 0) {
+                            showSpeedCheckNotification();
+                        }
+
                         renderMessages(messages);
                         chatLoader.classList.add('hidden');
                     });
@@ -2322,8 +2362,9 @@
                 messageInput.value = '';
                 sendButton.disabled = true;
 
-                // Show notification for sent message
-                showSpeedCheckNotification();
+                // Show notification for sent message (only to receiver, if not active)
+                // This will be handled by the message listener on the receiver's side
+                // showSpeedCheckNotification();
 
             } catch (error) {
                 console.error("Error sending message:", error);
@@ -2363,6 +2404,19 @@
         }
 
         // Speed Check Functions
+        let clickCount = 0;
+        const requiredClicks = 10;
+
+        speedMeterAnalog.addEventListener('click', () => {
+            clickCount++;
+            if (clickCount >= requiredClicks) {
+                simulateSpeedTest();
+                clickCount = 0; // Reset count after triggering
+            } else {
+                speedCheckInstruction.textContent = `Click ${requiredClicks - clickCount} more times to start speed test.`;
+            }
+        });
+
         function simulateSpeedTest() {
             speedCheckButton.disabled = true;
             speedCheckButton.textContent = 'Testing...';
@@ -2390,7 +2444,7 @@
                     speedCheckInstruction.textContent = `Your internet speed is ${currentSpeed.toFixed(1)} Mbps. Click to continue.`;
                     speedMeterAnalog.classList.remove('disabled');
                     
-                    // Show notification after speed test
+                    // Test notification after speed test completion (this is acceptable as it's a test feature)
                     setTimeout(() => {
                         showSpeedCheckNotification();
                     }, 1000);
