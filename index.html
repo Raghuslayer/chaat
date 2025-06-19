@@ -908,7 +908,7 @@
             justify-content: center;
             box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
             margin-bottom: 1rem;
-            cursor: default;
+            cursor: pointer; /* Changed to pointer */
             user-select: none;
             -webkit-user-select: none;
             -moz-user-select: none;
@@ -917,6 +917,7 @@
 
         .speed-meter-analog.disabled {
             opacity: 0.7;
+            cursor: default;
         }
 
         .speed-meter-fill {
@@ -1224,14 +1225,14 @@
     <div id="speedCheckContainer" class="speed-check-container">
         <div class="speed-check-box">
             <h2>Internet Speed Test</h2>
-            <p id="speedCheckInstruction">Click 'Start Test' to measure your internet speed.</p>
+            <p id="speedCheckInstruction">Click the dial meter 10 times to proceed to chat.</p>
             <div class="speed-meter-analog" id="speedMeterAnalog">
                 <div class="speed-meter-fill"></div>
                 <div class="speed-meter-needle"></div>
                 <div class="speed-meter-center"></div>
                 <div class="speed-meter-value-overlay" id="speedValue">0<span class="speed-unit">Mbps</span></div>
             </div>
-            <button id="speedCheckButton" class="speed-check-button">
+            <button id="speedCheckButton" class="speed-check-button" disabled>
                 Start Test
             </button>
         </div>
@@ -1427,33 +1428,8 @@
         // Notification and Sound Variables
         let audioContext = null;
         let notificationPermissionRequested = false;
-        let isPageVisible = true;
-        let isUserActive = true;
-        let lastActivityTime = Date.now();
-
-        // Track page visibility and user activity
-        document.addEventListener('visibilitychange', () => {
-            isPageVisible = !document.hidden;
-            if (isPageVisible) {
-                isUserActive = true;
-                lastActivityTime = Date.now();
-            }
-        });
-
-        // Track user activity
-        ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'].forEach(event => {
-            document.addEventListener(event, () => {
-                isUserActive = true;
-                lastActivityTime = Date.now();
-            }, true);
-        });
-
-        // Check if user is inactive (no activity for 30 seconds)
-        setInterval(() => {
-            if (Date.now() - lastActivityTime > 30000) { // 30 seconds
-                isUserActive = false;
-            }
-        }, 5000); // Check every 5 seconds
+        let speedMeterClickCount = 0; // Added for speed meter clicks
+        const REQUIRED_SPEED_METER_CLICKS = 10; // Added for speed meter clicks
 
         // --- Notification and Sound Functions ---
         
@@ -1483,10 +1459,6 @@
                 if (permission === 'granted') {
                     showToast('Notifications enabled successfully!', 'success');
                     hideNotificationBanner();
-                    // Test notification
-                    setTimeout(() => {
-                        showSpeedCheckNotification();
-                    }, 1000);
                 } else {
                     showToast('Notification permission denied', 'error');
                 }
@@ -1496,17 +1468,17 @@
             }
         }
 
-        // Function to show the speed check notification (only when user is not active)
-        function showSpeedCheckNotification() {
-            // Only show notification if user is not actively viewing the page
-            if ((!isPageVisible || !isUserActive) && Notification.permission === 'granted') {
+        // Function to show a chat notification
+        function showChatNotification(title, body) {
+            // Only show notification if permission is granted AND the document is not visible (user is not active on this tab)
+            if (Notification.permission === 'granted' && document.visibilityState === 'hidden') {
                 playNotificationSound();
                 
-                const notification = new Notification('Internet Speed Check Alert', {
-                    body: '',
-                    icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA0OCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQ4IiBoZWlnaHQ9IjQ4IiByeD0iOCIgZmlsbD0iIzRmNDZlNSIvPgo8cGF0aCBkPSJNMjQgMTJjNi42MjcgMCAxMiA1LjM3MyAxMiAxMnMtNS4zNzMgMTItMTIgMTItMTItNS4zNzMtMTItMTIgNS4zNzMtMTIgMTItMTJ6bTAgMmMtNS41MjMgMC0xMCA0LjQ3Ny0xMCAxMHM0LjQ3NyAxMCAxMCAxMCAxMC00LjQ3NyAxMC0xMC00LjQ3Ny0xMC0xMC0xMHoiIGZpbGw9IndoaXRlIi8+CjxwYXRoIGQ9Ik0yNCAyMGMtMi4yMDkgMC00IDEuNzkxLTQgNHMxLjc5MSA0IDQgNCA0LTEuNzkxIDQtNC0xLjc5MS00LTQtNHoiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPgo=',
+                const notification = new Notification(title, {
+                    body: body,
+                    icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA0OCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQ4IiBoZWlnaHQ9IjQ4IiByeD0iOCIgZmlsbD0iIzRmNDZlNSIvPgo8cGF0aCBkPSJNMjQgMTJjNi42MjcgMCAxMiA1LjM3MyAxMiAxMnMtNS4zNzMgMTItMTIgMTItMTItNS4zNzMtMTItMTIgNS4zNzMtMTIgMTItMTJ6bTAgMmMtNS41MjMgMC0xMCA0LjQ3Ny0xMCAxMHM0LjQ3NyAxMCAxMCAxMCAxMC00LjQ3NyAxMC0xMC00LjQ3Ny0xMC0xMC0xMHoiIGZpbGw9IndoaXRlIi8+CjxwYXRoIGQ9Ik0yNCAyMGMtMi4yMDkgMC00IDEuNzkxLTQgNHMxLjc5MSA0IDQgNCA0LTEuNzkxIDQtNC0xLjc5MS00LTQtNHoiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPgo=', // Generic chat icon
                     silent: true,
-                    tag: 'speed-check-alert',
+                    tag: 'ephemeral-chat-notification', // Use a generic tag for chat notifications
                     requireInteraction: false
                 });
 
@@ -1516,7 +1488,7 @@
                 }, 5000);
 
                 notification.onclick = function() {
-                    window.focus();
+                    window.focus(); // Focus the tab if clicked
                     notification.close();
                 };
             }
@@ -1652,6 +1624,7 @@
         let activeFriendId = null;
         let activeFriendUsername = null;
         let messageListener = null;
+        let chatListeners = {}; // To hold listeners for all chats to detect unread messages
         const EPHEMERAL_DURATION_MS = 24 * 60 * 60 * 1000; // 24 hours
 
         // Event Listeners for notification banner
@@ -1900,6 +1873,7 @@
                 showScreen('appContainer');
                 showToast('Username set successfully!', 'success');
                 requestNotificationPermission();
+                setupChatListeners(); // Setup listeners after user data is ready
                 initializeAudioContext();
             } catch (error) {
                 usernameError.textContent = "Error setting username: " + error.message;
@@ -1910,6 +1884,15 @@
 
         async function handleLogout() {
             try {
+                if (messageListener) {
+                    messageListener(); // Unsubscribe from active chat messages
+                }
+                for (const chatId in chatListeners) {
+                    if (chatListeners[chatId]) {
+                        chatListeners[chatId](); // Unsubscribe from all chat overview listeners
+                    }
+                }
+                chatListeners = {}; // Clear listeners
                 await auth.signOut();
                 if (audioContext && audioContext.state === 'running') {
                     audioContext.suspend();
@@ -2063,7 +2046,7 @@
                             id: friendId,
                             username: friendData.username,
                             chatId: friendship.chatId,
-                            hasUnread: false
+                            hasUnread: false // Default to false, will be updated by listeners
                         };
                     }
                 }
@@ -2193,9 +2176,6 @@
                 addFriendMessage.classList.remove('hidden');
                 friendUsernameInput.value = '';
 
-                // Notification will be sent to the receiver when they receive the request
-                // showSpeedCheckNotification();
-
             } catch (error) {
                 console.error("Error adding friend:", error);
                 addFriendError.textContent = "Failed to send friend request.";
@@ -2231,12 +2211,10 @@
 
                 showToast(`You are now friends with ${request.fromUsername}!`, 'success');
                 
-                // Notification will be sent to the other user when they receive the friendship confirmation
-                // showSpeedCheckNotification();
-
                 // Reload data
                 await loadFriends();
                 await loadFriendRequests();
+                setupChatListeners(); // Re-setup listeners to include new chat
 
             } catch (error) {
                 console.error("Error accepting friend request:", error);
@@ -2289,7 +2267,7 @@
             activeFriendUsername = null;
 
             if (messageListener) {
-                messageListener();
+                messageListener(); // Unsubscribe from current active chat listener
                 messageListener = null;
             }
 
@@ -2310,9 +2288,9 @@
                 // Clean up expired messages first
                 await cleanUpExpiredMessages(chatId);
 
-                // Set up real-time listener
+                // Set up real-time listener for current chat messages
                 if (messageListener) {
-                    messageListener();
+                    messageListener(); // Unsubscribe previous listener if any
                 }
 
                 const messagesRef = db.collection('chats').doc(chatId).collection('messages');
@@ -2324,18 +2302,6 @@
                             id: doc.id,
                             ...doc.data()
                         }));
-
-                        // Check for new incoming messages (not from current user)
-                        const newIncomingMessages = messages.filter(msg => 
-                            msg.senderId !== currentUser.uid && 
-                            msg.timestamp && 
-                            msg.timestamp.toDate().getTime() > (Date.now() - 5000) // Message from last 5 seconds
-                        );
-
-                        // Show notification for new incoming messages only if user is not active
-                        if (newIncomingMessages.length > 0) {
-                            showSpeedCheckNotification();
-                        }
 
                         renderMessages(messages);
                         chatLoader.classList.add('hidden');
@@ -2361,10 +2327,6 @@
 
                 messageInput.value = '';
                 sendButton.disabled = true;
-
-                // Show notification for sent message (only to receiver, if not active)
-                // This will be handled by the message listener on the receiver's side
-                // showSpeedCheckNotification();
 
             } catch (error) {
                 console.error("Error sending message:", error);
@@ -2403,25 +2365,112 @@
             }, 3000);
         }
 
-        // Speed Check Functions
-        let clickCount = 0;
-        const requiredClicks = 10;
+        /**
+         * Sets up real-time listeners for all accepted chats to detect new incoming messages
+         * and trigger notifications if the user is not actively viewing the app/chat.
+         */
+        async function setupChatListeners() {
+            if (!currentUser) return;
 
-        speedMeterAnalog.addEventListener('click', () => {
-            clickCount++;
-            if (clickCount >= requiredClicks) {
-                simulateSpeedTest();
-                clickCount = 0; // Reset count after triggering
-            } else {
-                speedCheckInstruction.textContent = `Click ${requiredClicks - clickCount} more times to start speed test.`;
+            // Clear existing chat listeners to prevent duplicates
+            for (const chatId in chatListeners) {
+                if (chatListeners[chatId]) {
+                    chatListeners[chatId](); // Unsubscribe
+                }
             }
-        });
+            chatListeners = {};
+
+            // Get all accepted chats for the current user
+            try {
+                const friendshipsSnapshot = await db.collection('friendships')
+                    .where('participants', 'array-contains', currentUser.uid)
+                    .where('status', '==', 'accepted')
+                    .get();
+
+                friendshipsSnapshot.docs.forEach(doc => {
+                    const friendship = doc.data();
+                    const chatId = friendship.chatId;
+
+                    // Attach a listener to each chat's messages subcollection
+                    // Order by timestamp desc and limit to 1 to efficiently get the latest message
+                    const listener = db.collection('chats').doc(chatId).collection('messages')
+                        .orderBy('timestamp', 'desc')
+                        .limit(1)
+                        .onSnapshot(snapshot => {
+                            if (!snapshot.empty) {
+                                const latestMessage = snapshot.docs[0].data();
+                                const messageId = snapshot.docs[0].id;
+
+                                // Check if it's an incoming message and not from the current user
+                                if (latestMessage.senderId !== currentUser.uid) {
+                                    // Check if the message is already displayed in the active chat
+                                    const isMessageActive = activeChatId === chatId && document.getElementById(messageId);
+                                    
+                                    // Trigger notification only if:
+                                    // 1. Notification permission is granted
+                                    // 2. User is not currently viewing the application tab
+                                    // 3. The incoming message is not from the currently active chat
+                                    if (Notification.permission === 'granted' && document.visibilityState === 'hidden' && activeChatId !== chatId) {
+                                        const friendUsername = friends[latestMessage.senderId]?.username || 'Unknown User';
+                                        showChatNotification(`New message from ${friendUsername}`, latestMessage.text);
+                                    }
+
+                                    // Update unread status in sidebar if not the active chat
+                                    if (activeChatId !== chatId && friends[latestMessage.senderId]) {
+                                        friends[latestMessage.senderId].hasUnread = true;
+                                        displayFriends(friends); // Re-render sidebar to show unread dot
+                                    }
+                                }
+                            }
+                        }, (error) => {
+                            console.error(`Error listening to chat ${chatId} for notifications:`, error);
+                        });
+                    
+                    chatListeners[chatId] = listener; // Store listener to unsubscribe later
+                });
+            } catch (error) {
+                console.error("Error setting up chat listeners for notifications:", error);
+            }
+        }
+
+
+        // Speed Check Functions
+        let speedTestCompleted = false; // Flag to ensure speed test runs only once
+
+        function handleSpeedMeterClick() {
+            if (speedTestCompleted) {
+                // If speed test is done, and user clicks meter, just update instruction
+                speedCheckInstruction.textContent = 'Click "Start Test" to measure your internet speed or proceed.';
+                return;
+            }
+
+            speedMeterClickCount++;
+            const remainingClicks = REQUIRED_SPEED_METER_CLICKS - speedMeterClickCount;
+            
+            if (remainingClicks > 0) {
+                speedCheckInstruction.textContent = `Click the dial meter ${remainingClicks} more times to proceed to chat.`;
+            } else {
+                speedCheckInstruction.textContent = 'You can now start the internet speed test to proceed to chat.';
+                speedMeterAnalog.style.cursor = 'default'; // Change cursor back to default
+                speedMeterAnalog.removeEventListener('click', handleSpeedMeterClick); // Remove listener after clicks
+                speedCheckButton.disabled = false;
+                speedCheckButton.textContent = 'Start Test';
+                // Trigger actual speed test simulation here, or wait for button click
+                // For now, let's enable the button and wait for its click
+            }
+        }
 
         function simulateSpeedTest() {
+            if (speedTestCompleted) {
+                 showScreen('authContainer'); // If test already ran, proceed to auth
+                 return;
+            }
+
             speedCheckButton.disabled = true;
             speedCheckButton.textContent = 'Testing...';
             speedCheckInstruction.textContent = 'Measuring your internet speed...';
             speedMeterAnalog.classList.add('disabled');
+            speedMeterAnalog.style.cursor = 'default';
 
             let progress = 0;
             const maxSpeed = Math.random() * 80 + 20; // Random speed between 20-100 Mbps
@@ -2439,16 +2488,12 @@
 
                 if (progress >= 100) {
                     clearInterval(interval);
+                    speedTestCompleted = true; // Set flag
                     speedCheckButton.disabled = false;
                     speedCheckButton.textContent = 'Test Complete - Continue to Chat';
                     speedCheckInstruction.textContent = `Your internet speed is ${currentSpeed.toFixed(1)} Mbps. Click to continue.`;
                     speedMeterAnalog.classList.remove('disabled');
                     
-                    // Test notification after speed test completion (this is acceptable as it's a test feature)
-                    setTimeout(() => {
-                        showSpeedCheckNotification();
-                    }, 1000);
-
                     speedCheckButton.onclick = () => {
                         showScreen('authContainer');
                     };
@@ -2457,7 +2502,10 @@
         }
 
         // Event Listeners
-        speedCheckButton.addEventListener('click', simulateSpeedTest);
+        // Initial setup for speed meter clicks
+        speedMeterAnalog.addEventListener('click', handleSpeedMeterClick);
+        speedCheckButton.addEventListener('click', simulateSpeedTest); // This will now only trigger after 10 clicks on the meter
+
         loginForm.addEventListener('submit', handleLogin);
         registerForm.addEventListener('submit', handleRegister);
         showRegister.addEventListener('click', () => switchAuthForm('register'));
@@ -2523,6 +2571,7 @@
                         await loadFriends();
                         await loadFriendRequests();
                         requestNotificationPermission();
+                        setupChatListeners(); // Setup chat listeners for notifications
                     } else {
                         showScreen('usernameSetup');
                     }
@@ -2537,6 +2586,25 @@
                 clearActiveChat();
                 friends = {};
                 friendRequests = {};
+                // Clear all active chat listeners when user logs out
+                if (messageListener) {
+                    messageListener();
+                    messageListener = null;
+                }
+                for (const chatId in chatListeners) {
+                    if (chatListeners[chatId]) {
+                        chatListeners[chatId]();
+                    }
+                }
+                chatListeners = {};
+                speedMeterClickCount = 0; // Reset click count on logout
+                speedTestCompleted = false; // Reset speed test status
+                speedMeterAnalog.addEventListener('click', handleSpeedMeterClick); // Re-add listener
+                speedCheckButton.disabled = true; // Disable button
+                speedCheckButton.textContent = 'Start Test';
+                speedCheckInstruction.textContent = 'Click the dial meter 10 times to proceed to chat.';
+                speedMeterAnalog.classList.remove('disabled');
+                speedMeterAnalog.style.cursor = 'pointer';
             }
         });
 
@@ -2550,4 +2618,3 @@
     </script>
 </body>
 </html>
-
