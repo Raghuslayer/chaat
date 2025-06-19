@@ -9,25 +9,23 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.2/firebase-auth-compat.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.2/firebase-firestore-compat.min.js"></script>
     <style>
-        /* CSS Variables for consistent theming and easy adjustments */
         :root {
             --primary-color: #4f46e5;
             --primary-hover: #4338ca;
-            --secondary-color: #10b981;  
+            --secondary-color: #10b981;
             --light-bg: #f3f4f6;
             --dark-text: #111827;
             --light-text: #f9fafb;
             --gray-text: #6b7280;
             --error-color: #ef4444;
             --success-color: #10b981;
-            --border-radius: clamp(0.5rem, 1vw, 0.75rem); /* Responsive border-radius */
+            --border-radius: clamp(0.5rem, 1vw, 0.75rem);
             --shadow: 0 0.25rem 0.375rem -0.0625rem rgba(0, 0, 0, 0.1), 0 0.125rem 0.25rem -0.0625rem rgba(0, 0, 0, 0.06);
-            --base-font-size: clamp(0.875rem, 2.5vw, 1rem); /* Responsive base font size */
-            --sidebar-width: clamp(15rem, 25vw, 20rem); /* Responsive sidebar width */
+            --base-font-size: clamp(0.875rem, 2.5vw, 1rem);
+            --sidebar-width: clamp(15rem, 25vw, 20rem);
             --container-max-width: 90rem;
         }
 
-        /* Basic Reset */
         * {
             margin: 0;
             padding: 0;
@@ -35,7 +33,6 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        /* HTML and Body base styles for fluid typography and full height layout */
         html {
             font-size: var(--base-font-size);
         }
@@ -46,10 +43,8 @@
             display: flex;
             flex-direction: column;
             font-size: var(--base-font-size);
-            overflow: hidden; /* Prevent body scroll, handled by individual sections */
         }
 
-        /* General container styling for content areas */
         .container {
             width: 100%;
             max-width: var(--container-max-width);
@@ -68,7 +63,7 @@
             top: 0;
             left: 0;
             right: 0;
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            background: linear-gradient(135deg, #4f46e5 0%, #10b981 100%);
             color: white;
             padding: 1rem;
             text-align: center;
@@ -82,7 +77,7 @@
             align-items: center;
             justify-content: center;
             gap: 1rem;
-            flex-wrap: wrap; /* Allow content to wrap on smaller screens */
+            flex-wrap: wrap;
         }
 
         .notification-banner button {
@@ -108,7 +103,7 @@
             font-size: 1.2rem;
             cursor: pointer;
             padding: 0.25rem;
-            margin-left: auto; /* Push close button to the right */
+            margin-left: auto;
         }
 
         @keyframes slideDown {
@@ -123,16 +118,15 @@
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            background: linear-gradient(135deg, #4f46e5 0%, #10b981 100%);
             padding: clamp(1rem, 5vw, 2rem);
-            width: 100%;
         }
 
         .auth-box {
             background-color: white;
             border-radius: var(--border-radius);
             box-shadow: var(--shadow);
-            width: clamp(18rem, 90vw, 25rem); /* Responsive width */
+            width: clamp(18rem, 90vw, 25rem);
             padding: clamp(1rem, 5vw, 2rem);
             animation: slideUp 0.5s ease-out;
         }
@@ -264,10 +258,9 @@
         /* --- App Container Styles --- */
         .app-container {
             display: grid;
-            grid-template-columns: minmax(0, var(--sidebar-width)) 1fr; /* Responsive grid columns */
+            grid-template-columns: minmax(0, var(--sidebar-width)) 1fr;
             height: 100vh;
-            overflow: hidden; /* Prevent internal scrolling of the whole app container */
-            width: 100%;
+            overflow: hidden;
         }
 
         .sidebar {
@@ -276,7 +269,7 @@
             display: flex;
             flex-direction: column;
             transition: transform 0.3s ease;
-            width: 100%; /* Take full width of its grid column */
+            width: 100%;
         }
 
         .sidebar-header {
@@ -302,7 +295,6 @@
             cursor: pointer;
             color: var(--dark-text);
             font-size: clamp(1rem, 3vw, 1.25rem);
-            padding: 0.25rem; /* Make clickable area larger */
         }
 
         .dropdown-menu {
@@ -327,9 +319,6 @@
             cursor: pointer;
             transition: background-color 0.2s;
             font-size: clamp(0.875rem, 2.5vw, 1rem);
-            display: flex; /* Align icon and text */
-            align-items: center;
-            gap: 0.5rem;
         }
 
         .dropdown-menu li:hover {
@@ -363,9 +352,8 @@
 
         .tab-content {
             flex: 1;
-            overflow-y: auto; /* Enable scrolling for tab content */
+            overflow-y: auto;
             padding: clamp(0.25rem, 1vw, 0.5rem);
-            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
         }
 
         .search-bar {
@@ -543,14 +531,13 @@
         .add-friend {
             padding: clamp(0.5rem, 2vw, 1rem);
             border-top: 1px solid #e5e7eb;
-            margin-top: auto; /* Push to bottom */
+            margin-top: auto;
             background-color: white;
         }
 
         .add-friend-form {
             display: flex;
             gap: clamp(0.25rem, 1vw, 0.5rem);
-            align-items: center; /* Vertically align items in the form */
         }
 
         .add-friend-form input {
@@ -559,7 +546,6 @@
             border: 1px solid #e5e7eb;
             border-radius: var(--border-radius);
             font-size: clamp(0.8rem, 2vw, 0.9rem);
-            min-width: 0; /* Allow input to shrink on smaller screens */
         }
 
         .add-friend-form input:focus {
@@ -577,7 +563,6 @@
             cursor: pointer;
             transition: background-color 0.3s;
             font-size: clamp(0.8rem, 2vw, 0.9rem);
-            flex-shrink: 0; /* Prevent button from shrinking */
         }
 
         .add-friend-form button:hover {
@@ -594,8 +579,8 @@
             display: flex;
             flex-direction: column;
             background-color: #f9fafb;
-            position: relative; /* Needed for absolute positioning of child elements */
-            height: 100vh; /* Fill remaining vertical space */
+            position: relative;
+            height: 100vh;
         }
 
         .chat-header {
@@ -604,18 +589,17 @@
             border-bottom: 1px solid #e5e7eb;
             display: flex;
             align-items: center;
-            flex-shrink: 0; /* Prevent header from shrinking */
+            flex-shrink: 0;
         }
 
         .menu-button, .back-button {
-            display: none; /* Hidden by default, shown on mobile */
+            display: none;
             margin-right: clamp(0.5rem, 2vw, 1rem);
             background: none;
             border: none;
             font-size: clamp(1rem, 3vw, 1.25rem);
             cursor: pointer;
             color: var(--gray-text);
-            padding: 0.25rem; /* Make clickable area larger */
         }
 
         .chat-info {
@@ -634,22 +618,21 @@
         }
 
         .chat-messages {
-            flex: 1; /* Allow messages to take up available space */
-            overflow-y: auto; /* Enable vertical scrolling */
+            flex: 1;
+            overflow-y: auto;
             padding: clamp(0.5rem, 2vw, 1rem);
             display: flex;
             flex-direction: column;
             gap: clamp(0.5rem, 2vw, 1rem);
-            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
         }
 
         .message {
-            max-width: clamp(60%, 80vw, 80%); /* Responsive max-width for messages */
+            max-width: clamp(60%, 80vw, 80%);
             padding: clamp(0.5rem, 2vw, 0.75rem) clamp(0.75rem, 3vw, 1rem);
             border-radius: clamp(0.75rem, 3vw, 1rem);
             animation: fadeIn 0.3s;
             position: relative;
-            word-break: break-word; /* Ensure long words break */
+            word-break: break-word;
             font-size: clamp(0.875rem, 2.5vw, 1rem);
         }
 
@@ -681,14 +664,14 @@
             align-self: flex-start;
             background-color: white;
             border: 1px solid #e5e7eb;
-            border-bottom-left-radius: 0.25rem; /* Pointy corner for incoming */
+            border-bottom-left-radius: 0.25rem;
         }
 
         .message.outgoing {
             align-self: flex-end;
             background-color: var(--primary-color);
             color: white;
-            border-bottom-right-radius: 0.25rem; /* Pointy corner for outgoing */
+            border-bottom-right-radius: 0.25rem;
         }
 
         .chat-input {
@@ -698,13 +681,7 @@
             display: flex;
             gap: clamp(0.25rem, 1vw, 0.5rem);
             align-items: center;
-            flex-shrink: 0; /* Prevent input area from shrinking */
-            position: sticky; /* Sticky to keep at bottom */
-            bottom: 0;
-            left: 0;
-            right: 0;
-            width: 100%;
-            z-index: 5; /* Ensure it's above messages when scrolling */
+            flex-shrink: 0;
         }
 
         .chat-input input {
@@ -714,7 +691,6 @@
             border-radius: clamp(1rem, 3vw, 1.25rem);
             font-size: clamp(0.875rem, 2.5vw, 1rem);
             transition: all 0.3s;
-            min-width: 0; /* Allow input to shrink on smaller screens */
         }
 
         .chat-input input:focus {
@@ -735,7 +711,7 @@
             justify-content: center;
             cursor: pointer;
             transition: all 0.3s;
-            flex-shrink: 0; /* Prevent button from shrinking */
+            flex-shrink: 0;
             font-size: clamp(0.8rem, 2vw, 1rem);
         }
 
@@ -780,7 +756,6 @@
             padding: clamp(1rem, 5vw, 2rem);
             text-align: center;
             color: var(--gray-text);
-            flex: 1; /* Allow empty state to fill space */
         }
 
         .empty-state i {
@@ -794,7 +769,6 @@
             justify-content: center;
             align-items: center;
             padding: clamp(1rem, 5vw, 2rem);
-            flex: 1; /* Allow loader to fill space */
         }
 
         .spinner {
@@ -816,8 +790,7 @@
             flex-direction: column;
             gap: clamp(0.5rem, 2vw, 0.75rem);
             max-height: 80vh;
-            overflow-y: auto; /* Allow multiple toasts to scroll */
-            -webkit-overflow-scrolling: touch;
+            overflow-y: auto;
         }
 
         .toast {
@@ -896,7 +869,6 @@
             color: white;
             text-align: center;
             padding: clamp(1rem, 5vw, 2rem);
-            width: 100%;
         }
 
         .speed-check-box {
@@ -924,7 +896,6 @@
             opacity: 0.8;
         }
 
-        /* Analog Speed Meter */
         .speed-meter-analog {
             position: relative;
             width: clamp(10rem, 35vw, 12rem);
@@ -937,7 +908,7 @@
             justify-content: center;
             box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
             margin-bottom: 1rem;
-            cursor: pointer; /* Changed to pointer */
+            cursor: default;
             user-select: none;
             -webkit-user-select: none;
             -moz-user-select: none;
@@ -946,7 +917,6 @@
 
         .speed-meter-analog.disabled {
             opacity: 0.7;
-            cursor: default;
         }
 
         .speed-meter-fill {
@@ -956,9 +926,8 @@
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            /* Use CSS custom property for dynamic fill percentage */
             background: conic-gradient(var(--primary-color) 0%, var(--secondary-color) var(--meter-fill, 0%), transparent var(--meter-fill, 0%));
-            transform: rotate(-180deg); /* Start from bottom */
+            transform: rotate(-180deg);
             transform-origin: center;
             transition: --meter-fill 0.3s ease-out;
         }
@@ -973,18 +942,17 @@
             z-index: 2;
             box-shadow: 0 0 5px rgba(0,0,0,0.5);
         }
-
+        
         .speed-meter-needle {
             position: absolute;
-            bottom: 50%; /* Position at the center bottom */
+            bottom: 50%;
             left: 50%;
-            transform-origin: bottom center; /* Rotate around the bottom center */
+            transform-origin: bottom center;
             width: 3px;
-            height: 45%; /* Length of the needle */
+            height: 45%;
             background-color: red;
-            border-radius: 50% / 0 0 100% 100%; /* Creates a rounded top */
+            border-radius: 50% / 0 0 100% 100%;
             z-index: 3;
-            /* Rotate based on custom property, offset by -180deg to start from the left */
             transform: translateX(-50%) rotate(calc(var(--meter-rotation, 0deg) - 180deg));
             transition: transform 0.3s ease-out;
         }
@@ -996,12 +964,6 @@
             color: var(--light-text);
             z-index: 4;
             text-shadow: 0 0 5px rgba(0,0,0,0.5);
-        }
-
-        .speed-unit {
-            font-size: clamp(0.8rem, 2vw, 1rem);
-            opacity: 0.8;
-            margin-left: 0.2rem;
         }
 
         .speed-check-button {
@@ -1016,13 +978,13 @@
             transition: all 0.3s ease;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
             position: relative;
-            overflow: hidden; /* For the ripple effect */
+            overflow: hidden;
         }
 
         .speed-check-button:hover {
             transform: translateY(-3px);
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-            background: linear-gradient(45deg, #06b6d4 0%, #10b981 100%); /* Reverse gradient on hover */
+            background: linear-gradient(45deg, #06b6d4 0%, #10b981 100%);
         }
 
         .speed-check-button:active {
@@ -1030,7 +992,6 @@
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
         }
 
-        /* Ripple effect for button */
         .speed-check-button::before {
             content: '';
             position: absolute;
@@ -1058,7 +1019,7 @@
             transform: none;
         }
         .speed-check-button:disabled::before {
-            display: none; /* Disable ripple when disabled */
+            display: none;
         }
 
         /* --- Keyframe Animations --- */
@@ -1074,7 +1035,7 @@
 
         @keyframes fadeOut {
             from { opacity: 1; }
-            to { opacity: 0; display: none; } /* Use display none to fully remove */
+            to { opacity: 0; display: none; }
         }
 
         @keyframes slideUp {
@@ -1093,18 +1054,16 @@
         }
 
         /* --- Media Queries for Responsiveness --- */
-
-        /* Tablets and larger phones in landscape */
         @media (max-width: 1024px) {
             .app-container {
                 grid-template-columns: minmax(0, var(--sidebar-width)) 1fr;
             }
+
             .auth-box {
                 width: clamp(16rem, 95vw, 22rem);
             }
         }
 
-        /* Smaller tablets and larger phones in portrait */
         @media (max-width: 768px) {
             .app-container {
                 display: flex;
@@ -1116,18 +1075,21 @@
                 height: 100%;
                 position: absolute;
                 z-index: 10;
-                transform: translateX(-100%); /* Hide sidebar by default */
+                transform: translateX(-100%);
             }
 
             .sidebar.active {
-                transform: translateX(0); /* Show sidebar */
+                transform: translateX(0);
             }
 
-            .menu-button, .back-button {
-                display: block; /* Show menu and back buttons on mobile */
+            .menu-button {
+                display: block;
             }
 
-            /* When sidebar is active, hide chat content and show overlay */
+            .back-button {
+                display: block;
+            }
+
             .sidebar.active ~ .chat-container #activeChat,
             .sidebar.active ~ .chat-container #noChatSelected {
                 display: none;
@@ -1140,23 +1102,20 @@
                 left: 0;
                 right: 0;
                 bottom: 0;
-                background-color: rgba(0, 0, 0, 0.5); /* Dark overlay */
+                background-color: rgba(0, 0, 0, 0.5);
                 z-index: 5;
             }
 
-            /* Ensure back button is always visible in active chat header on mobile */
             .app-container .chat-container #activeChat .chat-header .back-button {
                 display: block;
             }
 
-            /* Ensure user menu in sidebar is visible when sidebar is active */
             .sidebar.active .user-menu {
                 display: block;
             }
 
-            /* When activeChat is hidden (sidebar active), ensure noChatSelected is hidden too */
             .app-container .chat-container #activeChat.hidden + #noChatSelected {
-                display: flex; /* Reset to default if activeChat is hidden for other reasons */
+                display: flex;
             }
 
             .auth-box {
@@ -1175,40 +1134,36 @@
             }
 
             .chat-container {
-                height: 100vh; /* Ensure chat container takes full height */
-                overflow: hidden; /* Prevents unwanted scrolling on mobile */
+                height: 100vh;
+                overflow: hidden;
             }
 
-            /* Specific styling for active chat on mobile to manage height and scrolling */
-            #activeChat {
+            .activeChat {
                 display: flex;
                 flex-direction: column;
-                height: 100%; /* Fill remaining height */
+                height: 100%;
             }
 
             .chat-messages {
-                flex: 1; /* Allow messages to scroll */
-                /* Calculate height dynamically based on header and input height */
-                height: calc(100vh - clamp(3rem, 10vw, 4rem) - clamp(3.5rem, 12vw, 4.5rem)); 
+                flex: 1;
+                height: calc(100vh - clamp(3rem, 10vw, 4rem) - clamp(3.5rem, 12vw, 4.5rem));
                 overflow-y: auto;
                 padding: clamp(0.5rem, 2vw, 1rem);
                 -webkit-overflow-scrolling: touch;
             }
 
-            /* Fix chat input to bottom on mobile */
             .chat-input {
                 position: fixed;
                 bottom: 0;
                 left: 0;
                 right: 0;
                 z-index: 10;
-                padding: clamp(0.5rem, 2vw, 1rem);
+                padding: clamp(0.5rem, 2vw, 1rem) clamp(0.5rem, 2vw, 1rem);
                 border-top: 1px solid #e5e7eb;
                 background-color: white;
             }
         }
 
-        /* Extra small screens / older phones */
         @media (max-width: 480px) {
             :root {
                 --base-font-size: clamp(0.75rem, 3vw, 0.875rem);
@@ -1238,12 +1193,11 @@
 
             .chat-messages {
                 padding: clamp(0.25rem, 1.5vw, 0.5rem);
-                /* Recalculate height for very small screens */
                 height: calc(100vh - clamp(2.5rem, 8vw, 3.5rem) - clamp(3rem, 10vw, 4rem));
             }
 
             .message {
-                max-width: 90%; /* Messages can take more width on small screens */
+                max-width: 90%;
                 padding: clamp(0.4rem, 2.5vw, 0.6rem) clamp(0.6rem, 3vw, 0.8rem);
             }
 
@@ -1267,24 +1221,22 @@
         </div>
     </div>
 
-    <!-- Speed Check Container -->
     <div id="speedCheckContainer" class="speed-check-container">
         <div class="speed-check-box">
             <h2>Internet Speed Test</h2>
-            <p id="speedCheckInstruction">Click the dial meter to begin network diagnostics.</p>
+            <p id="speedCheckInstruction">Click 'Start Test' to measure your internet speed.</p>
             <div class="speed-meter-analog" id="speedMeterAnalog">
                 <div class="speed-meter-fill"></div>
                 <div class="speed-meter-needle"></div>
                 <div class="speed-meter-center"></div>
                 <div class="speed-meter-value-overlay" id="speedValue">0<span class="speed-unit">Mbps</span></div>
             </div>
-            <button id="speedCheckButton" class="speed-check-button" disabled>
+            <button id="speedCheckButton" class="speed-check-button">
                 Start Test
             </button>
         </div>
     </div>
 
-    <!-- Authentication Container (Login/Register) -->
     <div id="authContainer" class="auth-container hidden">
         <div class="auth-box">
             <div class="auth-logo">
@@ -1333,7 +1285,6 @@
         </div>
     </div>
 
-    <!-- Username Setup Container -->
     <div id="usernameSetup" class="auth-container hidden">
         <div class="auth-box username-setup">
             <h2>Create Username</h2>
@@ -1350,7 +1301,6 @@
         </div>
     </div>
 
-    <!-- Main Application Container -->
     <div id="appContainer" class="app-container hidden">
         <div id="sidebar" class="sidebar">
             <div class="sidebar-header">
@@ -1422,11 +1372,6 @@
                     <button id="menuButton" class="menu-button">
                         <i class="fas fa-bars"></i>
                     </button>
-                    <!-- User info in header, even when no chat selected -->
-                    <div class="chat-info">
-                        <div class="chat-name">Welcome</div>
-                        <div class="chat-status">Select a chat to begin</div>
-                    </div>
                 </div>
                 <i class="fas fa-comments"></i>
                 <h3>Select a chat to start messaging</h3>
@@ -1461,14 +1406,12 @@
         </div>
     </div>
 
-    <!-- Global Toast Notification Container -->
     <div id="toastContainer" class="toast-container"></div>
 
     <script>
         // Firebase Configuration
-        // Note: Using a placeholder API key. In a real app, this would be managed securely.
         const firebaseConfig = {
-            apiKey: "AIzaSyBXQAIu0_JwngXpgjuftCsM05kLM6H5OW8", 
+            apiKey: "AIzaSyBXQAIu0_JwngXpgjuftCsM05kLM6H5OW8",
             authDomain: "chat-app-e3afc.firebaseapp.com",
             projectId: "chat-app-e3afc",
             storageBucket: "chat-app-e3afc.firebasestorage.app",
@@ -1483,51 +1426,67 @@
 
         // Notification and Sound Variables
         let audioContext = null;
-        
-        // Speed Check Variables
-        let speedMeterClickCount = 0;
-        const REQUIRED_SPEED_METER_CLICKS = 10;
-        let speedTestOngoing = false; // To prevent multiple speed tests from running simultaneously
-        let speedTestCompleted = false; // Flag to indicate if a speed test has completed
+        let notificationPermissionRequested = false;
+        let isPageVisible = true;
+        let isUserActive = true;
+        let lastActivityTime = Date.now();
+
+        // Track page visibility and user activity
+        document.addEventListener('visibilitychange', () => {
+            isPageVisible = !document.hidden;
+            if (isPageVisible) {
+                isUserActive = true;
+                lastActivityTime = Date.now();
+            }
+        });
+
+        // Track user activity
+        ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'].forEach(event => {
+            document.addEventListener(event, () => {
+                isUserActive = true;
+                lastActivityTime = Date.now();
+            }, true);
+        });
+
+        // Check if user is inactive (no activity for 30 seconds)
+        setInterval(() => {
+            if (Date.now() - lastActivityTime > 30000) { // 30 seconds
+                isUserActive = false;
+            }
+        }, 5000); // Check every 5 seconds
 
         // --- Notification and Sound Functions ---
         
-        /**
-         * Requests notification permission from the user if it's currently 'default'.
-         * Shows a banner prompting the user to enable notifications.
-         */
+        // Function to request notification permission
         function requestNotificationPermission() {
             if ('Notification' in window && Notification.permission === 'default') {
                 showNotificationBanner();
             }
         }
 
-        /**
-         * Displays the notification permission banner.
-         */
+        // Function to show notification permission banner
         function showNotificationBanner() {
             const banner = document.getElementById('notificationBanner');
             banner.classList.remove('hidden');
         }
 
-        /**
-         * Hides the notification permission banner.
-         */
+        // Function to hide notification permission banner
         function hideNotificationBanner() {
             const banner = document.getElementById('notificationBanner');
             banner.classList.add('hidden');
         }
 
-        /**
-         * Initiates the notification permission request. If granted, hides the banner and shows a success toast.
-         * If denied, shows an error toast.
-         */
+        // Function to enable notifications
         async function enableNotifications() {
             try {
                 const permission = await Notification.requestPermission();
                 if (permission === 'granted') {
                     showToast('Notifications enabled successfully!', 'success');
                     hideNotificationBanner();
+                    // Test notification
+                    setTimeout(() => {
+                        showSpeedCheckNotification();
+                    }, 1000);
                 } else {
                     showToast('Notification permission denied', 'error');
                 }
@@ -1537,24 +1496,18 @@
             }
         }
 
-        /**
-         * Displays a chat notification if permission is granted and the user is not
-         * currently active on the tab. Also plays a notification sound.
-         * @param {string} title - The title of the notification.
-         * @param {string} body - The body text of the notification.
-         */
-        function showChatNotification(title, body) {
-            // Only show notification if permission is granted AND the document is not visible (user is not active on this tab)
-            if (Notification.permission === 'granted' && document.visibilityState === 'hidden') {
+        // Function to show the speed check notification (only when user is not active)
+        function showSpeedCheckNotification() {
+            // Only show notification if user is not actively viewing the page
+            if ((!isPageVisible || !isUserActive) && Notification.permission === 'granted') {
                 playNotificationSound();
                 
-                const notification = new Notification(title, {
-                    body: body,
-                    // Generic chat icon as base64 SVG to avoid external requests
-                    icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA0OCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQ4IiBoZWlnaHQ9IjQ4IiByeD0iOCIgZmlsbD0iIzRmNDZlNSIvPgo8cGF0aCBkPSJNMjQgMTJjNi42MjcgMCAxMiA1LjM3MyAxMiAxMnMtNS4zNzMgMTItMTIgMTItMTItNS4zNzMtMTItMTIgNS4zNzMtMTIgMTItMTJ6bTAgMmMtNS41MjMgMC0xMCA0LjQ3Ny0xMCAxMHM0LjQ3NyAxMCAxMCAxMCAxMC00LjQ3NyAxMC0xMC00LjQ3Ny0xMC0xMC0xMHoibTI0IDhjMCA2LjYyNy01LjM3MyAxMi0xMiAxMnMtMTItNS4zNzMtMTItMTIgNS4zNzMtMTIgMTItMTIgMTIgNS4zNzMgMTIgMTJ6bS00LjUxNiAwYy0uNzgxLTQuMzY5LTIuMzgyLTguMzYtNC41MTYtMTJhMTEuOTczIDExLjk3MyAwIDAgMC03LjE1MSAyLjQ5Yy01LjE2OCAzLjcyNi03LjUzMyA4Ljk2OS03LjEzMyAxNC43MkwyNi4wMTIgMjZsLS4wMTIgLjAxMkMyNS43OTcgMjUuNTQ1IDI1LjkwNiAyNS42NTQgMjYgMjZjLS41MzEuOTMtLjU5MSAxLjQ5LS4yMjQgMS42NzUgMS44MS42MTUgMy4wMzYgMS40NDIgNC4wMjQgMi4xNzUuMTk3Ljg5LjU5IDEuNzQ2IDEuMTU4IDIuMzEzLjMyLjMyNy41NjkuNTY1LjcwNi42MzYuODUxLS4yOTQgMS40MjEtLjY5MiAxLjg5OC0xLjA3LjY0MS0uNTA3IDEuMzI2LS45NzEgMS45MzgtMS4zNzkuNDg0LS4zMjEuOTQzLS41MjggMS4yOTgtLjYxNy40NzUtLjEzLjgyLS4wNjkgMS4xNTYtLjAwOS4zMzUuMDYxLjY1NS4xNTkuOTUxLjI4Mi42MzYuMjU0IDEuMjc0LjU1NCAxLjkwNy44NjEuNzA0LjM4MSAxLjQwNS43OTMgMi4wNiAxLjI3Mi41OTguNDM5IDEuMTUuODQ4IDEuNjU4IDEuMTgzLjc2Mi41MDkgMS4zNzIuODkyIDEuODE1Ljk0NS4xNi4wMjEuMzA1LS4wOTMuMzgxLS4yMTguOTc2LTEuNTggMS45OTQtMy4yNjYgMi44MzUtNS4wNjQuNjI1LTEuMzM4IDEuMDU1LTIuNzc1IDEuMjU2LTQuMzA5bC4wMTEtLjA2NEMzNy40ODQgMjcuNzM1IDM2LjU4NSAyNC45NzMgMzUuNDg0IDI0em0tNi44OTggNC44MjNjLjQ3Ni4wMjEuOTQ0LjA5MSAxLjQwMi4yMDEuOTUxLjIxNyAxLjg5NC40OTcgMi44MDIuNzk5LjY5OC4yNDEgMS4zNzMuNDUyIDIuMDEuNjE0LjA3My4yMjUuMjM0LjQ1LjUwNi41ODMuMjcuMTMyLjU1Ny4xNTYuODI3LjExLjI3LS4wNDYuNDgyLS4xNjYuNjE5LS4yNDguNTcxLS40OTYgMS4xMy0uOTY2IDEuNzEtMS40OC41MzUtLjQ4MSAxLjA1Mi0uOTkgMS41MTQtMS41MTcuNjgyLS41OTUgMS4zMjgtMS4wOTggMS44NDItMS40MTIuNTYyLS4zNDUgMS4xLS41MzYgMS41MDktLjQ1Ny40MTkuMDc4LjcxNS40MDIuOTUyLjczNi4xNzYuMjQ5LjMxOC42NjYuNDQ3IDEuMTUzLjExLjMyMi4yMzYuNjMzLjM2Ny45NjQuMjc1Ljc1LjQ3OCAxLjU0Ni42MSAyLjM2Nmg1LjcwMWMtLjI3NC0uNjEzLS42MjEtMS4xODQtMS4wMzMtMS42ODEtLjQ5OS0uNTgxLTEuMDU3LTEuMDUxLTEuNzA1LTEuNDE1LS41ODUtLjMyNC0xLjE3MS0uNjI4LTEuNjYtLjcxNS0uNDktLjA4Ny0uOTMyLS4wNDEtMS4zNTUtLjAyLS40MjMuMDIxLS43OTYuMTIzLTEuMDk3LjI3LS42OTguMzMzLTEuMzU0Ljc1My0xLjk2NSAxLjE5Mi0uNjExLjQzOS0xLjE4LjkwNi0xLjY5MSAxLjQwMy0uOTg4Ljk3OC0xLjkwMiAxLjg5OS0yLjQxIDIuMzc5LS41MDcuNDgtLjc5OS44ODMtLjk1NSAxLjE4MS0uMTU2LjI5OS0uMjE1LjU1OS0uMjQxLjc4My0uMTA5LS4wMTgtLjIxLS4wMzYtLjMxMy0uMDU1LS44ODctLjE4OS0xLjY4Ny0uNDIyLTIuMjEzLS41NjEtLjc5OS0uMjEyLTEuNTc1LS4zNTItMi4zNjMtLjQxOC0uOTMyLS4wNzgtMS44Ni0uMDkzLTIuNzUyLS4wNjktLjg5Mi4wMjMtMS43NjkuMTM4LTIuNjExLjM0NC0uODY2LjIwNi0xLjcwOS40OTMtMi40NzcuODQ3LS40NTguMjE1LS44OTcuNDI5LTEuMzE0LjYyOS0xLjE3MS4yNzktMi4zNjUuNTE1LTMuNDkyLjgxMS0uNjEyLjE1OS0xLjI1OS4yOTItMS45Mi4zMzgtLjQ1LjAyNi0uODkyLS4wNzctMS4zMDgtLjMwNS0uNzgtLjQzMi0xLjQ0OC0xLjM2NS0xLjkxMi0yLjYzLS4xNzItLjQ0MS0uMjkxLS44OTItLjMxLTEuMzUzLS4wMTktLjQ2LS4wMDUtLjkxOC4wNTQtMS4zNzMuMDYyLS40NzYuMTc0LS45MjguMzA4LTEuMjk5LjIyLS41OTQuNDktMS4xNjQuNzkzLTEuNzEtMi4yOTYgMS4zOTctNC40MTUgMy40NjMtNi4wOTIgNS42MDQtLjQ0NC41NjEtLjU2MiAxLjM1Ni0uMzU0IDIuMDQ5Ljc5MSAyLjgxMiAyLjQ0OCA1LjY3IDQuNTcgNy42ODkgMi4zMTkgMi4xNzkgNS4xNiAzLjcxNyA4LjM5MiAzLjkxMy4zMDIuMDI1LjU0MS0uMDcyLjcxLS4yNzguNjE1LS43MzMgMS41MDgtMS44MDcgMi40NTItMi40MDguNjQtLjM5OCAxLjI2LS42OTYgMS44NDItLjg4LjY4LS4yMTEgMS4zMjgtLjMzMSAxLjg5OS0uMzc5LjU3NC0uMDQ3IDEuMTI4LS4wNzMgMS42NjYtLjA3MyAxLjk3OS4wMDIgMy41MjkuMDk2IDQuNjI3LjI5NSAxLjY1NS4yOTkgMy4yNi43OTUgNC43MyAxLjUxMi41NzcuMjcyIDEuMTM2LjUyNSAxLjY1NC43NTMuNjQuMjkxIDEuMjQ2LjQ1MiAxLjc1LjQ1Mi41MDQuMDAxLjk0LS4xMzIgMS4zMDktLjM4LjM1OC0uMjQ4LjYzMy0uNTg4Ljg1NC0uOTc1LjIyMS0uMzg3LjM4Mi0uODQzLjQ4Ny0xLjI2Mi41MjMtMS45ODcgMS43NDgtMy45NDYgMy42MjMtNS4wNjEuNzIyLS40MzEgMS40MDktLjczMiAyLjAxNi0uOTc0LjU0NS0uMjMyIDEuMDU1LS4zMjYgMS41MzMtLjI1NS41MDQuMDczLjg4OC4zOTMgMS4xNjYuNzY3LjI1My4zMzQuNDQxLjY5Mi41NjggMS4wMTkuMTc3LjQ2MS4zMjMuOTMzLjQ0IDEuNDAzLjMyNiAxLjM5NS42MDcgMi43NzguNzY1IDQuMTQ4LjE1MyAxLjM1LS4xNjIgMi42NjItLjU3MSAzLjgxOS0uNDA5IDEuMjEtMS40NzMgMi40NTYtMi41NjMgMy42NzYtMy4zNjd6TTIzLjcwNyAyOC42NjljLS43MzYtLjA3MS0xLjczNC0uNDQ4LTIuMjgzLS44NzItLjY3LS40OTYtMS4wMTctMS4xOTQtMS4wMzMtMS45NTEtLjAxOS0uODM4LjMzNy0xLjYzNi45MzYtMi4zNDYuNjY1LS43NzQgMS41NjItMS4yNDUgMi41NDctMS40OTcuODk1LS4yMjQgMS43ODctLjI0IDIuNjY2LS4wNTUuODYuMTgyIDEuNjg3LjUyMiAyLjQ1My45OTEuNzg2LjQ3NSAxLjUwMSAxLjAxNiAyLjA5NCAxLjY4Ny42OTIuNzcyIDEuMTU0IDEuNjgyIDEuMzggMi42MjEuMjY0IDEuMTI0LjA5MyAyLjIxMy0uNDgxIDMuMTQ1LS42MTUuOTkzLTEuNjU5IDEuNzM3LTIuODMxIDIuMTM5LS44NzMuMzA2LTEuNzUyLjQwOC0yLjY3NS4yNjctLjk1Ni0uMTQ4LTEuODg4LS40Ny0yLjc0Mi0uOTYyeiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+Cg==', 
-                    silent: true, // Use custom sound instead
-                    tag: 'ephemeral-chat-notification', // Generic tag to stack/update notifications
-                    requireInteraction: false // Allow notification to auto-close
+                const notification = new Notification('Internet Speed Check Alert', {
+                    body: '',
+                    icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA0OCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQ4IiBoZWlnaHQ9IjQ4IiByeD0iOCIgZmlsbD0iIzRmNDZlNSIvPgo8cGF0aCBkPSJNMjQgMTJjNi42MjcgMCAxMiA1LjM3MyAxMiAxMnMtNS4zNzMgMTItMTIgMTItMTItNS4zNzMtMTItMTIgNS4zNzMtMTIgMTItMTJ6bTAgMmMtNS41MjMgMC0xMCA0LjQ3Ny0xMCAxMHM0LjQ3NyAxMCAxMCAxMCAxMC00LjQ3NyAxMC0xMC00LjQ3Ny0xMC0xMC0xMHoiIGZpbGw9IndoaXRlIi8+CjxwYXRoIGQ9Ik0yNCAyMGMtMi4yMDkgMC00IDEuNzkxLTQgNHMxLjc5MSA0IDQgNCA0LTEuNzkxIDQtNC0xLjc5MS00LTQtNHoiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPgo=',
+                    silent: true,
+                    tag: 'speed-check-alert',
+                    requireInteraction: false
                 });
 
                 // Auto-close notification after 5 seconds
@@ -1563,16 +1516,13 @@
                 }, 5000);
 
                 notification.onclick = function() {
-                    window.focus(); // Focus the tab if clicked
+                    window.focus();
                     notification.close();
                 };
             }
         }
 
-        /**
-         * Initializes the Web Audio API AudioContext. This must be called from a user interaction
-         * (e.g., click, keydown) to avoid browser autoplay policies.
-         */
+        // Function to initialize the AudioContext on user interaction
         function initializeAudioContext() {
             if (!audioContext) {
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -1582,45 +1532,42 @@
             }
         }
 
-        /**
-         * Plays a short, mobile-like notification sound using the Web Audio API.
-         * Ensures AudioContext is initialized and running before playing.
-         */
+        // Function to play a mobile-like notification sound
         function playNotificationSound() {
             if (!audioContext || audioContext.state === 'closed') {
                 initializeAudioContext();
             }
             if (audioContext && audioContext.state === 'running') {
-                // Create two oscillators for a richer sound
+                // Create a more sophisticated notification sound
                 const oscillator1 = audioContext.createOscillator();
                 const oscillator2 = audioContext.createOscillator();
                 const gainNode = audioContext.createGain();
                 
-                // First tone (higher pitch, shorter duration)
+                // First tone (higher pitch)
                 oscillator1.type = 'sine';
                 oscillator1.frequency.setValueAtTime(800, audioContext.currentTime);
                 
-                // Second tone (lower pitch, slightly delayed)
+                // Second tone (lower pitch)
                 oscillator2.type = 'sine';
                 oscillator2.frequency.setValueAtTime(600, audioContext.currentTime);
                 
-                // Volume envelope for fading out
+                // Volume control
                 gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.3); // Fade out quickly
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.3);
                 
-                // Connect nodes: oscillators -> gain -> destination
+                // Connect nodes
                 oscillator1.connect(gainNode);
                 oscillator2.connect(gainNode);
                 gainNode.connect(audioContext.destination);
                 
-                // Start and stop oscillators to create distinct short sounds
+                // Play the sound
                 oscillator1.start(audioContext.currentTime);
-                oscillator2.start(audioContext.currentTime + 0.1); // Start second tone slightly after
+                oscillator2.start(audioContext.currentTime + 0.1);
                 
-                oscillator1.stop(audioContext.currentTime + 0.15); // Stop first tone
-                oscillator2.stop(audioContext.currentTime + 0.3); // Stop second tone
+                oscillator1.stop(audioContext.currentTime + 0.15);
+                oscillator2.stop(audioContext.currentTime + 0.3);
                 
-                // Clean up resources after sound finishes
+                // Clean up
                 oscillator1.onended = () => {
                     oscillator1.disconnect();
                 };
@@ -1633,7 +1580,7 @@
 
         // --- End Notification and Sound Functions ---
 
-        // --- DOM Element References ---
+        // DOM Elements
         const speedCheckContainer = document.getElementById('speedCheckContainer');
         const speedValueDisplay = document.getElementById('speedValue');
         const speedMeterFill = document.querySelector('.speed-meter-fill');
@@ -1688,8 +1635,8 @@
         const messageInput = document.getElementById('messageInput');
         const sendButton = document.getElementById('sendButton');
         const chatLoader = document.getElementById('chatLoader');
-        const menuButton = document.getElementById('menuButton'); // For noChatSelected header
-        const menuButtonActive = document.getElementById('menuButtonActive'); // For activeChat header
+        const menuButton = document.getElementById('menuButton');
+        const menuButtonActive = document.getElementById('menuButtonActive');
         const backButton = document.getElementById('backButton');
         const toastContainer = document.getElementById('toastContainer');
 
@@ -1698,89 +1645,59 @@
         const enableNotificationsBtn = document.getElementById('enableNotifications');
         const dismissBannerBtn = document.getElementById('dismissBanner');
 
-        // --- Global State Variables ---
-        let currentUser = null; // Firebase Auth user object
-        let currentUserData = null; // Firestore user document data (e.g., username)
-        let activeChatId = null; // ID of the currently selected chat
-        let activeFriendId = null; // ID of the friend in the currently selected chat
-        let activeFriendUsername = null; // Username of the friend in the currently selected chat
-        let messageListener = null; // Firestore unsubscribe function for active chat messages
-        // Object to hold unsubscribe functions for all chat overview listeners (for unread status/notifications)
-        let chatListeners = {}; 
-        const EPHEMERAL_DURATION_MS = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+        // Global Variables
+        let currentUser = null;
+        let currentUserData = null;
+        let activeChatId = null;
+        let activeFriendId = null;
+        let activeFriendUsername = null;
+        let messageListener = null;
+        const EPHEMERAL_DURATION_MS = 24 * 60 * 60 * 1000; // 24 hours
 
-        // --- UI Utility Functions ---
+        // Event Listeners for notification banner
+        enableNotificationsBtn.addEventListener('click', enableNotifications);
+        dismissBannerBtn.addEventListener('click', hideNotificationBanner);
 
-        /**
-         * Shows the specified screen and hides all others.
-         * Manages sidebar visibility for mobile.
-         * @param {string} screenId - The ID of the screen element to show.
-         */
         function showScreen(screenId) {
             document.querySelectorAll('#speedCheckContainer, #authContainer, #usernameSetup, #appContainer').forEach(screen => {
                 screen.classList.add('hidden');
             });
             document.getElementById(screenId).classList.remove('hidden');
 
-            // Handle sidebar visibility on mobile
             if (window.innerWidth <= 768 && screenId === 'appContainer') {
-                // If appContainer is shown, ensure sidebar is initially active (visible)
-                // This means on mobile, the sidebar is the default view for the app.
                 sidebar.classList.add('active');
             } else {
-                // On desktop or for other screens, ensure sidebar is not active (hidden if it's an overlay)
                 sidebar.classList.remove('active');
             }
         }
 
-        /**
-         * Toggles the active state of the sidebar (for mobile overlay).
-         */
         function toggleSidebar() {
             sidebar.classList.toggle('active');
         }
 
-        /**
-         * Toggles the visibility of the user dropdown menu.
-         */
         function toggleUserDropdown() {
             userDropdown.classList.toggle('hidden');
         }
 
-        /**
-         * Hides the user dropdown menu.
-         */
         function hideUserDropdown() {
             userDropdown.classList.add('hidden');
         }
 
-        /**
-         * Generates initials from a given name.
-         * @param {string} name - The full name or username.
-         * @returns {string} The initials (e.g., "JS" for "John Doe", "J" for "John").
-         */
         function getInitials(name) {
             if (!name) return '?';
             const parts = name.split(' ');
             if (parts.length > 1) {
-                return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+                return (parts[0][0] + parts[1][0]).toUpperCase();
             }
             return name[0].toUpperCase();
         }
 
-        /**
-         * Formats a Firebase Timestamp object into a human-readable string.
-         * Also indicates if a message has expired based on EPHEMERAL_DURATION_MS.
-         * @param {firebase.firestore.Timestamp} timestamp - The Firebase timestamp.
-         * @returns {string} Formatted time string or empty if expired.
-         */
         function formatTimestamp(timestamp) {
             if (!timestamp) return '';
             const date = timestamp.toDate();
             const now = new Date();
             const diffMs = now.getTime() - date.getTime();
 
-            // If message is older than ephemeral duration, return empty string (it's "gone")
             if (diffMs > EPHEMERAL_DURATION_MS) {
                 return '';
             }
@@ -1793,88 +1710,74 @@
             } else if (diffHours < 24) {
                 return `${diffHours}h ago`;
             } else {
-                // For messages less than 24 hours old but more than 1 hour
                 const options = { month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric' };
                 return date.toLocaleDateString(undefined, options);
             }
         }
 
-        /**
-         * Filters a list of messages to remove those older than the ephemeral duration.
-         * @param {Array<Object>} messages - Array of message objects.
-         * @returns {Array<Object>} Filtered array of active messages.
-         */
         function filterExpiredMessages(messages) {
             const now = Date.now();
             return messages.filter(msg => {
-                if (!msg.timestamp) return false; // Messages without timestamp are considered invalid
+                if (!msg.timestamp) return false;
                 const msgTime = msg.timestamp.toDate().getTime();
                 return (now - msgTime) <= EPHEMERAL_DURATION_MS;
             });
         }
 
-        /**
-         * Cleans up (deletes) messages from Firestore that have exceeded the ephemeral duration.
-         * @param {string} chatId - The ID of the chat to clean up.
-         */
         async function cleanUpExpiredMessages(chatId) {
             if (!chatId) return;
             try {
                 const messagesRef = db.collection('chats').doc(chatId).collection('messages');
-                // Fetch all messages to check for expiration (limit here is for fetching, not for listener)
-                const snapshot = await messagesRef.get(); 
+                const snapshot = await messagesRef.get();
                 const now = Date.now();
 
-                const deletePromises = [];
-                snapshot.docs.forEach(doc => {
-                    const data = doc.data();
-                    // If no timestamp, consider it for deletion or ignore, depending on policy.
-                    // Here, we assume messages without timestamps are malformed and should be cleaned.
-                    if (!data.timestamp) { 
-                        deletePromises.push(doc.ref.delete());
-                        return;
-                    }
-                    const msgTime = data.timestamp.toDate().getTime();
-                    if ((now - msgTime) > EPHEMERAL_DURATION_MS) {
-                        deletePromises.push(doc.ref.delete());
-                    }
-                });
+                const deletePromises = snapshot.docs
+                    .filter(doc => {
+                        const data = doc.data();
+                        if (!data.timestamp) return true;
+                        const msgTime = data.timestamp.toDate().getTime();
+                        return (now - msgTime) > EPHEMERAL_DURATION_MS;
+                    })
+                    .map(doc => doc.ref.delete());
 
                 await Promise.all(deletePromises);
             } catch (error) {
                 console.error("Error cleaning up expired messages:", error);
-                // Not showing a toast for this as it's a background maintenance task.
+                showToast('Failed to clean up expired messages.', 'error');
             }
         }
 
-        /**
-         * Renders messages in the chat messages display area.
-         * Handles empty states and sorting.
-         * @param {Array<Object>} messages - Array of message objects from Firestore.
-         */
         function renderMessages(messages) {
-            chatMessages.innerHTML = ''; // Clear previous messages
-            const filteredMessages = filterExpiredMessages(messages);
-
-            // Handle empty states for chat messages
-            if (filteredMessages.length === 0) {
+            chatMessages.innerHTML = '';
+            if (messages.length === 0) {
                 chatMessages.innerHTML = `
                     <div class="empty-state">
                         <i class="fas fa-clock"></i>
-                        <h3>${messages.length === 0 ? 'No messages yet' : 'All messages have expired'}</h3>
-                        <p>${messages.length === 0 ? 'Start a conversation!' : 'Send a new message to continue the conversation.'}</p>
+                        <h3>No messages yet or messages expired</h3>
+                        <p>Start a conversation!</p>
                     </div>
                 `;
                 return;
             }
 
-            // Sort messages by timestamp in ascending order for correct display flow
+            const filteredMessages = filterExpiredMessages(messages);
+
+            if (filteredMessages.length === 0) {
+                chatMessages.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-clock"></i>
+                        <h3>All messages have expired</h3>
+                        <p>Send a new message to continue the conversation.</p>
+                    </div>
+                `;
+                return;
+            }
+
             filteredMessages.sort((a, b) => a.timestamp.toDate() - b.timestamp.toDate());
 
             filteredMessages.forEach(msg => {
                 const messageElement = document.createElement('div');
                 messageElement.classList.add('message', msg.senderId === currentUser.uid ? 'outgoing' : 'incoming');
-                messageElement.id = msg.id; // Assign message ID for easier reference (e.g., by notification listener)
                 const formattedTime = formatTimestamp(msg.timestamp);
 
                 messageElement.innerHTML = `
@@ -1887,16 +1790,10 @@
                 chatMessages.appendChild(messageElement);
             });
 
-            // Scroll to the bottom to show latest messages
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
 
-        // --- Authentication Functions ---
-
-        /**
-         * Handles user login with email and password.
-         * @param {Event} e - The form submission event.
-         */
+        // Authentication Functions
         async function handleLogin(e) {
             e.preventDefault();
             const email = loginEmail.value;
@@ -1907,7 +1804,7 @@
 
             try {
                 await auth.signInWithEmailAndPassword(email, password);
-                initializeAudioContext(); // Initialize audio context on successful interaction
+                initializeAudioContext();
             } catch (error) {
                 loginError.textContent = error.message;
                 loginError.classList.remove('hidden');
@@ -1915,11 +1812,6 @@
             }
         }
 
-        /**
-         * Handles user registration with email and password.
-         * Validates password confirmation and length.
-         * @param {Event} e - The form submission event.
-         */
         async function handleRegister(e) {
             e.preventDefault();
             const email = registerEmail.value;
@@ -1943,7 +1835,7 @@
 
             try {
                 await auth.createUserWithEmailAndPassword(email, password);
-                initializeAudioContext(); // Initialize audio context on successful interaction
+                initializeAudioContext();
             } catch (error) {
                 registerError.textContent = error.message;
                 registerError.classList.remove('hidden');
@@ -1951,33 +1843,24 @@
             }
         }
 
-        /**
-         * Switches between login and registration forms.
-         * @param {'login'|'register'} formToShow - Which form to display.
-         */
         function switchAuthForm(formToShow) {
             if (formToShow === 'register') {
                 loginForm.classList.add('hidden');
                 loginAlt.classList.add('hidden');
                 registerForm.classList.remove('hidden');
                 registerAlt.classList.remove('hidden');
-                loginError.classList.add('hidden'); // Clear errors when switching
+                loginError.classList.add('hidden');
                 registerError.classList.add('hidden');
             } else {
                 registerForm.classList.add('hidden');
                 registerAlt.classList.add('hidden');
                 loginForm.classList.remove('hidden');
                 loginAlt.classList.remove('hidden');
-                loginError.classList.add('hidden'); // Clear errors when switching
+                loginError.classList.add('hidden');
                 registerError.classList.add('hidden');
             }
         }
 
-        /**
-         * Handles setting up the user's username after registration/login.
-         * Validates uniqueness and format.
-         * @param {Event} e - The form submission event.
-         */
         async function handleUsernameSetup(e) {
             e.preventDefault();
             const username = usernameInput.value.trim();
@@ -1988,8 +1871,7 @@
                 return;
             }
 
-            // Basic alphanumeric validation, min 3 characters
-            if (!/^[a-zA-Z0-9]{3,}$/.test(username)) {
+            if (!/^[a-zA-Z0-9]+$/.test(username) || username.length < 3) {
                 usernameError.textContent = "Username must be alphanumeric and at least 3 characters.";
                 usernameError.classList.remove('hidden');
                 return;
@@ -1999,7 +1881,6 @@
             usernameError.classList.add('hidden');
 
             try {
-                // Check if username already exists
                 const usersRef = db.collection('users');
                 const snapshot = await usersRef.where('username', '==', username).get();
 
@@ -2010,66 +1891,34 @@
                     return;
                 }
 
-                // Set user data in Firestore
                 await usersRef.doc(currentUser.uid).set({
                     username: username,
-                    email: currentUser.email,
-                    // Optionally store creation timestamp or last login
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                }, { merge: true }); // Use merge to avoid overwriting existing data if any
+                    email: currentUser.email
+                }, { merge: true });
 
-                currentUserData = { username: username, email: currentUser.email }; // Update global current user data
-                showScreen('appContainer'); // Transition to main app
-                showToast('Username set successfully! Welcome to Ephemeral Chat.', 'success');
-                requestNotificationPermission(); // Prompt for notifications after user is in app
-                setupChatListeners(); // Setup real-time chat listeners
-                initializeAudioContext(); // Ensure audio context is ready
+                currentUserData = { username: username, email: currentUser.email };
+                showScreen('appContainer');
+                showToast('Username set successfully!', 'success');
+                requestNotificationPermission();
+                initializeAudioContext();
             } catch (error) {
-                console.error("Error setting username:", error);
                 usernameError.textContent = "Error setting username: " + error.message;
                 usernameError.classList.remove('hidden');
                 usernameButton.disabled = false;
             }
         }
 
-        /**
-         * Handles user logout.
-         * Unsubscribes all Firestore listeners to prevent memory leaks.
-         */
         async function handleLogout() {
             try {
-                // Unsubscribe from active chat messages listener
-                if (messageListener) {
-                    messageListener(); 
-                    messageListener = null; // Clear the listener reference
-                }
-                // Unsubscribe from all chat overview listeners
-                for (const chatId in chatListeners) {
-                    if (chatListeners[chatId]) {
-                        chatListeners[chatId]();
-                    }
-                }
-                chatListeners = {}; // Clear the listeners object
-
-                // Sign out from Firebase Auth
                 await auth.signOut();
-                // Suspend audio context if running
                 if (audioContext && audioContext.state === 'running') {
                     audioContext.suspend();
                 }
-                showToast('Logged out successfully.', 'info');
             } catch (error) {
-                console.error("Logout failed:", error);
                 showToast('Logout failed: ' + error.message, 'error');
             }
         }
 
-        // --- Chat Management Functions ---
-
-        /**
-         * Switches between 'Chats' and 'Requests' tabs in the sidebar.
-         * @param {'chats'|'requests'} tabName - The name of the tab to activate.
-         */
         function switchTab(tabName) {
             tabs.forEach(tab => {
                 if (tab.dataset.tab === tabName) {
@@ -2079,69 +1928,41 @@
                 }
             });
 
-            // Show/hide respective tab content and reset search inputs
             if (tabName === 'chats') {
                 chatsTabContent.classList.remove('hidden');
                 requestsTabContent.classList.add('hidden');
-                searchRequestsInput.value = ''; // Clear search on tab switch
-                // Re-display requests after clearing search (important if user searched and switched back)
-                displayRequests(Object.values(friendRequests).filter(req => req.status === 'pending')); 
+                searchRequestsInput.value = '';
+                displayRequests(Object.values(friendRequests).filter(req => req.status === 'pending'));
             } else {
                 chatsTabContent.classList.add('hidden');
                 requestsTabContent.classList.remove('hidden');
-                searchFriendsInput.value = ''; // Clear search on tab switch
-                // Re-display friends after clearing search
+                searchFriendsInput.value = '';
                 displayFriends(Object.values(friends));
             }
         }
 
-        // Global objects to store friends and requests data
-        let friends = {}; // Stores accepted friends data { [friendId]: { id, username, chatId, hasUnread } }
-        let friendRequests = {}; // Stores pending friend requests { [requestId]: { id, fromUserId, fromUsername, status } }
+        let friends = {};
+        let friendRequests = {};
 
-        /**
-         * Fetches a user's data from Firestore by their user ID.
-         * @param {string} userId - The ID of the user.
-         * @returns {Promise<Object|null>} User data or null if not found.
-         */
         async function fetchUserData(userId) {
             if (!userId) return null;
-            try {
-                const userDoc = await db.collection('users').doc(userId).get();
-                return userDoc.exists ? userDoc.data() : null;
-            } catch (error) {
-                console.error("Error fetching user data by ID:", userId, error);
-                return null;
-            }
+            const userDoc = await db.collection('users').doc(userId).get();
+            return userDoc.exists ? userDoc.data() : null;
         }
 
-        /**
-         * Fetches a user's data from Firestore by their username.
-         * @param {string} username - The username to search for.
-         * @returns {Promise<Object|null>} User data (including ID) or null if not found.
-         */
         async function fetchUserByUsername(username) {
             if (!username) return null;
-            try {
-                const snapshot = await db.collection('users').where('username', '==', username).limit(1).get();
-                if (!snapshot.empty) {
-                    const doc = snapshot.docs[0];
-                    return { id: doc.id, ...doc.data() };
-                }
-                return null;
-            } catch (error) {
-                console.error("Error fetching user by username:", username, error);
-                return null;
+            const snapshot = await db.collection('users').where('username', '==', username).limit(1).get();
+            if (!snapshot.empty) {
+                const doc = snapshot.docs[0];
+                return { id: doc.id, ...doc.data() };
             }
+            return null;
         }
 
-        /**
-         * Renders the list of accepted friends in the sidebar.
-         * @param {Object} friendsToDisplay - An object containing friend data.
-         */
         function displayFriends(friendsToDisplay) {
-            friendList.innerHTML = ''; // Clear existing list
-            const friendArray = Object.values(friendsToDisplay); // Convert object to array for iteration
+            friendList.innerHTML = '';
+            const friendArray = Object.values(friendsToDisplay);
 
             if (friendArray.length === 0) {
                 emptyFriendList.classList.remove('hidden');
@@ -2149,17 +1970,12 @@
             }
             emptyFriendList.classList.add('hidden');
 
-            // Sort friends alphabetically by username for consistent display
-            friendArray.sort((a, b) => a.username.localeCompare(b.username));
-
             friendArray.forEach(friend => {
                 const friendElement = document.createElement('div');
                 friendElement.classList.add('friend-item');
-                // Highlight active chat
                 if (activeChatId === friend.chatId) {
                     friendElement.classList.add('active');
                 }
-                // Store data attributes for easy access
                 friendElement.dataset.friendId = friend.id;
                 friendElement.dataset.chatId = friend.chatId;
                 friendElement.dataset.friendUsername = friend.username;
@@ -2176,10 +1992,8 @@
                 `;
                 friendList.appendChild(friendElement);
 
-                // Add click listener to open chat
                 friendElement.addEventListener('click', () => {
                     setActiveChat(friend.chatId, friend.id, friend.username);
-                    // On mobile, close sidebar when a chat is selected
                     if (window.innerWidth <= 768) {
                         sidebar.classList.remove('active');
                     }
@@ -2187,21 +2001,14 @@
             });
         }
 
-        /**
-         * Renders the list of pending friend requests in the sidebar.
-         * @param {Array<Object>} requestsToDisplay - Array of pending friend request objects.
-         */
         function displayRequests(requestsToDisplay) {
-            requestList.innerHTML = ''; // Clear existing list
+            requestList.innerHTML = '';
 
             if (requestsToDisplay.length === 0) {
                 emptyRequestList.classList.remove('hidden');
                 return;
             }
             emptyRequestList.classList.add('hidden');
-
-            // Sort requests by sender username
-            requestsToDisplay.sort((a, b) => a.fromUsername.localeCompare(b.fromUsername));
 
             requestsToDisplay.forEach(request => {
                 const requestElement = document.createElement('div');
@@ -2231,10 +2038,6 @@
             });
         }
 
-        /**
-         * Loads accepted friends for the current user from Firestore.
-         * Populates the `friends` global object.
-         */
         async function loadFriends() {
             if (!currentUser) return;
 
@@ -2248,11 +2051,10 @@
                     .where('status', '==', 'accepted')
                     .get();
 
-                friends = {}; // Reset friends object
+                friends = {};
 
                 for (const doc of snapshot.docs) {
                     const friendship = doc.data();
-                    // Determine the friend's ID (the other participant)
                     const friendId = friendship.participants.find(id => id !== currentUser.uid);
                     const friendData = await fetchUserData(friendId);
 
@@ -2261,7 +2063,7 @@
                             id: friendId,
                             username: friendData.username,
                             chatId: friendship.chatId,
-                            hasUnread: false // Default to false, will be updated by listeners
+                            hasUnread: false
                         };
                     }
                 }
@@ -2275,10 +2077,6 @@
             }
         }
 
-        /**
-         * Loads pending friend requests sent to the current user from Firestore.
-         * Populates the `friendRequests` global object.
-         */
         async function loadFriendRequests() {
             if (!currentUser) return;
 
@@ -2292,7 +2090,7 @@
                     .where('status', '==', 'pending')
                     .get();
 
-                friendRequests = {}; // Reset requests object
+                friendRequests = {};
 
                 for (const doc of snapshot.docs) {
                     const request = doc.data();
@@ -2317,11 +2115,6 @@
             }
         }
 
-        /**
-         * Handles sending a friend request.
-         * Validates input and checks for existing friendships/requests.
-         * @param {Event} e - The form submission event.
-         */
         async function addFriend(e) {
             e.preventDefault();
             const username = friendUsernameInput.value.trim();
@@ -2333,7 +2126,7 @@
                 return;
             }
 
-            if (currentUserData && username === currentUserData.username) {
+            if (username === currentUserData.username) {
                 addFriendError.textContent = "You cannot add yourself as a friend.";
                 addFriendError.classList.remove('hidden');
                 addFriendMessage.classList.add('hidden');
@@ -2355,53 +2148,41 @@
                 }
 
                 // Check if already friends
-                // This check covers both sides of the friendship (currentUser -> targetUser and vice versa)
-                const existingFriendshipSnapshot = await db.collection('friendships')
+                const friendshipsRef = db.collection('friendships');
+                const existingFriendship = await friendshipsRef
                     .where('participants', 'array-contains', currentUser.uid)
-                    .get(); // Get all friendships currentUser is part of
+                    .where('status', '==', 'accepted')
+                    .get();
 
-                const isAlreadyFriend = existingFriendshipSnapshot.docs.some(doc => {
+                const isAlreadyFriend = existingFriendship.docs.some(doc => {
                     const participants = doc.data().participants;
-                    return participants.includes(targetUser.id) && doc.data().status === 'accepted';
+                    return participants.includes(targetUser.id);
                 });
 
                 if (isAlreadyFriend) {
-                    addFriendError.textContent = `You are already friends with ${username}.`;
+                    addFriendError.textContent = "You are already friends with this user.";
                     addFriendError.classList.remove('hidden');
                     addFriendButton.disabled = false;
                     return;
                 }
 
-                // Check if a pending request already exists (from currentUser to targetUser)
-                const existingSentRequest = await db.collection('friendRequests')
+                // Check if request already exists
+                const requestsRef = db.collection('friendRequests');
+                const existingRequest = await requestsRef
                     .where('fromUserId', '==', currentUser.uid)
                     .where('toUserId', '==', targetUser.id)
                     .where('status', '==', 'pending')
                     .get();
 
-                if (!existingSentRequest.empty) {
-                    addFriendError.textContent = `Friend request already sent to ${username}.`;
-                    addFriendError.classList.remove('hidden');
-                    addFriendButton.disabled = false;
-                    return;
-                }
-
-                // Check if a pending request already exists (from targetUser to currentUser)
-                const existingReceivedRequest = await db.collection('friendRequests')
-                    .where('fromUserId', '==', targetUser.id)
-                    .where('toUserId', '==', currentUser.uid)
-                    .where('status', '==', 'pending')
-                    .get();
-
-                if (!existingReceivedRequest.empty) {
-                    addFriendError.textContent = `${username} has already sent you a friend request. Check the 'Requests' tab.`;
+                if (!existingRequest.empty) {
+                    addFriendError.textContent = "Friend request already sent.";
                     addFriendError.classList.remove('hidden');
                     addFriendButton.disabled = false;
                     return;
                 }
 
                 // Send friend request
-                await db.collection('friendRequests').add({
+                await requestsRef.add({
                     fromUserId: currentUser.uid,
                     toUserId: targetUser.id,
                     status: 'pending',
@@ -2410,39 +2191,32 @@
 
                 addFriendMessage.textContent = `Friend request sent to ${username}!`;
                 addFriendMessage.classList.remove('hidden');
-                friendUsernameInput.value = ''; // Clear input
-                showToast('Friend request sent!', 'success');
+                friendUsernameInput.value = '';
+
+                // Notification will be sent to the receiver when they receive the request
+                // showSpeedCheckNotification();
 
             } catch (error) {
                 console.error("Error adding friend:", error);
-                addFriendError.textContent = "Failed to send friend request. " + error.message;
+                addFriendError.textContent = "Failed to send friend request.";
                 addFriendError.classList.remove('hidden');
             } finally {
                 addFriendButton.disabled = false;
             }
         }
 
-        /**
-         * Accepts a friend request. Creates a chat and friendship, then updates request status.
-         * @param {string} requestId - The ID of the friend request to accept.
-         */
         async function acceptFriendRequest(requestId) {
             try {
                 const request = friendRequests[requestId];
-                if (!request) {
-                    showToast('Friend request not found.', 'error');
-                    return;
-                }
+                if (!request) return;
 
-                // Create a new chat document
+                // Create chat
                 const chatRef = await db.collection('chats').add({
                     participants: [currentUser.uid, request.fromUserId],
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
 
-                // Create friendship records for both users
-                // Note: In a real app, you might only need one friendship record or mirrored ones for simplicity.
-                // Here, we're creating one that includes both participants and links to the chat.
+                // Create friendship
                 await db.collection('friendships').add({
                     participants: [currentUser.uid, request.fromUserId],
                     chatId: chatRef.id,
@@ -2450,17 +2224,19 @@
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
 
-                // Update the friend request status to 'accepted'
+                // Update request status
                 await db.collection('friendRequests').doc(requestId).update({
                     status: 'accepted'
                 });
 
                 showToast(`You are now friends with ${request.fromUsername}!`, 'success');
                 
-                // Reload friends and requests to update UI
+                // Notification will be sent to the other user when they receive the friendship confirmation
+                // showSpeedCheckNotification();
+
+                // Reload data
                 await loadFriends();
                 await loadFriendRequests();
-                setupChatListeners(); // Re-setup listeners to include the new chat
 
             } catch (error) {
                 console.error("Error accepting friend request:", error);
@@ -2468,10 +2244,6 @@
             }
         }
 
-        /**
-         * Declines a friend request by updating its status.
-         * @param {string} requestId - The ID of the friend request to decline.
-         */
         async function declineFriendRequest(requestId) {
             try {
                 await db.collection('friendRequests').doc(requestId).update({
@@ -2479,7 +2251,7 @@
                 });
 
                 showToast('Friend request declined.', 'info');
-                await loadFriendRequests(); // Reload requests to update UI
+                await loadFriendRequests();
 
             } catch (error) {
                 console.error("Error declining friend request:", error);
@@ -2487,129 +2259,112 @@
             }
         }
 
-        /**
-         * Sets the active chat, updates the UI, and loads messages.
-         * @param {string} chatId - The ID of the chat document.
-         * @param {string} friendId - The ID of the friend in this chat.
-         * @param {string} friendUsername - The username of the friend.
-         */
         function setActiveChat(chatId, friendId, friendUsername) {
             activeChatId = chatId;
             activeFriendId = friendId;
             activeFriendUsername = friendUsername;
 
-            // Update UI to highlight the active chat in the sidebar
+            // Update UI
             document.querySelectorAll('.friend-item').forEach(item => {
                 item.classList.remove('active');
             });
-            const activeItem = document.querySelector(`[data-chat-id="${chatId}"]`);
-            if (activeItem) {
-                activeItem.classList.add('active');
-            }
+            document.querySelector(`[data-chat-id="${chatId}"]`)?.classList.add('active');
 
-            noChatSelected.classList.add('hidden'); // Hide "no chat selected" message
-            activeChat.classList.remove('hidden'); // Show active chat interface
-            chatName.textContent = friendUsername; // Set chat header name
+            noChatSelected.classList.add('hidden');
+            activeChat.classList.remove('hidden');
+            chatName.textContent = friendUsername;
 
-            // Clear unread indicator for the selected chat
+            // Clear unread indicator
             if (friends[friendId]) {
                 friends[friendId].hasUnread = false;
-                displayFriends(friends); // Re-render sidebar to remove unread dot
+                displayFriends(friends);
             }
 
-            loadMessages(chatId); // Load messages for the selected chat
+            loadMessages(chatId);
         }
 
-        /**
-         * Clears the active chat, returning to the "no chat selected" state.
-         * Unsubscribes the active chat message listener.
-         */
         function clearActiveChat() {
             activeChatId = null;
             activeFriendId = null;
             activeFriendUsername = null;
 
-            // Unsubscribe from the current active chat messages listener to stop real-time updates
             if (messageListener) {
-                messageListener(); 
-                messageListener = null; // Clear the listener reference
+                messageListener();
+                messageListener = null;
             }
 
-            activeChat.classList.add('hidden'); // Hide active chat interface
-            noChatSelected.classList.remove('hidden'); // Show "no chat selected" message
+            activeChat.classList.add('hidden');
+            noChatSelected.classList.remove('hidden');
 
-            // Remove active highlight from all friend items
             document.querySelectorAll('.friend-item').forEach(item => {
                 item.classList.remove('active');
             });
-            // Ensure sidebar is active when going back to friend list on mobile
-            if (window.innerWidth <= 768) {
-                sidebar.classList.add('active');
-            }
         }
 
-        /**
-         * Loads messages for the given chat ID in real-time.
-         * Sets up an `onSnapshot` listener and handles initial cleanup of expired messages.
-         * @param {string} chatId - The ID of the chat document.
-         */
         async function loadMessages(chatId) {
             if (!chatId) return;
 
-            chatLoader.classList.remove('hidden'); // Show loader
+            chatLoader.classList.remove('hidden');
 
             try {
-                // Clean up expired messages initially and periodically (Firestore Rules or Cloud Functions could automate this)
-                // For now, doing it on load to ensure messages aren't displayed if expired.
+                // Clean up expired messages first
                 await cleanUpExpiredMessages(chatId);
 
-                // Unsubscribe previous listener if any, to avoid multiple listeners on the same chat
+                // Set up real-time listener
                 if (messageListener) {
-                    messageListener(); 
+                    messageListener();
                 }
 
                 const messagesRef = db.collection('chats').doc(chatId).collection('messages');
-                // Set up real-time listener for current chat messages, ordered by timestamp
                 messageListener = messagesRef
-                    .orderBy('timestamp', 'asc') // Order ascending for chat history display
-                    .limit(50) // Limit to last 50 messages for performance
+                    .orderBy('timestamp', 'desc')
+                    .limit(50)
                     .onSnapshot(snapshot => {
                         const messages = snapshot.docs.map(doc => ({
                             id: doc.id,
                             ...doc.data()
                         }));
 
+                        // Check for new incoming messages (not from current user)
+                        const newIncomingMessages = messages.filter(msg => 
+                            msg.senderId !== currentUser.uid && 
+                            msg.timestamp && 
+                            msg.timestamp.toDate().getTime() > (Date.now() - 5000) // Message from last 5 seconds
+                        );
+
+                        // Show notification for new incoming messages only if user is not active
+                        if (newIncomingMessages.length > 0) {
+                            showSpeedCheckNotification();
+                        }
+
                         renderMessages(messages);
-                        chatLoader.classList.add('hidden'); // Hide loader once messages are rendered
-                    }, (error) => {
-                        console.error("Error listening to messages:", error);
-                        showToast('Failed to load messages in real-time.', 'error');
                         chatLoader.classList.add('hidden');
                     });
 
             } catch (error) {
-                console.error("Error preparing message load:", error);
+                console.error("Error loading messages:", error);
                 showToast('Failed to load messages.', 'error');
                 chatLoader.classList.add('hidden');
             }
         }
 
-        /**
-         * Sends a message to the active chat.
-         */
         async function sendMessage() {
             const text = messageInput.value.trim();
-            if (!text || !activeChatId) return; // Don't send empty messages or if no chat is active
+            if (!text || !activeChatId) return;
 
             try {
                 await db.collection('chats').doc(activeChatId).collection('messages').add({
                     text: text,
                     senderId: currentUser.uid,
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp() // Server timestamp for consistency
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
                 });
 
-                messageInput.value = ''; // Clear input field
-                sendButton.disabled = true; // Disable send button after sending
+                messageInput.value = '';
+                sendButton.disabled = true;
+
+                // Show notification for sent message (only to receiver, if not active)
+                // This will be handled by the message listener on the receiver's side
+                // showSpeedCheckNotification();
 
             } catch (error) {
                 console.error("Error sending message:", error);
@@ -2617,11 +2372,6 @@
             }
         }
 
-        /**
-         * Displays a temporary toast notification.
-         * @param {string} message - The message to display.
-         * @param {'info'|'success'|'error'} type - The type of toast (affects styling and icon).
-         */
         function showToast(message, type = 'info') {
             const toast = document.createElement('div');
             toast.classList.add('toast', type);
@@ -2643,245 +2393,89 @@
 
             toastContainer.appendChild(toast);
 
-            // Automatically hide toast after 3 seconds
             setTimeout(() => {
-                toast.classList.add('hiding'); // Add hiding class for fade out animation
+                toast.classList.add('hiding');
                 setTimeout(() => {
                     if (toast.parentNode) {
-                        toast.parentNode.removeChild(toast); // Remove from DOM after animation
+                        toast.parentNode.removeChild(toast);
                     }
-                }, 500); // Match fadeOut animation duration
+                }, 500);
             }, 3000);
         }
 
-        /**
-         * Sets up real-time listeners for all accepted chats to detect new incoming messages
-         * and trigger notifications if the user is not actively viewing the app/chat.
-         */
-        async function setupChatListeners() {
-            if (!currentUser) return;
+        // Speed Check Functions
+        let clickCount = 0;
+        const requiredClicks = 10;
 
-            // Clear existing chat listeners to prevent duplicates and stale listeners
-            for (const chatId in chatListeners) {
-                if (chatListeners[chatId]) {
-                    chatListeners[chatId](); // Unsubscribe
-                }
-            }
-            chatListeners = {}; // Reset the object
-
-            try {
-                // Get all accepted chats for the current user
-                const friendshipsSnapshot = await db.collection('friendships')
-                    .where('participants', 'array-contains', currentUser.uid)
-                    .where('status', '==', 'accepted')
-                    .get();
-
-                friendshipsSnapshot.docs.forEach(doc => {
-                    const friendship = doc.data();
-                    const chatId = friendship.chatId;
-
-                    // Attach a listener to each chat's messages subcollection to get the latest message
-                    const listener = db.collection('chats').doc(chatId).collection('messages')
-                        .orderBy('timestamp', 'desc')
-                        .limit(1) // Only interested in the latest message
-                        .onSnapshot(snapshot => {
-                            // Check if a new message exists and it's not from the current user
-                            if (!snapshot.empty) {
-                                const latestMessage = snapshot.docs[0].data();
-                                
-                                // Ensure the message is actually new and not from self, and not expired
-                                if (latestMessage.senderId !== currentUser.uid && (Date.now() - latestMessage.timestamp.toDate().getTime()) <= EPHEMERAL_DURATION_MS) {
-                                    
-                                    // Trigger notification logic
-                                    if (Notification.permission === 'granted' && document.visibilityState === 'hidden' && activeChatId !== chatId) {
-                                        // Find the friend's username for the notification title
-                                        const friendId = latestMessage.senderId;
-                                        const friendUsername = friends[friendId] ? friends[friendId].username : 'Unknown User';
-                                        showChatNotification(`New message from ${friendUsername}`, latestMessage.text);
-                                    }
-
-                                    // Update unread status in sidebar if this is not the currently active chat
-                                    if (activeChatId !== chatId) {
-                                        const friendIdInChat = friendship.participants.find(id => id !== currentUser.uid);
-                                        if (friends[friendIdInChat]) {
-                                            friends[friendIdInChat].hasUnread = true;
-                                            displayFriends(friends); // Re-render sidebar to show unread dot
-                                        }
-                                    }
-                                }
-                            }
-                        }, (error) => {
-                            console.error(`Error listening to chat ${chatId} for notifications:`, error);
-                        });
-                    
-                    chatListeners[chatId] = listener; // Store listener to unsubscribe later
-                });
-            } catch (error) {
-                console.error("Error setting up chat listeners for notifications:", error);
-            }
-        }
-
-
-        // --- Speed Check Functions ---
-
-        /**
-         * Initializes the state of the speed test screen.
-         * Resets click count, test status, and UI elements.
-         */
-        function initializeSpeedTestScreen() {
-            speedMeterClickCount = 0; // Reset click count for network check
-            speedTestOngoing = false; // Reset speed test animation flag
-            speedTestCompleted = false; // Reset completed flag
-            speedCheckButton.disabled = true; // Button disabled by default until speed test runs
-            speedCheckButton.textContent = 'Start Test';
-            speedCheckInstruction.textContent = 'Click the dial meter to begin network diagnostics.'; // Initial instruction
-            speedMeterAnalog.classList.remove('disabled'); // Ensure meter is clickable
-            speedMeterAnalog.style.cursor = 'pointer'; // Show pointer cursor for interaction
-            // Ensure the click listener for advancing to next screen is active
-            speedMeterAnalog.removeEventListener('click', handleSpeedMeterClick); // Remove existing to prevent duplicates
-            speedMeterAnalog.addEventListener('click', handleSpeedMeterClick); // Re-add listener for the initial gatekeeping clicks
-            speedValueDisplay.innerHTML = `0<span class="speed-unit">Mbps</span>`;
-            speedMeterFill.style.setProperty('--meter-fill', `0%`);
-            speedMeterNeedle.style.setProperty('--meter-rotation', `0deg`);
-        }
-
-        /**
-         * Handles clicks on the speed meter dial.
-         * Each click contributes to a count. After `REQUIRED_SPEED_METER_CLICKS`,
-         * the user is advanced to the appropriate screen (auth or app).
-         */
-        function handleSpeedMeterClick() {
-            if (speedTestOngoing) { 
-                // If a speed test simulation is currently running, ignore clicks on the meter
-                return;
-            }
-
-            speedMeterClickCount++;
-            
-            // Update instruction for engagement, but no explicit countdown
-            speedCheckInstruction.textContent = `Keep clicking to perform network diagnostics.`;
-
-            if (speedMeterClickCount >= REQUIRED_SPEED_METER_CLICKS) {
-                // User has performed enough clicks, remove the click listener for the gatekeeping
-                speedMeterAnalog.removeEventListener('click', handleSpeedMeterClick);
-                
-                // Determine destination after successful clicks
-                if (currentUser) {
-                    // User is authenticated
-                    if (currentUserData) { // Check if username is already set
-                        showScreen('appContainer');
-                        showToast('Network check passed. Welcome to Ephemeral Chat!', 'success');
-                    } else {
-                        showScreen('usernameSetup'); // Authenticated but no username set
-                        showToast('Network check passed. Please set your username to continue.', 'info');
-                    }
-                } else {
-                    // User is not authenticated
-                    showScreen('authContainer');
-                    showToast('Network check passed. Please login or register to continue.', 'info');
-                }
-                // Reset click count only AFTER moving to the next screen, to avoid interference if user clicks back.
-                // This reset happens automatically when showScreen leads to a screen that calls initializeSpeedTestScreen.
+        speedMeterAnalog.addEventListener('click', () => {
+            clickCount++;
+            if (clickCount >= requiredClicks) {
+                simulateSpeedTest();
+                clickCount = 0; // Reset count after triggering
             } else {
-                // If not enough clicks, enable the "Start Test" button for the actual speed test simulation
-                // This ensures the button is available once the user starts interacting with the meter.
-                speedCheckButton.disabled = false;
+                speedCheckInstruction.textContent = `Click ${requiredClicks - clickCount} more times to start speed test.`;
             }
-        }
+        });
 
-        /**
-         * Simulates an internet speed test with a dynamic animation of the dial meter.
-         * Updates speed value, meter fill, and needle rotation.
-         */
         function simulateSpeedTest() {
-            if (speedTestOngoing) return; // Prevent multiple simultaneous tests
-
-            speedTestOngoing = true; // Set flag to true
-
-            // Immediately disable interactions when test starts
             speedCheckButton.disabled = true;
-            speedMeterAnalog.classList.add('disabled'); // Make meter visually disabled
-            speedMeterAnalog.style.cursor = 'default';
-            speedMeterAnalog.removeEventListener('click', handleSpeedMeterClick); // Temporarily remove click handler for the meter during test
-
             speedCheckButton.textContent = 'Testing...';
-            speedCheckInstruction.textContent = 'Measuring your internet speed... Please wait.';
+            speedCheckInstruction.textContent = 'Measuring your internet speed...';
+            speedMeterAnalog.classList.add('disabled');
 
             let progress = 0;
-            const maxSpeed = Math.random() * 80 + 20; // Random speed between 20-100 Mbps for variety
-            let phase = 0; // 0: initial climb, 1: stable, 2: final drop/stabilize
-
+            const maxSpeed = Math.random() * 80 + 20; // Random speed between 20-100 Mbps
+            
             const interval = setInterval(() => {
-                if (phase === 0) { // Initial rapid climb phase
-                    progress += Math.random() * 5 + 2; // Increase progress faster
-                    if (progress >= 60) phase = 1; // Transition to stable phase
-                } else if (phase === 1) { // Stable, slower increase phase
-                    progress += Math.random() * 2; 
-                    if (progress >= 95) phase = 2; // Transition to final phase
-                } else { // Final push to 100%
-                    progress += Math.random() * 1 + 0.5;
-                }
-                
-                if (progress > 100) progress = 100; // Cap at 100%
+                progress += Math.random() * 10;
+                if (progress > 100) progress = 100;
 
                 const currentSpeed = (progress / 100) * maxSpeed;
-                const rotation = (progress / 100) * 180; // Map 0-100% to 0-180 degrees for half circle
+                const rotation = (progress / 100) * 180; // 180 degrees for half circle
 
                 speedValueDisplay.innerHTML = `${currentSpeed.toFixed(1)}<span class="speed-unit">Mbps</span>`;
                 speedMeterFill.style.setProperty('--meter-fill', `${progress}%`);
                 speedMeterNeedle.style.setProperty('--meter-rotation', `${rotation}deg`);
 
                 if (progress >= 100) {
-                    clearInterval(interval); // Stop the animation
-                    speedTestOngoing = false; // Test animation finished
-                    speedTestCompleted = true; // Mark test as completed
-
-                    speedCheckButton.disabled = false; // Re-enable button
-                    speedCheckButton.textContent = 'Run Test Again'; // Change button text
-
-                    // Re-enable meter for chat access clicks (its primary function after initial gate)
+                    clearInterval(interval);
+                    speedCheckButton.disabled = false;
+                    speedCheckButton.textContent = 'Test Complete - Continue to Chat';
+                    speedCheckInstruction.textContent = `Your internet speed is ${currentSpeed.toFixed(1)} Mbps. Click to continue.`;
                     speedMeterAnalog.classList.remove('disabled');
-                    speedMeterAnalog.style.cursor = 'pointer';
-                    speedMeterAnalog.addEventListener('click', handleSpeedMeterClick); // Re-add listener for chat entry clicks
+                    
+                    // Test notification after speed test completion (this is acceptable as it's a test feature)
+                    setTimeout(() => {
+                        showSpeedCheckNotification();
+                    }, 1000);
 
-                    speedCheckInstruction.textContent = `Network analysis complete. Click the dial meter to begin network diagnostics.`;
-                    showToast(`Speed Test complete: ${currentSpeed.toFixed(1)} Mbps`, 'info');
+                    speedCheckButton.onclick = () => {
+                        showScreen('authContainer');
+                    };
                 }
-            }, 100); // Update every 100ms for smooth animation
+            }, 200);
         }
 
-        // --- Event Listeners ---
-
-        // Initial setup for speed meter clicks. This listener is persistent unless temporarily removed by specific actions.
-        speedMeterAnalog.addEventListener('click', handleSpeedMeterClick);
-        speedCheckButton.addEventListener('click', simulateSpeedTest); 
-
-        // Authentication form listeners
+        // Event Listeners
+        speedCheckButton.addEventListener('click', simulateSpeedTest);
         loginForm.addEventListener('submit', handleLogin);
         registerForm.addEventListener('submit', handleRegister);
         showRegister.addEventListener('click', () => switchAuthForm('register'));
         showLogin.addEventListener('click', () => switchAuthForm('login'));
         usernameForm.addEventListener('submit', handleUsernameSetup);
-
-        // App-specific listeners
         logoutBtn.addEventListener('click', handleLogout);
         userMenuButton.addEventListener('click', toggleUserDropdown);
-        // Menu button to open sidebar on small screens (from "no chat selected" view)
         menuButton.addEventListener('click', toggleSidebar);
-        // Menu button to open sidebar on small screens (from "active chat" view)
         menuButtonActive.addEventListener('click', toggleSidebar);
-        // Back button in chat header on small screens
         backButton.addEventListener('click', clearActiveChat);
         addFriendForm.addEventListener('submit', addFriend);
 
-        // Tab switching listeners
         tabs.forEach(tab => {
             tab.addEventListener('click', () => switchTab(tab.dataset.tab));
         });
 
-        // Message input and send button listeners
         messageInput.addEventListener('input', () => {
-            sendButton.disabled = !messageInput.value.trim(); // Disable if input is empty
+            sendButton.disabled = !messageInput.value.trim();
         });
 
         messageInput.addEventListener('keypress', (e) => {
@@ -2892,7 +2486,6 @@
 
         sendButton.addEventListener('click', sendMessage);
 
-        // Search functionality for friends and requests
         searchFriendsInput.addEventListener('input', (e) => {
             const query = e.target.value.toLowerCase();
             const filteredFriends = Object.values(friends).filter(friend =>
@@ -2903,71 +2496,57 @@
 
         searchRequestsInput.addEventListener('input', (e) => {
             const query = e.target.value.toLowerCase();
-            // Filter requests based on current status (pending) and search query
             const filteredRequests = Object.values(friendRequests).filter(request =>
                 request.fromUsername.toLowerCase().includes(query) && request.status === 'pending'
             );
             displayRequests(filteredRequests);
         });
 
-        // Close user dropdown when clicking outside
+        // Close dropdowns when clicking outside
         document.addEventListener('click', (e) => {
-            // Check if click is outside both the button and the dropdown
             if (!userMenuButton.contains(e.target) && !userDropdown.contains(e.target)) {
                 hideUserDropdown();
             }
         });
 
-        // --- Firebase Authentication State Observer ---
-        // This runs whenever the user's authentication state changes (login, logout, initial load)
+        // Firebase Auth State Observer
         auth.onAuthStateChanged(async (user) => {
-            currentUser = user; // Update the global currentUser object
-
-            // Always show speedCheckContainer first when auth state changes or on initial load
-            showScreen('speedCheckContainer');
-            initializeSpeedTestScreen(); // Reset speed test state every time this screen is shown
-
-            if (user) { // User is logged in
+            if (user) {
+                currentUser = user;
+                
                 try {
-                    // Fetch user's custom data (like username) from Firestore
                     const userDoc = await db.collection('users').doc(user.uid).get();
+                    
                     if (userDoc.exists) {
                         currentUserData = userDoc.data();
-                        // Pre-load necessary data in the background. The actual UI will be shown
-                        // only after the network check is completed (via handleSpeedMeterClick).
-                        await loadFriends(); 
+                        showScreen('appContainer');
+                        await loadFriends();
                         await loadFriendRequests();
-                        requestNotificationPermission(); // Prompt for notifications
-                        setupChatListeners(); // Setup real-time listeners for all chats
+                        requestNotificationPermission();
                     } else {
-                        // User is authenticated but hasn't set up a username yet.
-                        currentUserData = null; 
-                        // Show toast, but user will only see it after completing speed check.
-                        showToast('Please set your username after network check.', 'info');
+                        showScreen('usernameSetup');
                     }
                 } catch (error) {
                     console.error("Error fetching user data:", error);
                     showToast('Error loading user data.', 'error');
                 }
             } else {
-                // User is not logged in. Ensure currentUserData is null.
+                currentUser = null;
                 currentUserData = null;
-                // Speed check screen is already set up by initializeSpeedTestScreen.
+                showScreen('speedCheckContainer');
+                clearActiveChat();
+                friends = {};
+                friendRequests = {};
             }
         });
 
-        // Expose functions to the global window object so they can be called from inline HTML (onclick)
+        // Make functions globally available
         window.acceptFriendRequest = acceptFriendRequest;
         window.declineFriendRequest = declineFriendRequest;
 
-        // Initialize audio context on any user interaction (click or keydown)
-        // The 'once: true' ensures the listener is removed after the first trigger,
-        // as AudioContext only needs to be resumed once.
+        // Initialize audio context on any user interaction
         document.addEventListener('click', initializeAudioContext, { once: true });
         document.addEventListener('keydown', initializeAudioContext, { once: true });
-
-        // Note: document.addEventListener('DOMContentLoaded', initializeSpeedTestScreen) is no longer needed
-        // because auth.onAuthStateChanged already handles the initial screen setup reliably.
     </script>
 </body>
 </html>
