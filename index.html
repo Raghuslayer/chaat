@@ -8,6 +8,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.2/firebase-app-compat.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.2/firebase-auth-compat.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.2/firebase-firestore-compat.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.2/firebase-database-compat.min.js"></script> <!-- Added Realtime Database -->
     <style>
         /* CSS Variables for consistent theming and easy adjustments */
         :root {
@@ -75,63 +76,6 @@
 
         .hidden {
             display: none !important;
-        }
-
-        /* --- Notification Permission Banner --- */
-        .notification-banner {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%); /* Vibrant gradient */
-            color: var(--text-dark);
-            padding: 1rem;
-            text-align: center;
-            z-index: 10000;
-            box-shadow: var(--shadow-md);
-            animation: slideDown 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Smoother slide down */
-            backdrop-filter: blur(5px); /* Subtle blur behind banner */
-        }
-
-        .notification-banner-content {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .notification-banner button {
-            background: rgba(255, 255, 255, 0.25);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            color: var(--text-dark);
-            padding: 0.6rem 1.2rem;
-            border-radius: var(--border-radius-sm);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 600; /* Bolder font */
-            box-shadow: var(--shadow-sm);
-        }
-
-        .notification-banner button:hover {
-            background: rgba(255, 255, 255, 0.4);
-            transform: translateY(-2px) scale(1.02); /* More pronounced hover */
-            box-shadow: var(--shadow-md);
-        }
-
-        .notification-banner .close-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-dark);
-            font-size: 1.4rem; /* Larger icon */
-            cursor: pointer;
-            padding: 0.25rem;
-            margin-left: auto;
-            transition: transform 0.2s ease;
-        }
-        .notification-banner .close-btn:hover {
-            transform: rotate(90deg); /* Spin on hover */
-            color: var(--primary-color); /* Color change on hover */
         }
 
         /* --- Auth Container Styles --- */
@@ -653,6 +597,10 @@
             font-size: clamp(0.85rem, 2vw, 1rem);
             box-shadow: var(--shadow-sm);
             letter-spacing: 0.02em;
+            display: flex; /* Make buttons flex to center content */
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem; /* Gap between icon and text */
         }
 
         .accept-button {
@@ -1496,18 +1444,6 @@
     </style>
 </head>
 <body>
-    <!-- Notification Permission Banner -->
-    <div id="notificationBanner" class="notification-banner hidden">
-        <div class="notification-banner-content">
-            <i class="fas fa-bell"></i>
-            <span>Enable notifications to receive message alerts</span>
-            <button id="enableNotifications">Enable</button>
-            <button id="dismissBanner" class="close-btn">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-    </div>
-
     <!-- Speed Check Container -->
     <div id="speedCheckContainer" class="speed-check-container">
         <div class="speed-check-box">
@@ -1707,7 +1643,8 @@
 
     <script>
         // Firebase Configuration
-        // Note: Using a placeholder API key. In a real app, this would be managed securely.
+        // Attempt to use __firebase_config if available (provided by Canvas environment)
+        // This is the most robust way to get the correct Firebase configuration.
         const firebaseConfig = {
             apiKey: "AIzaSyBXQAIu0_JwngXpgjuftCsM05kLM6H5OW8", 
             authDomain: "chat-app-e3afc.firebaseapp.com",
@@ -1717,13 +1654,23 @@
             appId: "1:1005413617727:web:2f81b1c9139636cd4ee88a"
         };
 
+        if (typeof __firebase_config !== 'undefined' && __firebase_config) {
+            try {
+                const parsedConfig = JSON.parse(__firebase_config);
+                // Merge parsed config with the default to ensure all fields are covered
+                firebaseConfig = { ...firebaseConfig, ...parsedConfig };
+            } catch (e) {
+                console.error("Error parsing __firebase_config:", e);
+                // Fallback to the hardcoded placeholder if parsing fails
+            }
+        }
+        console.log("Firebase Config in use:", firebaseConfig); // Log the final config for debugging
+
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
-
-        // Notification and Sound Variables
-        let audioContext = null;
+        const rtdb = firebase.database(); // Initialize Realtime Database
         
         // Speed Check Variables
         let speedMeterClickCount = 0;
@@ -1742,149 +1689,6 @@
 
         const EPHEMERAL_DURATION_MS = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
         const ONLINE_THRESHOLD_MS = 5 * 60 * 1000; // 5 minutes for online status
-
-        // --- Notification and Sound Functions ---
-        
-        /**
-         * Requests notification permission from the user if it's currently 'default'.
-         * Shows a banner prompting the user to enable notifications.
-         */
-        function requestNotificationPermission() {
-            if ('Notification' in window && Notification.permission === 'default') {
-                showNotificationBanner();
-            }
-        }
-
-        /**
-         * Displays the notification banner.
-         */
-        function showNotificationBanner() {
-            const banner = document.getElementById('notificationBanner');
-            banner.classList.remove('hidden');
-        }
-
-        /**
-         * Hides the notification permission banner.
-         */
-        function hideNotificationBanner() {
-            const banner = document.getElementById('notificationBanner');
-            banner.classList.add('hidden');
-        }
-
-        /**
-         * Initiates the notification permission request. If granted, hides the banner and shows a success toast.
-         * If denied, shows an error toast.
-         */
-        async function enableNotifications() {
-            try {
-                const permission = await Notification.requestPermission();
-                if (permission === 'granted') {
-                    showToast('Notifications enabled successfully!', 'success');
-                    hideNotificationBanner();
-                } else {
-                    showToast('Notification permission denied', 'error');
-                }
-            } catch (error) {
-                console.error('Error requesting notification permission:', error);
-                showToast('Error enabling notifications', 'error');
-            }
-        }
-
-        /**
-         * Displays a chat notification if permission is granted and the user is not
-         * currently active on the tab. Also plays a notification sound.
-         * @param {string} title - The title of the notification.
-         * @param {string} body - The body text of the notification.
-         */
-        function showChatNotification(title, body) {
-            // Only show notification if permission is granted AND the document is not visible (user is not active on this tab)
-            if (Notification.permission === 'granted' && document.visibilityState === 'hidden') {
-                playNotificationSound();
-                
-                const notification = new Notification(title, {
-                    body: body,
-                    // Generic chat icon as base64 SVG to avoid external requests
-                    icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA0OCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQ4IiBoZWlnaHQ9IjQ4IiByeD0iOCIgZmlsbD0iIzRmNDZlNSIvPgo8cGF0aCBkPSJNMjQgMTJjNi42MjcgMCAxMiA1LjM3MyAxMiAxMnMtNS4zNzMgMTItMTIgMTItMTItNS4zNzMtMTItMTIgNS4zNzMtMTIgMTItMTJ6bTAgMmMtNS41MjMgMC0xMCA0LjQ3Ny0xMCAxMHM0LjQ3NyAxMCAxMCAxMCAxMC00LjQ3NyAxMC0xMC00LjQ3Ny0xMC0xMC0xMHooMjQgMTJjNi42MjcgMCAxMiA1LjM3MyAxMiAxMnMtNS4zNzMgMTItMTIgMTItMTItNS4zNzMtMTItMTIgNSuMzczLTEyIDEyLTEyek0zOC4yNyAyNS43Yy0uNzgxLTQuMzY5LTIuMzgyLTguMzYtNC41MTYtMTJhMTEuOTczIDExLjk3MyAwIDAgMC03LjE1MSAyLjQ5Yy01LjE2OCAzLjcyNi03LjUzMyA4Ljk2OS03LjEzMyAxNC43MkwyNi4wMTIgMjZsLS4wMTIgLjEwMUMyNS43OTcgMjUuNTQ1IDI1LjkwNiAyNS42NTQgMjYgMjZjLS41MzEuOTMtLjU5MSAxLjQ5LS4yMjQgMS42NzUgMS44MS42MTUuMDM2IDEuNDQyIDQuMDI0IDIuMTc1LjE5Ny44OS41OSAxLjc0NiAxLjE1OCAyLjMxMy4zMi4zMjcuNTY5LjU2NS43MDYuNjM2Ljg1MS0uMjk0IDEuNDIxLS42OTIgMS44OTgtMS4wNy42NDEtLjUwNyAxLjMyNi0uOTcxIDEuOTM4LTEuMzc5LjQ4NC0uMzIxLjk0My0uNTI4IDEuMjk4LS42MTcuNDc1LS4xMy44Mi0uMDY5IDEuMTU2LS4wMDkuMzM1LjA2MS42NTUuMTU5Ljk1MS4yODJjLjYzNi4yNTQgMS4yNzQuNTU0IDEuOTA3Ljg2MS43MDQuMzgxIDEuNDA1Ljc5MyAyLjA2IDEuMjcyLjU5OC40MzkgMS4xNS44NDggMS.2NyMi43NTItLjA2OS0uODkyLjAyMy0xLjc2OS4xMzgtMi42MTEuMzQ0LS44NjYuMjA2LTEuNzAuNDkzLTIuNDc3Ljg0Ny0uNDU4LjIxNS0uODk3LjQyOS0xLjMxNC42MjktMS45NDEuNjk1LTIuMjk2IDEuMzk3LTQuNDE1IDMuNDYzLTYuMDkyIDUuNjA0LS40NDQuNTYxLS41NjIgMS4zNTYtLjM1NCAyLjA0OS43OTEgMi44MTIgMi40NDggNS42NyA0LjU3IDcuNjg5IDIuMzE5IDIuMTc5IDUuMTYgMy43MTcgOC4zOTIgMy45MTMuMzAyLjAyNS41NDEtLjA3Mi43MS0uMjc4LjYxNS0uNzMzIDEuNTA4LTEuODA3IDIuNDUyLTIuNDA4LjY0LS4zOTggMS4yNi0uNjk2IDEuODQyLS44LjY4LS4yMTEgMS4zMjgtLjMzMSAxLjg5OS0uMzc5LjU3NC0uMDQ3IDEuMTI4LS4wNzMgMS42NjYtLjA3MyAx.OTc5LjAyIDMuNTI5LjA5NiA0LjYyNy4yOTUgMS42NTUuMjk5IDMuMjYuNzk1IDQuNzMgMS4NTEyLjU3Ny4yNzIgMS4xMzYuNTI1IDEuNjU0LjczNi42NC4yOTEgMS4yNDYuNDUyIDEuNzUuNDUyLjUwNC4wMDEuOTQtLjEzMiAx.MzA5LS4zOC4zNTgtLjI0OC42MzMtLjU4OC44NTQtLjk3NS4yMjEtLjM4Ny4zODItLjg0My40ODctMS4yNjIuNTIzLTEuOTg3IDEuNzQ4LTMuOTQ2IDMuNjIzLTUuMDYxLjc2Mi0uNDMzIDEuNDcxLS42NjcgMi4wOTUtLjc5OS41OTctLjEyNiAxLjE0NS0uMTIxIDEuNjU1LS4wNTIuNTkuMDgyLjk4Ny41MzMgMS4yOTcuODU1LjI4LjI4Mi40OTguNjI0LjY0OS45MDQuMTc4LjMyNS4zMjkuNjY4LjQ0NyAxLjA0NS4zNjIgMS41ODQuNjY4IDMuMTY3Ljc5NyA0Ljc0OS4xNTcgMS45NzktLjE3MyAzLjkwNy0uNjU3IDUuNDk5LS40NTggMS40OTgtMS42OTcgMi44OTMtMy4yMTEgMy44Mzd6TTIzLjcwNyAyOC42NjljLS43MzYtLjA3MS0xLjczNC0uNDQ4LTIuMjgzLS44NzItLjY3LS40OTYtMS4wMTctMS4xOTQtMS4wMzMtMS45NTEtLjAxOS0uODM4LjMzNy0xLjYzNi45MzYtMi4zNDYuNjY1LS43NzQgMS41NjItMS4yNDUgMi41NDctMS40OTcuODk1LS4yMjQgMS43ODctLjI0IDIuNjY2LS4wNTUuODYuMTgyIDEuNjg3LjUyMiAyLjQ1My45OTEuNzg2LjQ3NSAxLjUwMSAxLjAxNiAyLjA5NCAxLjY4Ny42OTIuNzcyIDEuMTU0IDEuNjgyIDEuMzggMi42MjEuMjY0IDEuMTI0LjA5MyAyLjIxMy0uNDgxIDMuMTQ1LS42MTUuOTkzLTEuNjU5IDEuNzM3LTIuODMxIDIuMTM5LS44NzMuMzA2LTEuNzUyLjQwOC0yLjY3NS4yNjctLjk1Ni0uMTQ4LTEuODg4LS40Ny0yLjc0Mi0uOTYyeiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+Cg==', 
-                    silent: true, // Use custom sound instead
-                    tag: 'ephemeral-chat-notification', // Generic tag to stack/update notifications
-                    requireInteraction: false // Allow notification to auto-close
-                });
-
-                // Auto-close notification after 5 seconds
-                setTimeout(() => {
-                    notification.close();
-                }, 5000);
-
-                notification.onclick = function() {
-                    window.focus(); // Focus the tab if clicked
-                    notification.close();
-                };
-            }
-        }
-
-        /**
-         * Initializes the Web Audio API AudioContext. This must be called from a user interaction
-         * (e.g., click, keydown) to avoid browser autoplay policies.
-         */
-        function initializeAudioContext() {
-            if (!audioContext) {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            if (audioContext.state === 'suspended') {
-                audioContext.resume().catch(e => console.error("Error resuming audio context:", e));
-            }
-        }
-
-        /**
-         * Plays a short, mobile-like notification sound using the Web Audio API.
-         * Ensures AudioContext is initialized and running before playing.
-         */
-        function playNotificationSound() {
-            if (!audioContext || audioContext.state === 'closed') {
-                initializeAudioContext();
-            }
-            if (audioContext && audioContext.state === 'running') {
-                // Create two oscillators for a richer sound
-                const oscillator1 = audioContext.createOscillator();
-                const oscillator2 = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-                
-                // First tone (higher pitch, shorter duration)
-                oscillator1.type = 'sine';
-                oscillator1.frequency.setValueAtTime(800, audioContext.currentTime);
-                
-                // Second tone (lower pitch, slightly delayed)
-                oscillator2.type = 'sine';
-                oscillator2.frequency.setValueAtTime(600, audioContext.currentTime);
-                
-                // Volume envelope for fading out
-                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.3); // Fade out quickly
-                
-                // Connect nodes: oscillators -> gain -> destination
-                oscillator1.connect(gainNode);
-                oscillator2.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-                
-                // Start and stop oscillators to create distinct short sounds
-                oscillator1.start(audioContext.currentTime);
-                oscillator2.start(audioContext.currentTime + 0.1); // Start second tone slightly after
-                
-                oscillator1.stop(audioContext.currentTime + 0.15); // Stop first tone
-                oscillator2.stop(audioContext.currentTime + 0.3); // Stop second tone
-                
-                // Clean up resources after sound finishes
-                oscillator1.onended = () => {
-                    oscillator1.disconnect();
-                };
-                oscillator2.onended = () => {
-                    oscillator2.disconnect();
-                    gainNode.disconnect();
-                };
-            }
-        }
-
-        // --- End Notification and Sound Functions ---
 
         // --- DOM Element References ---
         const speedCheckContainer = document.getElementById('speedCheckContainer');
@@ -1946,11 +1750,6 @@
         const backButton = document.getElementById('backButton');
         const toastContainer = document.getElementById('toastContainer');
 
-        // Notification banner elements
-        const notificationBanner = document.getElementById('notificationBanner');
-        const enableNotificationsBtn = document.getElementById('enableNotifications');
-        const dismissBannerBtn = document.getElementById('dismissBanner');
-
         // --- Global State Variables ---
         let currentUser = null; // Firebase Auth user object
         let currentUserData = null; // Firestore user document data (e.g., username)
@@ -1960,28 +1759,81 @@
         let messageListener = null; // Firestore unsubscribe function for active chat messages
         
         // Global objects to store friends and requests data
-        let friends = {}; // Stores accepted friends data { [friendId]: { id, username, chatId, hasUnread, lastSeen, statusListenerUnsub } }
+        let friends = {}; // Stores accepted friends data { [friendId]: { id, username, chatId, hasUnread, lastSeen, isOnline, statusListenerUnsub } }
         let friendRequests = {}; // Stores pending friend requests { [requestId]: { id, fromUserId, fromUsername, status } }
 
         /**
-         * Updates the current user's `lastSeen` timestamp in Firestore.
-         * This function is called periodically to maintain online status.
+         * Updates the current user's `lastSeen` timestamp and `isOnline` status in Firestore.
+         * This function is called periodically to maintain online status and activity.
          */
-        async function updateLastSeen() {
+        async function updateLastSeenAndOnlineStatus() {
             if (currentUser && currentUserData && currentUser.uid) {
                 try {
                     await db.collection('users').doc(currentUser.uid).update({
-                        lastSeen: firebase.firestore.FieldValue.serverTimestamp()
+                        lastSeen: firebase.firestore.FieldValue.serverTimestamp(),
+                        isOnline: true // Explicitly set online when active in the app
                     });
                 } catch (error) {
-                    console.error("Error updating lastSeen:", error);
+                    console.error("Error updating lastSeen and isOnline status:", error);
                 }
             }
         }
 
         /**
+         * Sets the user's online status in Realtime Database, with an onDisconnect handler.
+         * This ensures a reliable "offline" status when the user closes the browser or loses connection.
+         * It also sets up listeners to detect if the user's internet connection status changes.
+         */
+        function setupRealtimePresence() {
+            if (!currentUser || !rtdb) return; // Ensure RTDB is initialized
+
+            const userStatusDatabaseRef = rtdb.ref('/presence/' + currentUser.uid);
+            
+            // Create a reference to the special '.info/connected' path
+            const connectedRef = rtdb.ref('.info/connected');
+
+            // Listener for connection status changes
+            connectedRef.on('value', async (snapshot) => {
+                if (snapshot.val() === true) {
+                    // We're connected! Set up onDisconnect and then set online status
+                    await userStatusDatabaseRef.onDisconnect().set(false).catch(e => console.error("Error setting onDisconnect:", e)); // Set offline when disconnected
+                    await userStatusDatabaseRef.set(true).catch(e => console.error("Error setting RTDB online:", e)); // Set online immediately
+                    console.log("Realtime Database: Connected and set user online.");
+
+                    // Also update Firestore if currently connected and online
+                    if (currentUser && currentUser.uid) {
+                        await db.collection('users').doc(currentUser.uid).update({
+                            isOnline: true,
+                            lastSeen: firebase.firestore.FieldValue.serverTimestamp()
+                        }).catch(e => console.error("Error updating Firestore online status:", e));
+                    }
+
+                } else {
+                    // We've lost connection (or it was never established)
+                    console.log("Realtime Database: Disconnected or not connected.");
+                    // The onDisconnect will handle setting offline when the connection truly drops.
+                    // No explicit action needed here beyond what onDisconnect manages.
+                    if (currentUser && currentUser.uid) {
+                        // Optionally, update Firestore to offline immediately on client-side disconnect detection
+                        db.collection('users').doc(currentUser.uid).update({
+                            isOnline: false,
+                            lastSeen: firebase.firestore.FieldValue.serverTimestamp() // Update last seen
+                        }).catch(e => console.error("Error updating Firestore offline status on disconnect:", e));
+                    }
+                }
+            });
+
+            // Ensure onDisconnect is set up only once and remains (this will be cancelled and re-applied by connectedRef listener)
+            // userStatusDatabaseRef.onDisconnect().set(false).catch(error => {
+            //     console.error("Error setting up initial Realtime Database onDisconnect:", error);
+            // });
+        }
+
+
+        /**
          * Handles user logout.
-         * Unsubscribes all Firestore listeners and clears intervals to prevent memory leaks.
+         * Unsubscribes all Firebase listeners and clears intervals to prevent memory leaks.
+         * Also explicitly sets user offline in Realtime Database and Firestore.
          */
         async function handleLogout() {
             try {
@@ -1989,6 +1841,18 @@
                 if (userActivityInterval) {
                     clearInterval(userActivityInterval);
                     userActivityInterval = null;
+                }
+
+                // Explicitly set user offline in Realtime Database and Firestore
+                if (currentUser && currentUser.uid) {
+                    const userStatusDatabaseRef = rtdb.ref('/presence/' + currentUser.uid);
+                    await userStatusDatabaseRef.onDisconnect().cancel(); // Cancel any pending onDisconnect
+                    await userStatusDatabaseRef.set(false); // Set offline immediately
+
+                    await db.collection('users').doc(currentUser.uid).update({
+                        isOnline: false,
+                        lastSeen: firebase.firestore.FieldValue.serverTimestamp()
+                    });
                 }
 
                 // Unsubscribe from active chat messages listener
@@ -2008,17 +1872,14 @@
                 // Unsubscribe from all friend status listeners
                 for (const friendId in friendStatusListeners) {
                     if (friendStatusListeners[friendId]) {
-                        friendStatusListeners[friendId]();
+                        // Realtime Database listeners are unsubscribed using .off()
+                        rtdb.ref('/presence/' + friendId).off('value', friendStatusListeners[friendId]);
                     }
                 }
                 friendStatusListeners = {}; // Clear the listeners object
 
                 // Sign out from Firebase Auth
                 await auth.signOut();
-                // Suspend audio context if running
-                if (audioContext && audioContext.state === 'running') {
-                    audioContext.suspend();
-                }
                 showToast('Logged out successfully.', 'info');
             } catch (error) {
                 console.error("Logout failed:", error);
@@ -2091,18 +1952,13 @@
          * For messages, also indicates if a message has expired based on EPHEMERAL_DURATION_MS.
          * For lastSeen, provides relative time.
          * @param {firebase.firestore.Timestamp} timestamp - The Firebase timestamp.
-         * @param {boolean} forMessage - True if formatting for a chat message, false for lastSeen.
-         * @returns {string} Formatted time string or empty if expired (for message).
+         * @returns {string} Formatted time string.
          */
-        function formatTimestamp(timestamp, forMessage = true) {
+        function formatTimestamp(timestamp) {
             if (!timestamp) return '';
             const date = timestamp.toDate();
             const now = new Date();
             const diffMs = now.getTime() - date.getTime();
-
-            if (forMessage && diffMs > EPHEMERAL_DURATION_MS) {
-                return ''; // Message expired
-            }
 
             const diffSeconds = Math.floor(diffMs / 1000);
             const diffMinutes = Math.floor(diffSeconds / 60);
@@ -2202,8 +2058,8 @@
             filteredMessages.forEach(msg => {
                 const messageElement = document.createElement('div');
                 messageElement.classList.add('message', msg.senderId === currentUser.uid ? 'outgoing' : 'incoming');
-                messageElement.id = msg.id; // Assign message ID for easier reference (e.g., by notification listener)
-                const formattedTime = formatTimestamp(msg.timestamp, true); // Use true for message formatting
+                messageElement.id = msg.id; // Assign message ID for easier reference
+                const formattedTime = formatTimestamp(msg.timestamp); // Use generic formatTimestamp
 
                 messageElement.innerHTML = `
                     <div class="message-content">${msg.text}</div>
@@ -2235,7 +2091,6 @@
 
             try {
                 await auth.signInWithEmailAndPassword(email, password);
-                initializeAudioContext(); // Initialize audio context on successful interaction
             } catch (error) {
                 loginError.textContent = error.message;
                 loginError.classList.remove('hidden');
@@ -2271,7 +2126,6 @@
 
             try {
                 await auth.createUserWithEmailAndPassword(email, password);
-                initializeAudioContext(); // Initialize audio context on successful interaction
             } catch (error) {
                 registerError.textContent = error.message;
                 registerError.classList.remove('hidden');
@@ -2338,26 +2192,28 @@
                     return;
                 }
 
-                // Set user data in Firestore
+                // Set user data in Firestore, including initial online status
                 await usersRef.doc(currentUser.uid).set({
                     username: username,
                     email: currentUser.email,
                     createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    lastSeen: firebase.firestore.FieldValue.serverTimestamp() // Initial lastSeen
+                    lastSeen: firebase.firestore.FieldValue.serverTimestamp(), // Initial lastSeen
+                    isOnline: true // Set online by default
                 }, { merge: true }); // Use merge to avoid overwriting existing data if any
 
-                currentUserData = { username: username, email: currentUser.email }; // Update global current user data
+                currentUserData = { username: username, email: currentUser.email, isOnline: true }; // Update global current user data
                 
                 // Start periodically updating lastSeen for the current user
-                userActivityInterval = setInterval(updateLastSeen, 60 * 1000); // Every 60 seconds
-                updateLastSeen(); // Initial update immediately
+                userActivityInterval = setInterval(updateLastSeenAndOnlineStatus, 60 * 1000); // Every 60 seconds
+                updateLastSeenAndOnlineStatus(); // Initial update immediately
+
+                // Setup Realtime Database presence
+                setupRealtimePresence();
 
                 showScreen('appContainer'); // Transition to main app
                 showToast('Username set successfully! Welcome to Ephemeral Chat.', 'success');
-                requestNotificationPermission(); // Prompt for notifications after user is in app
                 setupChatListeners(); // Setup real-time chat listeners
                 setupFriendStatusListeners(); // Setup real-time listeners for friends' online status
-                initializeAudioContext(); // Ensure audio context is ready
             } catch (error) {
                 console.error("Error setting username:", error);
                 usernameError.textContent = "Error setting username: " + error.message;
@@ -2400,6 +2256,7 @@
 
         /**
          * Fetches a user's data from Firestore by their user ID.
+         * This is primarily used for getting username and lastSeen (if not online via RTDB).
          * @param {string} userId - The ID of the user.
          * @returns {Promise<Object|null>} User data or null if not found.
          */
@@ -2465,22 +2322,19 @@
 
                 const avatarInitial = getInitials(friend.username);
 
-                // Determine online status
-                const now = Date.now();
-                const lastSeenTime = friend.lastSeen ? friend.lastSeen.toDate().getTime() : 0;
-                const isOnline = (now - lastSeenTime) < ONLINE_THRESHOLD_MS; 
-
                 let statusText = '';
                 let statusClass = '';
-                if (isOnline) {
+
+                // Prioritize the isOnline flag from RTDB for immediate status
+                if (friend.isOnline) {
                     statusText = 'Online';
                     statusClass = 'online';
                 } else {
                     statusText = 'Offline'; 
                     statusClass = 'offline';
-                    // If last seen is available and not online, format it.
+                    // Fallback to Firestore's lastSeen if not online via RTDB
                     if (friend.lastSeen) {
-                        const formattedLastSeen = formatTimestamp(friend.lastSeen, false); // Use false for non-message formatting
+                        const formattedLastSeen = formatTimestamp(friend.lastSeen); 
                         if (formattedLastSeen !== '') {
                             statusText = `Last seen ${formattedLastSeen}`;
                         }
@@ -2572,10 +2426,11 @@
                     .where('status', '==', 'accepted')
                     .get();
 
-                // Clear previous friends and their status listeners before re-populating
+                // Clear previous friend status listeners before re-populating
                 for (const friendId in friendStatusListeners) {
                     if (friendStatusListeners[friendId]) {
-                        friendStatusListeners[friendId](); // Unsubscribe
+                        // Realtime Database listeners are unsubscribed using .off()
+                        rtdb.ref('/presence/' + friendId).off('value', friendStatusListeners[friendId]);
                     }
                 }
                 friendStatusListeners = {}; // Reset the object
@@ -2587,7 +2442,7 @@
                     // Determine the friend's ID (the other participant)
                     const friendId = friendship.participants.find(id => id !== currentUser.uid);
                     
-                    // Fetch initial friend data (including lastSeen if available)
+                    // Fetch initial friend data (including lastSeen) from Firestore
                     const friendData = await fetchUserData(friendId);
 
                     if (friendData) {
@@ -2595,13 +2450,16 @@
                             id: friendId,
                             username: friendData.username,
                             chatId: friendship.chatId,
-                            hasUnread: false, // Default to false, will be updated by notifications listener
-                            lastSeen: friendData.lastSeen || null // Initialize lastSeen from fetched data or null
+                            hasUnread: false, // Default to false, will be updated by chat listener
+                            lastSeen: friendData.lastSeen || null, // Initialize lastSeen from fetched data or null
+                            isOnline: false // Default to false, Realtime Database will update this
                         };
                     }
                 }
 
                 displayFriends(friends);
+                // After loading friends, set up Realtime Database listeners for their presence
+                setupFriendStatusListeners();
             } catch (error) {
                 console.error("Error loading friends:", error);
                 showToast('Failed to load friends.', 'error');
@@ -2793,10 +2651,9 @@
                 showToast(`You are now friends with ${request.fromUsername}!`, 'success');
                 
                 // Reload friends and requests to update UI
-                await loadFriends();
+                await loadFriends(); // loadFriends will now also setup RTDB listeners
                 await loadFriendRequests();
                 setupChatListeners(); // Re-setup listeners to include the new chat
-                setupFriendStatusListeners(); // Re-setup listeners to include the new friend's online status
 
             } catch (error) {
                 console.error("Error accepting friend request:", error);
@@ -2992,7 +2849,7 @@
 
         /**
          * Sets up real-time listeners for all accepted chats to detect new incoming messages
-         * and trigger notifications if the user is not actively viewing the app/chat.
+         * and update unread indicators.
          */
         async function setupChatListeners() {
             if (!currentUser) return;
@@ -3028,14 +2885,6 @@
                                 // Ensure the message is actually new and not from self, and not expired
                                 if (latestMessage.senderId !== currentUser.uid && (Date.now() - latestMessage.timestamp.toDate().getTime()) <= EPHEMERAL_DURATION_MS) {
                                     
-                                    // Trigger notification logic
-                                    if (Notification.permission === 'granted' && document.visibilityState === 'hidden' && activeChatId !== chatId) {
-                                        // Find the friend's username for the notification title
-                                        const friendId = latestMessage.senderId;
-                                        const friendUsername = friends[friendId] ? friends[friendId].username : 'Unknown User';
-                                        showChatNotification(`New message from ${friendUsername}`, latestMessage.text);
-                                    }
-
                                     // Update unread status in sidebar if this is not the currently active chat
                                     if (activeChatId !== chatId) {
                                         const friendIdInChat = friendship.participants.find(id => id !== currentUser.uid);
@@ -3047,49 +2896,72 @@
                                 }
                             }
                         }, (error) => {
-                            console.error(`Error listening to chat ${chatId} for notifications:`, error);
+                            console.error(`Error listening to chat ${chatId} for updates:`, error);
                         });
                     
                     chatListeners[chatId] = listener; // Store listener to unsubscribe later
                 });
             } catch (error) {
-                console.error("Error setting up chat listeners for notifications:", error);
+                console.error("Error setting up chat listeners:", error);
             }
         }
 
         /**
-         * Sets up real-time listeners for each friend's user document to track their online status.
+         * Sets up real-time listeners for each friend's online status using Realtime Database.
+         * This provides immediate online/offline updates.
          */
         async function setupFriendStatusListeners() {
-            if (!currentUser) return;
+            if (!currentUser || !rtdb) return; // Ensure RTDB is initialized
 
             // Clear existing listeners
             for (const friendId in friendStatusListeners) {
                 if (friendStatusListeners[friendId]) {
-                    friendStatusListeners[friendId](); // Unsubscribe
+                    // Realtime Database listeners are unsubscribed using .off()
+                    rtdb.ref('/presence/' + friendId).off('value', friendStatusListeners[friendId]);
                 }
             }
             friendStatusListeners = {}; // Reset the object
 
-            // Iterate through current friends and set up listeners
+            // Iterate through current friends and set up RTDB listeners
             for (const friendId in friends) {
-                const listener = db.collection('users').doc(friendId)
-                    .onSnapshot(docSnapshot => {
-                        if (docSnapshot.exists) {
-                            const friendUserData = docSnapshot.data();
-                            if (friends[friendId]) {
-                                // Update lastSeen for the friend
-                                friends[friendId].lastSeen = friendUserData.lastSeen;
-                                // Re-render the friend list to update status
-                                displayFriends(friends);
-                            }
+                const friendPresenceRef = rtdb.ref('/presence/' + friendId);
+                
+                // Define the listener callback function
+                const listenerCallback = (snapshot) => {
+                    if (friends[friendId]) {
+                        const isOnline = snapshot.val() === true; // Value will be true or false
+                        friends[friendId].isOnline = isOnline;
+
+                        // Only update lastSeen from Firestore if the user is currently NOT online via RTDB.
+                        // This prevents Firestore's lastSeen from being inaccurate for truly online users.
+                        if (!isOnline) {
+                            // If friend is offline, fetch their lastSeen from Firestore
+                            // This ensures we have the latest lastSeen timestamp for offline display
+                            db.collection('users').doc(friendId).get().then(doc => {
+                                if (doc.exists && doc.data().lastSeen) {
+                                    friends[friendId].lastSeen = doc.data().lastSeen;
+                                } else {
+                                    friends[friendId].lastSeen = null; // Clear if no lastSeen
+                                }
+                                displayFriends(friends); // Re-render to show updated status
+                            }).catch(error => {
+                                console.error(`Error fetching lastSeen for friend ${friendId}:`, error);
+                                friends[friendId].lastSeen = null; // Ensure consistency on error
+                                displayFriends(friends); // Re-render even on error to update state
+                            });
                         } else {
-                            console.warn(`Friend user document for ID ${friendId} not found.`);
+                            // For online users, set lastSeen to current time (from Realtime Database's server timestamp equivalent)
+                            // This ensures 'just now' is accurate for online users.
+                            // We don't need to explicitly fetch Firestore's lastSeen for online users.
+                            friends[friendId].lastSeen = firebase.firestore.Timestamp.now(); // Use Firestore Timestamp.now() for consistency
+                            displayFriends(friends); // Re-render to show updated status
                         }
-                    }, error => {
-                        console.error(`Error listening to friend ${friendId} status:`, error);
-                    });
-                friendStatusListeners[friendId] = listener; // Store unsubscribe function
+                    }
+                };
+
+                // Attach the listener and store the callback function itself for .off()
+                friendPresenceRef.on('value', listenerCallback);
+                friendStatusListeners[friendId] = listenerCallback; // Store the function reference
             }
         }
 
@@ -3140,7 +3012,7 @@
                 // Determine destination after successful clicks
                 if (currentUser) {
                     // User is authenticated
-                    if (currentUserData) { // Check if username is already set
+                    if (currentUserData && currentUserData.username) { // Check if username is already set
                         showScreen('appContainer');
                         showToast('Network check passed. Welcome to Ephemeral Chat!', 'success');
                     } else {
@@ -3290,10 +3162,6 @@
             }
         });
 
-        // Event listeners for the notification banner buttons
-        enableNotificationsBtn.addEventListener('click', enableNotifications);
-        dismissBannerBtn.addEventListener('click', hideNotificationBanner); // Corrected this line
-
         // --- Firebase Authentication State Observer ---
         // This runs whenever the user's authentication state changes (login, logout, initial load)
         auth.onAuthStateChanged(async (user) => {
@@ -3311,22 +3179,24 @@
 
             if (user) { // User is logged in
                 try {
-                    // Fetch user's custom data (like username) from Firestore
+                    // Fetch user's custom data (like username and isOnline) from Firestore
                     const userDoc = await db.collection('users').doc(user.uid).get();
                     if (userDoc.exists) {
                         currentUserData = userDoc.data();
                         
-                        // Start periodically updating lastSeen for the current user
-                        userActivityInterval = setInterval(updateLastSeen, 60 * 1000); // Every 60 seconds
-                        updateLastSeen(); // Initial update immediately
+                        // Start periodically updating lastSeen and isOnline for the current user
+                        userActivityInterval = setInterval(updateLastSeenAndOnlineStatus, 60 * 1000); // Every 60 seconds
+                        updateLastSeenAndOnlineStatus(); // Initial update immediately
+
+                        // Setup Realtime Database presence
+                        setupRealtimePresence();
 
                         // Pre-load necessary data in the background. The actual UI will be shown
                         // only after the network check is completed (via handleSpeedMeterClick).
                         await loadFriends(); 
                         await loadFriendRequests();
-                        requestNotificationPermission(); // Prompt for notifications
                         setupChatListeners(); // Setup real-time listeners for all chats (for new messages)
-                        setupFriendStatusListeners(); // Setup real-time listeners for friends' online status
+                        // setupFriendStatusListeners() is now called within loadFriends()
 
                     } else {
                         // User is authenticated but hasn't set up a username yet.
@@ -3347,14 +3217,17 @@
 
         // Add a listener for browser window/tab closing or navigation (best effort)
         window.addEventListener('beforeunload', async () => {
-            if (currentUser && currentUserData) {
+            if (currentUser && currentUser.uid) {
+                // This will be handled by Realtime Database's onDisconnect,
+                // but we also update Firestore for consistency and explicit state.
                 try {
-                    // One final attempt to update lastSeen, though not guaranteed on browser close
                     await db.collection('users').doc(currentUser.uid).update({
+                        isOnline: false,
                         lastSeen: firebase.firestore.FieldValue.serverTimestamp()
                     });
+                    // Realtime Database onDisconnect is already setup and more reliable for immediate disconnects.
                 } catch (error) {
-                    console.warn("Could not update lastSeen on beforeunload:", error);
+                    console.warn("Could not explicitly update Firestore status on beforeunload:", error);
                 }
             }
         });
@@ -3362,12 +3235,6 @@
         // Expose functions to the global window object so they can be called from inline HTML (onclick)
         window.acceptFriendRequest = acceptFriendRequest;
         window.declineFriendRequest = declineFriendRequest;
-
-        // Initialize audio context on any user interaction (click or keydown)
-        // The 'once: true' ensures the listener is removed after the first trigger,
-        // as AudioContext only needs to be resumed once.
-        document.addEventListener('click', initializeAudioContext, { once: true });
-        document.addEventListener('keydown', initializeAudioContext, { once: true });
 
         // Note: document.addEventListener('DOMContentLoaded', initializeSpeedTestScreen) is no longer needed
         // because auth.onAuthStateChanged already handles the initial screen setup reliably.
