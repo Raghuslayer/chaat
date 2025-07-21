@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ephemeral Chat</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Using Firebase Compat libraries as per original code, consider upgrading to modular SDK for better tree-shaking -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.2/firebase-app-compat.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.2/firebase-auth-compat.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.2/firebase-firestore-compat.min.js"></script>
@@ -1440,8 +1441,7 @@
                 bottom: clamp(0.75rem, 3vw, 1rem);
                 right: clamp(0.75rem, 3vw, 1rem);
             }
-        }
-    </style>
+        </style>
 </head>
 <body>
     <!-- Speed Check Container -->
@@ -1645,7 +1645,7 @@
         // Firebase Configuration
         // Attempt to use __firebase_config if available (provided by Canvas environment)
         // This is the most robust way to get the correct Firebase configuration.
-        const firebaseConfig = {
+        let firebaseConfig = { // Changed to 'let' to allow reassignment/merging
             apiKey: "AIzaSyBXQAIu0_JwngXpgjuftCsM05kLM6H5OW8", 
             authDomain: "chat-app-e3afc.firebaseapp.com",
             projectId: "chat-app-e3afc",
@@ -1688,7 +1688,7 @@
         let friendStatusListeners = {}; 
 
         const EPHEMERAL_DURATION_MS = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
-        const ONLINE_THRESHOLD_MS = 5 * 60 * 1000; // 5 minutes for online status
+        const ONLINE_THRESHOLD_MS = 5 * 60 * 1000; // 5 minutes for online status (not directly used for RTDB, but good for context)
 
         // --- DOM Element References ---
         const speedCheckContainer = document.getElementById('speedCheckContainer');
@@ -1704,6 +1704,11 @@
         const registerForm = document.getElementById('registerForm');
         const loginButton = document.getElementById('loginButton');
         const registerButton = document.getElementById('registerButton');
+        const loginEmailInput = document.getElementById('loginEmail'); // Added for direct access
+        const loginPasswordInput = document.getElementById('loginPassword'); // Added for direct access
+        const registerEmailInput = document.getElementById('registerEmail'); // Added for direct access
+        const registerPasswordInput = document.getElementById('registerPassword'); // Added for direct access
+        const confirmPasswordInput = document.getElementById('confirmPassword'); // Added for direct access
         const loginError = document.getElementById('loginError');
         const registerError = document.getElementById('registerError');
         const showRegister = document.getElementById('showRegister');
@@ -1796,7 +1801,9 @@
             connectedRef.on('value', async (snapshot) => {
                 if (snapshot.val() === true) {
                     // We're connected! Set up onDisconnect and then set online status
-                    await userStatusDatabaseRef.onDisconnect().set(false).catch(e => console.error("Error setting onDisconnect:", e)); // Set offline when disconnected
+                    // onDisconnect().set(false) is crucial here. It ensures that if the client disconnects
+                    // (e.g., closes browser, loses internet), the value at userStatusDatabaseRef will be set to false.
+                    await userStatusDatabaseRef.onDisconnect().set(false).catch(e => console.error("Error setting onDisconnect:", e)); 
                     await userStatusDatabaseRef.set(true).catch(e => console.error("Error setting RTDB online:", e)); // Set online immediately
                     console.log("Realtime Database: Connected and set user online.");
 
@@ -1813,8 +1820,9 @@
                     console.log("Realtime Database: Disconnected or not connected.");
                     // The onDisconnect will handle setting offline when the connection truly drops.
                     // No explicit action needed here beyond what onDisconnect manages.
+                    // Optionally, update Firestore to offline immediately on client-side disconnect detection
+                    // This is a "best effort" as onDisconnect is more reliable for true network drops.
                     if (currentUser && currentUser.uid) {
-                        // Optionally, update Firestore to offline immediately on client-side disconnect detection
                         db.collection('users').doc(currentUser.uid).update({
                             isOnline: false,
                             lastSeen: firebase.firestore.FieldValue.serverTimestamp() // Update last seen
@@ -1822,11 +1830,6 @@
                     }
                 }
             });
-
-            // Ensure onDisconnect is set up only once and remains (this will be cancelled and re-applied by connectedRef listener)
-            // userStatusDatabaseRef.onDisconnect().set(false).catch(error => {
-            //     console.error("Error setting up initial Realtime Database onDisconnect:", error);
-            // });
         }
 
 
@@ -2083,14 +2086,15 @@
          */
         async function handleLogin(e) {
             e.preventDefault();
-            const email = loginEmail.value;
-            const password = loginPassword.value;
+            const email = loginEmailInput.value;
+            const password = loginPasswordInput.value;
 
             loginButton.disabled = true;
             loginError.classList.add('hidden');
 
             try {
                 await auth.signInWithEmailAndPassword(email, password);
+                // Auth state change listener will handle screen transition
             } catch (error) {
                 loginError.textContent = error.message;
                 loginError.classList.remove('hidden');
@@ -2105,9 +2109,9 @@
          */
         async function handleRegister(e) {
             e.preventDefault();
-            const email = registerEmail.value;
-            const password = registerPassword.value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
+            const email = registerEmailInput.value;
+            const password = registerPasswordInput.value;
+            const confirmPassword = confirmPasswordInput.value;
 
             if (password !== confirmPassword) {
                 registerError.textContent = "Passwords do not match.";
@@ -2126,6 +2130,7 @@
 
             try {
                 await auth.createUserWithEmailAndPassword(email, password);
+                // Auth state change listener will handle screen transition
             } catch (error) {
                 registerError.textContent = error.message;
                 registerError.classList.remove('hidden');
@@ -2145,6 +2150,9 @@
                 registerAlt.classList.remove('hidden');
                 loginError.classList.add('hidden'); // Clear errors when switching
                 registerError.classList.add('hidden');
+                // Clear inputs when switching forms
+                loginEmailInput.value = '';
+                loginPasswordInput.value = '';
             } else {
                 registerForm.classList.add('hidden');
                 registerAlt.classList.add('hidden');
@@ -2152,6 +2160,10 @@
                 loginAlt.classList.remove('hidden');
                 loginError.classList.add('hidden'); // Clear errors when switching
                 registerError.classList.add('hidden');
+                // Clear inputs when switching forms
+                registerEmailInput.value = '';
+                registerPasswordInput.value = '';
+                confirmPasswordInput.value = '';
             }
         }
 
@@ -3002,30 +3014,27 @@
 
             speedMeterClickCount++;
             
-            // Update instruction for engagement, but no explicit countdown
+            // Update instruction for engagement, but without displaying the click count
             speedCheckInstruction.textContent = `Keep clicking to perform network diagnostics.`;
 
             if (speedMeterClickCount >= REQUIRED_SPEED_METER_CLICKS) {
                 // User has performed enough clicks, remove the click listener for the gatekeeping
                 speedMeterAnalog.removeEventListener('click', handleSpeedMeterClick);
                 
-                // Determine destination after successful clicks
+                // Determine the next screen based on authentication and username status
                 if (currentUser) {
-                    // User is authenticated
-                    if (currentUserData && currentUserData.username) { // Check if username is already set
+                    if (currentUserData && currentUserData.username) { // User is logged in AND has a username
                         showScreen('appContainer');
                         showToast('Network check passed. Welcome to Ephemeral Chat!', 'success');
-                    } else {
-                        showScreen('usernameSetup'); // Authenticated but no username set
+                    } else { // User is logged in but DOES NOT have a username
+                        showScreen('usernameSetup'); 
                         showToast('Network check passed. Please set your username to continue.', 'info');
                     }
-                } else {
-                    // User is not authenticated
+                } else { // User is NOT logged in
                     showScreen('authContainer');
                     showToast('Network check passed. Please login or register to continue.', 'info');
                 }
-                // Reset click count only AFTER moving to the next screen, to avoid interference if user clicks back.
-                // This reset happens automatically when showScreen leads to a screen that calls initializeSpeedTestScreen.
+                // Reset click count happens implicitly when `initializeSpeedTestScreen` is called upon screen change
             } else {
                 // If not enough clicks, enable the "Start Test" button for the actual speed test simulation
                 // This ensures the button is available once the user starts interacting with the meter.
@@ -3088,7 +3097,7 @@
                     speedMeterAnalog.style.cursor = 'pointer';
                     speedMeterAnalog.addEventListener('click', handleSpeedMeterClick); // Re-add listener for chat entry clicks
 
-                    speedCheckInstruction.textContent = `Network analysis complete. Click the dial meter to begin network diagnostics.`;
+                    speedCheckInstruction.textContent = `Network analysis complete. Click the dial meter to proceed.`;
                     showToast(`Speed Test complete: ${currentSpeed.toFixed(1)} Mbps`, 'info');
                 }
             }, 100); // Update every 100ms for smooth animation
@@ -3174,6 +3183,7 @@
             }
 
             // Always show speedCheckContainer first when auth state changes or on initial load
+            // This ensures the network check is always the first step.
             showScreen('speedCheckContainer');
             initializeSpeedTestScreen(); // Reset speed test state every time this screen is shown
 
@@ -3191,27 +3201,31 @@
                         // Setup Realtime Database presence
                         setupRealtimePresence();
 
-                        // Pre-load necessary data in the background. The actual UI will be shown
-                        // only after the network check is completed (via handleSpeedMeterClick).
+                        // Pre-load necessary data in the background.
                         await loadFriends(); 
                         await loadFriendRequests();
-                        setupChatListeners(); // Setup real-time listeners for all chats (for new messages)
-                        // setupFriendStatusListeners() is now called within loadFriends()
+                        setupChatListeners(); 
+                        
+                        // The transition to appContainer or usernameSetup is now handled by handleSpeedMeterClick
+                        // after the required clicks. No direct screen change here based on user/username status.
 
                     } else {
                         // User is authenticated but hasn't set up a username yet.
                         currentUserData = null; 
                         // Show toast, but user will only see it after completing speed check.
                         showToast('Please set your username after network check.', 'info');
+                        // The transition to usernameSetup is handled by handleSpeedMeterClick after clicks.
                     }
                 } catch (error) {
                     console.error("Error fetching user data:", error);
                     showToast('Error loading user data.', 'error');
                 }
-            } else {
-                // User is not logged in. Ensure currentUserData is null.
+            } else { // User is NOT logged in (e.g., after logout or initial unauthenticated load)
                 currentUserData = null;
-                // Speed check screen is already set up by initializeSpeedTestScreen.
+                // Directly show the authentication container for logged-out users.
+                // The speed check is effectively bypassed for subsequent login attempts after logout.
+                showScreen('authContainer');
+                showToast('You have been logged out. Please login or register.', 'info');
             }
         });
 
